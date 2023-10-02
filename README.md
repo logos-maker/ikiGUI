@@ -1,5 +1,5 @@
 # ikiGUI
-The smallest cross platform audio plugin GUI library availible
+The smallest cross platform audio plugin GUI library availible. Is about 530 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability. 
 
 ## GUI lib in C for iki graphics
 It's a new cross platform audio plugin GUI library for tiled graphics and animations, that uses almost no code at all. That is currently availible to Windows and Linux. 
