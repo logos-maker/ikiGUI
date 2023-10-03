@@ -1,4 +1,4 @@
-![](./gfx/thelay.png)
+![](./thelay.png)
 
 # ikiGUI
 The smallest cross platform audio plugin GUI library availible. Is about 530 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
