@@ -1,5 +1,7 @@
 # ikiGUI
-The smallest cross platform audio plugin GUI library availible. Is about 530 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability. 
+The smallest cross platform audio plugin GUI library availible. Is about 530 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
+
+Example code for using it can be found here... https://github.com/logos-maker/VST2
 
 ## GUI lib in C for iki graphics
 It's a new cross platform audio plugin GUI library for tiled graphics and animations, that uses almost no code at all. That is currently availible to Windows and Linux. 
