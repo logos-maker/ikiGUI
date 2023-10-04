@@ -10,9 +10,9 @@ It's a new cross platform audio plugin GUI library for tiled graphics with alpha
 
 It's currently availible to Windows and Linux, and selects the platform specific code automatically.
 
-For displaying graphics it uses simple placement, and character maps, an old concept widely used in the 80's and in 2D computer games. 
+For displaying and animate graphics it uses simple placement, and character maps (an old concept widely used in the 80's and in 2D computer games that also gives the animation capabilities). 
 
-And is well suited for displaying prerendered skeuomorphic or flat vector graphics or photos as plugin graphics.
+And it's well suited for displaying prerendered skeuomorphic or flat vector graphics or photos as plugin graphics.
 
 The core concept here is simplicity, and less is more. There is not much to learn, and it givs fewer compatibillity issues, and gives 100% identical graphis for all platforms.
 
