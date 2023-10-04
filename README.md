@@ -6,11 +6,15 @@ The smallest cross platform audio plugin GUI library availible. Is about 530 lin
 Example code for using it can be found here... https://github.com/logos-maker/VST2
 
 ## GUI lib in C for iki graphics
-It's a new cross platform audio plugin GUI library for tiled graphics and animations, that uses almost no code at all. That is currently availible to Windows and Linux. 
-It selects the platform specific code automatically, depending on what platform the compiler uses.
-For displaying graphics it uses character maps, an old concept widely used in the 80's and in 2D computer games. But in this case you can place them anywhere in the editor window.
-And is well suited for displaying prerendered skeuomorphic graphics or photos as plugin graphics.
-The core concept here is simplicity, and less is more. There is not much to learn, and it givs fewer compatibillity issues.
+It's a new cross platform audio plugin GUI library for tiled graphics with alpha channel and animations, that uses almost no code at all. 
+
+It's currently availible to Windows and Linux, and selects the platform specific code automatically.
+
+For displaying graphics it uses simple placement, and character maps, an old concept widely used in the 80's and in 2D computer games. 
+
+And is well suited for displaying prerendered skeuomorphic or flat vector graphics or photos as plugin graphics.
+
+The core concept here is simplicity, and less is more. There is not much to learn, and it givs fewer compatibillity issues, and gives 100% identical graphis for all platforms.
 
 The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with GUI (Graphical User Interface).
 
