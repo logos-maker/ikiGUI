@@ -28,7 +28,7 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 - Tutorials.
 - More examples.
 - Readymade graphics for easy usage.
-- Tools for faster development.
+- Tools for faster development and rapid GUI design.
 - Better documentation.
 
 ## Licences
