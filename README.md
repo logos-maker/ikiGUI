@@ -4,6 +4,8 @@
 The smallest cross platform audio plugin GUI library availible. Is about 530 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
 - Cross platform compatible to Linux and Windows
 - Cross compiles 100% identical code to differnt platforms.
+- Only uses the most compatible OS functionalliy availible.
+- Uses no third party libraries.
 - Super small code base
 - Easy to animate graphics
 - Easy to make columns or rows of knobs, buttons or even letters.
@@ -24,6 +26,15 @@ And it's well suited for displaying prerendered skeuomorphic or flat vector grap
 The core concept here is simplicity, and less is more. There is not much to learn, and it givs fewer compatibillity issues, and to get you more productive where it counts.
 
 The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with GUI (Graphical User Interface).
+## Reasons to use GUI lib for graphics
+- The small code base gives less bugs
+- It's easy to understand
+- It's easy to modify
+- It's compatible to the highest degree
+- It cross compiles with 100% identical code
+- Easy to animate graphics
+- Gives 24bit layered graphics with alpha channel
+- Easy to implement  it in other languages 
 
 ## Quick overview of all functions
 ```
@@ -45,6 +56,7 @@ ikigui_update_window()		// updates the graphics in the plugin window.
 
 ## Roadmap
 - Support for more platforms.
+- Support usage in more languages.
 - Tutorials.
 - More examples.
 - Readymade graphics for easy usage.
