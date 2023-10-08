@@ -3,6 +3,7 @@
 # ikiGUI
 The smallest cross platform audio plugin GUI library availible. Is about 530 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
 - Cross platform compatible to Linux and Windows
+- Cross compiles 100% identical code to differnt platforms.
 - Super small code base
 - Easy to animate graphics
 - Easy to make columns or rows of knobs, buttons or even letters.
@@ -23,6 +24,25 @@ And it's well suited for displaying prerendered skeuomorphic or flat vector grap
 The core concept here is simplicity, and less is more. There is not much to learn, and it givs fewer compatibillity issues, and to get you more productive where it counts.
 
 The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with GUI (Graphical User Interface).
+
+## Quick overview of all functions
+```
+ikigui				// creates a ikigui object.
+ikigui_init()			// allocates memory and configures your tilemap.
+ikigui_free()			// release memory allocated with ikigui_init()
+ikigui_draw()			// draws the graphics tile map. According to ikigui_init() 
+
+ikigui_blit_part()		// Blits a part of an image, with alpha channel over the destination graphic
+ikigui_blit_part_filled()	// Blits a part of an image, with a background color so the destination graphic gets overwritten.
+ikigui_blit_part_fast()		// Blits a part of an image, without alpha channel.
+ikigui_blit()			// Blits the whole image, to the destination, without alpha channel.
+ikigui_fill_bg()		// Initializes and overwites an image alpha channel, using a color for the background.
+ikigui_bmp_include()		// Imports BMP graphics that are included, to be used as graphics.
+ikigui_open_plugin_window()	// open a plugin window (child window) in the used DAW.
+ikigui_get_events()		// gets the window events like mouseclicks and so on.
+ikigui_update_window()		// updates the graphics in the plugin window.
+```
+
 ## Roadmap
 - Support for more platforms.
 - Tutorials.
