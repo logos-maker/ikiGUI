@@ -1,7 +1,7 @@
 ![](./thelay.png)
 
 # ikiGUI
-The smallest cross platform audio plugin GUI library availible. Is about 530 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
+The smallest cross platform audio plugin GUI library availible. Is about 500 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
 - Cross platform compatible to Linux and Windows
 - Cross compiles 100% identical code to differnt platforms.
 - Only uses the most compatible OS functionalliy availible.
