@@ -72,6 +72,24 @@ void ikigui_fill_bg(ikigui_frame *frame,unsigned int color){// A background colo
         }
 }
 
+void ikigui_bmp_include(ikigui_frame *frame,const unsigned char* bmp_incl){
+        unsigned int start;
+        frame->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
+        frame->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
+        start =    bmp_incl[0x0a] + (bmp_incl[0x0a+1]<<8) + (bmp_incl[0x0a+2]<<16) + (bmp_incl[0x0a+3]<<24);
+
+        frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
+
+        int counter = 0 ; 
+        for(int j = frame->h -1 ; j >= 0 ; j--){
+                for(int i = 0 ; i < frame->w ; i++){
+                        int pixl_addr = (i+(j*frame->w))*4+start;
+                        frame->pixels[counter++]= bmp_incl[pixl_addr]+ (bmp_incl[pixl_addr+1]<<8)+ (bmp_incl[pixl_addr+2]<<16)+ (bmp_incl[pixl_addr+3]<<24);
+                }
+        }
+        frame->size = frame->w * frame->h ;
+}
+
 void ikigui_blit_part(ikigui_frame *mywin,ikigui_frame *frame, int x, int y, ikigui_rect *part){ // Draw area
         if((x<0) || (y<0))return; // sheilding crash
         if(mywin->w <= (x+part->w))return; // shelding crash
