@@ -63,7 +63,7 @@ ikigui_update_window()		// updates the graphics in the plugin window.
 - Tools for faster development and rapid GUI design.
 - Better documentation.
 
-##Tutorial on how to prepare  graphics for a plug with ikiGUI
+## Tutorial on how to prepare  graphics for a plug with ikiGUI
 For this you need som background graphics for your front panel.
 And some assets like knobs and other graphics that can change it's appearance during usage of your audio plug. This changing graphics will be on top of the background graphics. 
 
