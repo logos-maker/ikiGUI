@@ -63,6 +63,31 @@ ikigui_update_window()		// updates the graphics in the plugin window.
 - Tools for faster development and rapid GUI design.
 - Better documentation.
 
+##Tutorial on how to prepare  graphics for a plug with ikiGUI
+For this you need som background graphics for your front panel.
+And some assets like knobs and other graphics that can change it's appearance during usage of your audio plug. This changing graphics will be on top of the background graphics. 
+
+Your assets needs to be saved in a image format that supports alpha channel.
+Alpha channel gives the possibility for transparent graphics for shadows and edges.
+So your assets on top of the background will look right.
+
+One good place to find free suitable knobs for your plug is here...
+https://www.g200kg.com/en/webknobman/gallery.php
+Click on one knob you like and then press 'Easy Rendering'.
+On the next screen press 'Export Exec'.
+Right click on the .png image in your web-browser and save it.
+
+Next you need to convert the image to a BMP file.
+Open the image in a program like gimp or what you like, and export the image to a BMP file using ARGB formatting. After saving the image, you can convert it to a C-array that you can include in your project C code.
+
+Then you also need a background image for your knobs to be displayed upon.
+Use som type of graphics program like Gimp or what you like to use.
+And place all your text, background color and everything you want visible on your front panel.
+it's good to make usage of layers when designing so you move and change separate things without problems. If you use layers, you can also try out your assets in the top layers.
+
+Then when you are ready, you can then export it all except your assets as a BMP image.
+And then convert it to a c-array to include to your project.
+
 ## Licences
 The code will soon be dual-licensed for a small fee for closed source projects. More info later.
 
