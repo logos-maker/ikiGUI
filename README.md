@@ -84,7 +84,7 @@ For conversion to a C-array, there is a program called asset_conv.c included in 
 Then you also need a background image for your knobs to be displayed upon.
 Use som type of graphics program like Gimp or what you like to use.
 And place all your text, background color and everything you want visible on your front panel.
-it's good to make usage of layers when designing so you move and change separate things without problems. If you use layers, you can also try out your assets in the top layers.
+it's good to make usage of layers when designing, so you can move and change separate things without problems. If you use layers, you can also try out your assets in the top layers.
 
 Then when you are ready, you can then export it all except your assets as a BMP image.
 And then convert it to a c-array to include to your project.
