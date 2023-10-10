@@ -79,6 +79,7 @@ Right click on the .png image in your web-browser and save it.
 
 Next you need to convert the image to a BMP file.
 Open the image in a program like gimp or what you like, and export the image to a BMP file using ARGB formatting. After saving the image, you can convert it to a C-array that you can include in your project C code.
+For conversion to a C-array, there is a program called asset_conv.c included in this repository if you don't have a program to do the job.
 
 Then you also need a background image for your knobs to be displayed upon.
 Use som type of graphics program like Gimp or what you like to use.
