@@ -27,6 +27,7 @@ The core concept here is simplicity, and less is more. There is not much to lear
 
 The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with GUI (Graphical User Interface).
 ## Reasons to use GUI lib for graphics
+- Plugs that load and opens the editor incedibly fast.
 - The small code base gives less bugs
 - It's easy to understand
 - It's easy to modify
