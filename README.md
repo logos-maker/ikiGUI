@@ -12,6 +12,9 @@ The smallest cross platform audio plugin GUI library availible. Is about 500 lin
 - Convenient for debuging, printing text and numbers directly on the plugin GUI.
 - Uses 32bit pixels (24bit color and 8bit alpha channel).
 - Optimized to be easy to learn and use.
+- To be able to write incredibly fast plugins where it actually counts.
+- Faster learing curve as C is many times easier language to learn than C++
+- Faster deep knowledge to improve code base and do innovations by your ovn.
 Example code for using it can be found here... https://github.com/logos-maker/VST2
 
 ## GUI lib in C for iki graphics
