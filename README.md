@@ -92,10 +92,11 @@ it's good to make usage of layers when designing, so you can move and change sep
 Then when you are ready, you can then export it all except your assets as a BMP image.
 And then convert it to a c-array to include to your project.
 
-## What is a tile map(https://en.wikipedia.org/wiki/Text_mode)?
+## What is a [tile map](https://en.wikipedia.org/wiki/Text_mode)?
 A tile map is used to create a 2D grid of graphics. Examples of this is found everywhere in 80's computers and video games, and was used to display characters and build levels in computer games.
 The tile map is stored in a array, where the first elements is the first row, followed by the second row and so on. And the first element is the upper left.
-By changing the numbers in the array, you selects what graphical elements to show in each position in the tile map.
+By changing the numbers in the array, you selects what graphical elements to show in each position in the tile map. Historically you used built in graphics modes in the computers graphics chips for this.
+And this tile map would be called a character map and it told what character should be placed for every position of the intire screen.  
 
 ## How to create and make use of tile maps with ikiGUI
 First you need to define an object for the window. You simply do this by writing...
