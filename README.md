@@ -58,7 +58,7 @@ ikigui_open_plugin_window()	// open a plugin window (child window) in the used D
 ikigui_get_events()		// gets the window events like mouseclicks and so on.
 ikigui_update_window()		// updates the graphics in the plugin window.
 ```
-## Quick overview of the stucts structs used
+## Quick overview of the stucts used
 ```
 ikigui_screen // for making a window object
 ikigui_frame // for making a image data object
