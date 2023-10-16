@@ -75,8 +75,8 @@ Your assets needs to be saved in a image format that supports alpha channel.
 Alpha channel gives the possibility for transparent graphics for shadows and edges.
 So your assets on top of the background will look right.
 
-One good place to find free suitable knobs for your plug is [here](https://www.g200kg.com/en/webknobman/gallery.php)
-Click on one knob you like and then press 'Easy Rendering'.
+One good place to find free suitable knobs for your plug is [here.](https://www.g200kg.com/en/webknobman/gallery.php)
+On that page, click on one knob you like and then press 'Easy Rendering'.
 On the next screen press 'Export Exec'.
 Right click on the .png image in your web-browser and save it.
 
