@@ -104,7 +104,7 @@ First you need to define an object for the window. You simply do this by writing
 ikigui_screen mywin ; // This will define an object called mywin. The name mywin is unique for your project.
 ```
 
-Then you need graphics that you can use as a https://en.wikipedia.org/wiki/Texture_atlas
+Then you need graphics that you can use as a  [texture atlas](https://en.wikipedia.org/wiki/Texture_atlas)
 And you need a place for storing that image. You do this by writing...
 ```
 ikigui_frame knob_anim; // knob_anim is the name of the array that is in the included file knob.h
