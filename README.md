@@ -93,6 +93,64 @@ it's good to make usage of layers when designing, so you can move and change sep
 Then when you are ready, you can then export it all except your assets as a BMP image.
 And then convert it to a c-array to include to your project.
 
+## What is a tile map?
+A tile map is used to create a 2D grid of graphics. Examples of this is found everywhere in 80's computers and video games, and was used to display characters and build levels in computer games.
+The tile map is stored in a array, where the first elements is the first row, followed by the second row and so on. And the first element is the upper left.
+By changing the numbers in the array, you selects what graphical elements to show in each position in the tile map.
+
+## How to create and make use of tile maps with ikiGUI
+First you need to define an object for the window. You simply do this by writing...
+```
+ikigui_screen mywin ; // This will define an object called mywin. The name mywin is unique for your project.
+```
+
+Then you need graphics that you can use as a https://en.wikipedia.org/wiki/Texture_atlas
+And you need a place for storing that image. You do this by writing...
+```
+ikigui_frame knob_anim; // knob_anim is the name of the array that is in the included file knob.h
+```
+
+Then you need to fill it with graphics. For that we prepare a BMP picture converted to an array, and then include that in your program.
+You include this by writing...
+```
+#include "gfx/knob.h" // gfx is the catalog and knob.h is the file with the array of the BMP picture.
+```
+
+Then you need to read in that BMP picture, and get it’s width and hight. You do this by writing...
+```
+ikigui_bmp_include(&knob_anim,knob_array); // knob_array is the array found in knob.h
+```
+
+Then we need to have a tile map. You create one by writing...
+```
+ikigui knobs; // This will create a tile map called knobs. The name knobs is unique for your project.
+```
+
+Then we need to initialize that tile map with the graphical properties...
+```
+ikigui_init(&knobs, &mywin.frame,&knob_anim,5,1,64,56);
+```
+knobs is the tile map, 
+mywin.frame is the destination, 
+5 is the number of columns, 
+1 is the number of rows,
+64 is the width in pixels of each graphical object in the tile atlas,
+56 is the hight if pixels of each graphical object in the tile atlas.
+
+To draw the tile map to the window you write...
+```
+ikigui_draw(&knobs,0,10,10);
+```
+knobs is the tile map, 
+0 is the drawing mode, 
+10 x coordinate where to paint it, 
+the next 10 is the y coordinate.
+
+Then finally to display everything you have drawn to the window including your tile map, you do this by writing...
+```
+ikigui_update_window(&mywin); 
+```
+
 ## Licences
 The code will soon be dual-licensed for a small fee for closed source projects. More info later.
 
