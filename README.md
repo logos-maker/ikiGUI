@@ -58,7 +58,12 @@ ikigui_open_plugin_window()	// open a plugin window (child window) in the used D
 ikigui_get_events()		// gets the window events like mouseclicks and so on.
 ikigui_update_window()		// updates the graphics in the plugin window.
 ```
-
+## Quick overview of the stucts structs used
+```
+ikigui_screen // for making a window object
+ikigui_frame // for making a image data object
+ikigui // for making a tile map and hold it's settings.
+```
 ## Roadmap
 - Support for more platforms.
 - Support usage in more languages.
@@ -68,7 +73,7 @@ ikigui_update_window()		// updates the graphics in the plugin window.
 - Tools for faster development and rapid GUI design.
 - Better documentation.
 
-## Tutorial on how to prepare  graphics for a plug with ikiGUI
+## Tutorial on how to prepare graphics for a plug with ikiGUI
 For this you need som background graphics for your front panel.
 And some assets like knobs and other graphics that can change it's appearance during usage of your audio plug. This changing graphics will be on top of the background graphics. 
 
