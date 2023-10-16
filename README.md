@@ -156,7 +156,11 @@ Then finally to display everything you have drawn to the window including your t
 ```
 ikigui_update_window(&mywin); 
 ```
-
+## about the drawing modes of ikigui_draw()
+It har 3 different drawing modes.
+1. uses ikigui_blit_part() // Blits a part of an image, with alpha channel over the destination graphic
+2. uses ikigui_blit_part_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
+3. uses ikigui_blit_part_fast() // Blits a part of an image, without alpha channel.
 ## Licences
 The code will soon be dual-licensed for a small fee for closed source projects. More info later.
 
