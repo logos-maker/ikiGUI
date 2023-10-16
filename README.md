@@ -22,7 +22,8 @@ It's a new cross platform audio plugin GUI library for tiled graphics with alpha
 
 It's currently availible to Windows and Linux, and selects the platform specific code automatically.
 
-For displaying and animate graphics it uses simple placement, and character maps (an old concept widely used in the 80's and in 2D computer games that also gives the animation capabilities). 
+For displaying and animate graphics it uses simple placement, and character maps (an old concept widely used in the 80's and in 2D computer games that also gives the animation capabilities).
+You don't need to use character maps and instead simply blit single objects to the window one by one, but it's a simple way to make columns and rows of knobs for example and then animate them.
 
 And it's well suited for displaying prerendered skeuomorphic or flat vector graphics or photos as plugin graphics, and gives 100% identical graphis for all platforms.
 
