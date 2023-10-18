@@ -154,7 +154,7 @@ void ikigui_blit_fast(ikigui_image *mywin,ikigui_image *frame, int x, int y, iki
         }
 }
 
-void ikigui_blit_image(ikigui_image *mywin,ikigui_image *frame, int x, int y){
+void ikigui_image_draw(ikigui_image *mywin,ikigui_image *frame, int x, int y){
         for(int j = 0 ; j < frame->h ; j++){ // vertical
                 for(int i = 0 ; i < frame->w ; i++){   // horizontal
                         mywin->pixels[(x+i+(hflip(mywin->h,j+y))*mywin->w)] = frame->pixels[i+frame->w*(j)];
