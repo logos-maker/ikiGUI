@@ -46,7 +46,7 @@ int ikigui_mouse_pos(struct ikigui_map *display, int x, int y){ // returns -1 if
    return -1; // Pixel coordinate is outside of the character display. 
 }
 
-void ikigui_draw(struct ikigui_map *display, char filling, int x, int y){  // x y is pixel coordinate to draw it in the window
+void ikigui_map_draw(struct ikigui_map *display, char filling, int x, int y){  // x y is pixel coordinate to draw it in the window
    ikigui_rect srcrect;
    ikigui_rect dstrect;
 
