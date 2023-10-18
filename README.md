@@ -39,14 +39,14 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 ## Quick overview of all functions
 ```
 ikigui				// creates a ikigui object.
-ikigui_init()			// allocates memory and configures your tilemap.
-ikigui_free()			// release memory allocated with ikigui_init()
-ikigui_draw()			// draws the graphics tile map. According to ikigui_init() 
+ikigui_map_init()			// allocates memory and configures your tilemap.
+ikigui_map_free()			// release memory allocated with ikigui_init()
+ikigui_map_draw()			// draws the graphics tile map. According to ikigui_init() 
 
-ikigui_blit_part()		// Blits a part of an image, with alpha channel over the destination graphic
-ikigui_blit_part_filled()	// Blits a part of an image, with a background color so the destination graphic gets overwritten.
-ikigui_blit_part_fast()		// Blits a part of an image, without alpha channel.
-ikigui_blit()			// Blits the whole image, to the destination, without alpha channel.
+ikigui_blit_alpha()		// Blits a part of an image, with alpha channel over the destination graphic
+ikigui_blit_filled()	// Blits a part of an image, with a background color so the destination graphic gets overwritten.
+ikigui_blit_fast()		// Blits a part of an image, without alpha channel.
+ikigui_blit_image()			// Blits the whole image, to the destination, without alpha channel.
 ikigui_fill_bg()		// Initializes and overwites an image alpha channel, using a color for the background.
 ikigui_bmp_include()		// Imports BMP graphics that are included, to be used as graphics.
 ikigui_open_plugin_window()	// open a plugin window (child window) in the used DAW.
@@ -55,9 +55,9 @@ ikigui_update_window()		// updates the graphics in the plugin window.
 ```
 ## Quick overview of the stucts used
 ```
-ikigui_screen // for making a window object
-ikigui_frame // for making a image data object
-ikigui // for making a tile map and hold it's settings.
+ikigui_window // for making a window object
+ikigui_image // for making a image data object
+ikigui_map // for making a tile map and hold it's settings.
 ```
 ## Roadmap
 - Support for more platforms.
@@ -102,13 +102,13 @@ And this tile map/character map told what character should be placed for every p
 ## How to create and make use of tile maps with ikiGUI
 To have a place to put your graphics, need to define an object for a window. You simply do this by writing...
 ```
-ikigui_screen mywin ; // This will define an object called mywin. The name mywin is unique for your project.
+ikigui_window mywin ; // This will define an object called mywin. The name mywin is unique for your project.
 ```
 
 Then you need graphics that you can use as a [texture atlas](https://en.wikipedia.org/wiki/Texture_atlas)
 And you need a place for storing that image. You do this by writing...
 ```
-ikigui_frame knob_anim; // knob_anim is the name of the array that is in the included file knob.h
+ikigui_image knob_anim; // knob_anim is the name of the array that is in the included file knob.h
 ```
 
 Then you need to fill the ikigui_frame with graphics. For that we prepare a BMP picture converted to an array, and then include that in your program.
@@ -124,12 +124,12 @@ ikigui_bmp_include(&knob_anim,knob_array); // knob_array is the array found in k
 
 Then we need to have a tile map. You create one by writing...
 ```
-ikigui knobs; // This will create a tile map called knobs. The name knobs is unique for your project.
+ikigui_map knobs; // This will create a tile map called knobs. The name knobs is unique for your project.
 ```
 
 Then we need to initialize that tile map with the graphical properties...
 ```
-ikigui_init(&knobs, &mywin.frame,&knob_anim,5,1,64,56);
+ikigui_map_init(&knobs, &mywin.frame,&knob_anim,5,1,64,56);
 ```
 knobs is the tile map, 
 mywin.frame is the destination, 
@@ -140,7 +140,7 @@ mywin.frame is the destination,
 
 To draw the tile map to the window you write...
 ```
-ikigui_draw(&knobs,0,10,10);
+ikigui_map_draw(&knobs,0,10,10);
 ```
 knobs is the tile map, 
 0 is the drawing mode, 
@@ -154,9 +154,9 @@ ikigui_update_window(&mywin);
 ## About the drawing modes of ikigui_draw()
 It has 3 different drawing modes 0,1 and 2...
 ```
-1. uses ikigui_blit_part() // Blits a part of an image, with alpha channel over the destination graphic
-2. uses ikigui_blit_part_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
-3. uses ikigui_blit_part_fast() // Blits a part of an image, without alpha channel.
+1. uses ikigui_blit_alpha() // Blits a part of an image, with alpha channel over the destination graphic
+2. uses ikigui_blit_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
+3. uses ikigui_blit_fast() // Blits a part of an image, without alpha channel.
 ```
 ## Compilation
 On linux it compiles with GCC, Clang or TCC. But to compile on Windows you need to install GCC with MinGW-w64. And there is many ways to do that, but I recommend to use [TDM-GCC](https://jmeubank.github.io/tdm-gcc/articles/2021-05/10.3.0-release) as it's the simplest way to do it that I have found.
