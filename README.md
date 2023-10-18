@@ -36,11 +36,15 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 - Easy to animate graphics
 - Gives 24bit layered graphics with alpha channel
 
-## Quick overview of all functions
+## Quick overview of the stucts used in ikiGUI
 ```
-ikigui_window         // a window object/struct.
-ikigui_image          // a image object/struct.
-ikigui_map    				// a tile map object/struct.
+ikigui_window // for making a window object
+ikigui_image // for making a image data object
+ikigui_map // for making a tile map and hold it's settings.
+```
+
+## Quick overview of all functions used in ikiGUI
+```
 ikigui_map_init()			// allocates memory and configures your tilemap.
 ikigui_map_free()			// release memory allocated with ikigui_init()
 ikigui_map_draw()			// draws the graphics tile map. According to ikigui_init() 
@@ -55,12 +59,7 @@ ikigui_open_plugin_window()	// open a plugin window (child window) in the used D
 ikigui_get_events()		     // gets the window events like mouseclicks and so on.
 ikigui_update_window()		// updates the graphics in the plugin window.
 ```
-## Quick overview of the stucts used
-```
-ikigui_window // for making a window object
-ikigui_image // for making a image data object
-ikigui_map // for making a tile map and hold it's settings.
-```
+
 ## Roadmap
 - Support for more platforms.
 - Support usage in more languages.
