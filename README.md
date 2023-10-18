@@ -38,7 +38,9 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 
 ## Quick overview of all functions
 ```
-ikigui_map    				// creates a ikigui object.
+ikigui_window         // a window object/struct.
+ikigui_image          // a image object/struct.
+ikigui_map    				// a tile map object/struct.
 ikigui_map_init()			// allocates memory and configures your tilemap.
 ikigui_map_free()			// release memory allocated with ikigui_init()
 ikigui_map_draw()			// draws the graphics tile map. According to ikigui_init() 
