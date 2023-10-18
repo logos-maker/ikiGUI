@@ -158,6 +158,8 @@ It has 3 different drawing modes 0,1 and 2...
 2. uses ikigui_blit_part_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
 3. uses ikigui_blit_part_fast() // Blits a part of an image, without alpha channel.
 ```
+## Compilation
+On linux it compiles with GCC, Clang or TCC. But to compile on Windows you need to install GCC with MinGW-w64. And there is many ways to do that, but I recommend to use [TDM-GCC](https://jmeubank.github.io/tdm-gcc/articles/2021-05/10.3.0-release) as it's the simplest way to do it that I have found.
 ## Licences
 The code will soon be dual-licensed for a small fee for closed source projects. More info later.
 
