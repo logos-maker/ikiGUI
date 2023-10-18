@@ -151,7 +151,7 @@ Then finally to display this tilemap and everything else in your plug that you h
 ```
 ikigui_update_window(&mywin); 
 ```
-## About the drawing modes of ikigui_draw()
+## About the drawing modes of ikigui_map_draw()
 It has 3 different drawing modes 0,1 and 2...
 ```
 1. uses ikigui_blit_alpha() // Blits a part of an image, with alpha channel over the destination graphic
