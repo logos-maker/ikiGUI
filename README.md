@@ -53,16 +53,16 @@ ikigui_map // for making a tile map and hold it's settings.
 
 ## Quick overview of all functions used in ikiGUI
 ```
-ikigui_map_init()			// allocates memory and configures your tilemap.
-ikigui_map_free()			// release memory allocated with ikigui_init()
-ikigui_map_draw()			// draws the graphics tile map. According to ikigui_init() 
+ikigui_map_init()      // allocates memory and configures your tilemap.
+ikigui_map_free()      // release memory allocated with ikigui_init()
+ikigui_map_draw()      // draws the graphics tile map. According to ikigui_init() 
 
-ikigui_blit_alpha()		// Blits a part of an image, with alpha channel over the destination graphic
-ikigui_blit_filled()	// Blits a part of an image, with a background color so the destination graphic gets overwritten.
-ikigui_blit_fast()		// Blits a part of an image, without alpha channel.
-ikigui_blit_image()		// Blits the whole image, to the destination, without alpha channel.
-ikigui_fill_bg()  		// Initializes and overwites an image alpha channel, using a color for the background.
-ikigui_bmp_include()	// Imports BMP graphics that are included, to be used as graphics.
+ikigui_blit_alpha()    // Blits a part of an image, with alpha channel over the destination graphic
+ikigui_blit_filled()   // Blits a part of an image, with a background color so the destination graphic gets overwritten.
+ikigui_blit_fast()     // Blits a part of an image, without alpha channel.
+ikigui_blit_image()    // Blits the whole image, to the destination, without alpha channel.
+ikigui_fill_bg()       // Initializes and overwites an image alpha channel, using a color for the background.
+ikigui_bmp_include()   // Imports BMP graphics that are included, to be used as graphics.
 ikigui_open_plugin_window()	// open a plugin window (child window) in the used DAW.
 ikigui_get_events()		     // gets the window events like mouseclicks and so on.
 ikigui_update_window()		// updates the graphics in the plugin window.
