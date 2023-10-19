@@ -15,6 +15,14 @@ The smallest cross platform audio plugin GUI library availible. Is about 520 lin
 - Faster deep knowledge to improve code base and do innovations by your own.
 Example code for using it can be found here... https://github.com/logos-maker/VST2
 
+## Why on earth is it so small?
+- So you have much less to learn to do a plugin.
+- It's so you one day should understand all code.
+- So you can add things yourself if needed.
+- So it gets a lot less possible bugs. Ever heard of crashing audio plugins?
+- So it gets very easy to port it to other languages and platforms.
+- So the plugins opens much faster. And uses the instruction CPU cache that is 50 times faster than RAM memory.
+
 ## GUI lib in C for iki graphics
 It's a new cross platform audio plugin GUI library for tiled graphics with alpha channel and animations, that uses almost no code at all. 
 
