@@ -105,6 +105,17 @@ It's good to make usage of layers when designing, so you can move and change sep
 Then when you are ready, you can then export it all except your movin assets like knobs as a BMP image.
 And then convert it to a c-array to include to your project so your graphics will be embedded into your plug.
 
+## Integrating other pixel based drawing routines
+Maybe you want to be able to do things graphics that ikiGUI doesn't have out of the box.
+Like drawing lines or vector graphics or image processing with colors or whatever.
+Then this can quite easily be done, just get the base address for the pixels and the width and hight
+of what you want to change and do what you need to do. All pixels are saved in a 32bit ARGB format.
+
+If you want vector graphics maybe you could use something like 
+[Olive](https://github.com/tsoding/olive.c),
+[PlutoVG](https://github.com/sammycage/plutovg/tree/main)
+[Video: How Blurs & Filters Work](https://youtu.be/C_zFhWdM4ic?si=F9bRqaaNlFn7qX06)
+
 ## What is a [tile map](https://en.wikipedia.org/wiki/Text_mode)?
 A tile map is used to create a 2D grid of graphics. Examples of this is found everywhere in 80's computers and video games, and was used to display characters and build levels in computer games.
 The tile map is stored in a array, where the first elements is the first row, followed by the second row and so on. And the first element is the upper left.
