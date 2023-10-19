@@ -74,6 +74,7 @@ ikigui_fill_bg()       // Draws a background color to an image. The source and d
 ## Roadmap
 - Support for more platforms.
 - Support usage in more languages.
+- More functions for realtime drawing.
 - Tutorials.
 - More examples.
 - Readymade graphics for easy usage.
