@@ -106,7 +106,7 @@ Then when you are ready, you can then export it all except your movin assets lik
 And then convert it to a c-array to include to your project so your graphics will be embedded into your plug.
 
 ## Integrating other pixel based drawing routines
-Maybe you want to be able to do things graphics that ikiGUI doesn't have out of the box.
+Maybe you want to be able to do other things with graphics that ikiGUI doesn't have out of the box.
 Like drawing lines or vector graphics or image processing with colors or whatever.
 Then this can quite easily be done, just get the base address for the pixels and the width and hight
 of what you want to change and do what you need to do. All pixels are saved in a 32bit ARGB format.
