@@ -68,7 +68,7 @@ ikigui_get_events()          // gets the window events like mouseclicks and so o
 ikigui_update_window()       // updates the graphics in the plugin window.
 
 ikigui_bmp_include()   // Imports BMP graphics that are included, to be used as graphics.
-ikigui_fill_bg()       // Initializes and overwites an image alpha channel, using a color for the background.
+ikigui_fill_bg()       // Draws a background color to an image. The source and destination is the same image.
 ```
 
 ## Roadmap
