@@ -61,7 +61,7 @@ ikigui_mouse_pos()     // Gives the index to the right element of a tile map fro
 ikigui_blit_alpha()    // Blits a part of an image, with alpha channel over the destination graphic.
 ikigui_blit_filled()   // Blits a part of an image, with a background color so the destination graphic gets overwritten.
 ikigui_blit_fast()     // Blits a part of an image, without alpha channel.
-ikigui_blit_image()    // Blits the whole image, to the destination, without alpha channel.
+ikigui_image_draw()    // Blits a whole image to the destination, without alpha channel.
 
 ikigui_open_plugin_window()  // open a plugin window (child window) in the used DAW.
 ikigui_get_events()          // gets the window events like mouseclicks and so on.
