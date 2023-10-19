@@ -41,7 +41,7 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 - It gives you the mouse cursor position and buttons pressed (from your window object).
 - It loads pictures that you embedd into your plugin (so your plugin is contained in one file).
 - Lets you easily build layers of graphics with [alpha blending](https://en.wikipedia.org/wiki/Alpha_compositing),
-built up of single graphical elements or arrays, rows and columns of pictures aka tile maps(f.e of knobs for your audio plugin).
+built up of single graphical elements or arrays, rows and columns of pictures aka [tile map](https://en.wikipedia.org/wiki/Text_mode)(f.e of knobs for your audio plugin).
 - It can give you information about what tile (for example a knob or button) the mouse cursor is on.
 
 ## Quick overview of the stucts used in ikiGUI
