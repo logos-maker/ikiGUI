@@ -30,11 +30,19 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 ## Reasons to use GUI lib for graphics
 - Plugs that load and opens the editor incedibly fast.
 - The small code base gives less bugs
-- It's easy to understand
+- It's easy to understand and gain knowledge of what is actually happening.
 - It's easy to modify
 - It cross compiles with 100% identical code
 - Easy to animate graphics
 - Gives 24bit layered graphics with alpha channel
+
+## What ikiGUI will do for you
+It lets you open audio plugin windows aka child windows.
+It gives you the mouse cursor position and buttons pressed (from your window object).
+It loads pictures that you embedd into your plugin (so your plugin is contained in one file).
+Lets you easily build layers of graphics with [alpha blending](https://en.wikipedia.org/wiki/Alpha_compositing),
+built up of single graphical elements or arrays, rows and columns of pictures aka tile maps(f.e of knobs for your audio plugin).
+It can give you information about what tile (for example a knob or button) the mouse cursor is on.
 
 ## Quick overview of the stucts used in ikiGUI
 ```
