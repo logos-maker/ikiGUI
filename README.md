@@ -111,9 +111,10 @@ Like drawing lines or vector graphics or image processing with colors or whateve
 Then this can quite easily be done, just get the base address for the pixels and the width and hight
 of what you want to change and do what you need to do. All pixels are saved in a 32bit ARGB format.
 
-If you want vector graphics maybe you could use something like 
-[Olive](https://github.com/tsoding/olive.c),
-[PlutoVG](https://github.com/sammycage/plutovg/tree/main)
+If you want vector graphics maybe you could use something like...  
+[Olive](https://github.com/tsoding/olive.c),  
+[PlutoVG](https://github.com/sammycage/plutovg/tree/main)  
+And here you can find a interesting video about image processing...  
 [Video: How Blurs & Filters Work](https://youtu.be/C_zFhWdM4ic?si=F9bRqaaNlFn7qX06)
 
 ## What is a [tile map](https://en.wikipedia.org/wiki/Text_mode)?
