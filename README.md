@@ -112,8 +112,8 @@ Use a external graphics program like Gimp or what you like to use.
 And make your background color, text and everything you want visible on your front panel that has a static look.
 It's good to make usage of layers when designing, so you can move and change separate things without problems. If you use layers, you can also try out your assets in the top layers in the graphics program.
 
-Then when you are ready, you can then export it all except your movin assets like knobs as a BMP image.
-And then convert it to a c-array to include to your project so your graphics will be embedded into your plug.
+Then when you are ready, you can then export it to a BMP image, all except your animated assets like knobs.
+And then convert it to a c-array to include to your project, so your graphics will be embedded into your plug.
 
 ## Integrating other pixel based drawing routines
 Maybe you want to be able to do other things with graphics that ikiGUI doesn't have out of the box.
