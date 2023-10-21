@@ -32,7 +32,7 @@ It's currently availible to Windows and Linux, and selects the platform specific
 You can place graphic elements one by one or use character/tile maps (an old concept widely used in the 80's and in 2D computer games).
 Tile maps it's a simple way to make columns and rows of knobs for example and animate them.
 
-And it's well suited for displaying prerendered skeuomorphic or flat vector graphics or photos as plugin graphics, and gives 100% identical graphis for all platforms.
+And it's well suited for displaying prerendered skeuomorphic or flat vector graphics or photos as plugin graphics, and gives 100% identical graphics for all platforms.
 
 The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with GUI (Graphical User Interface).
 
