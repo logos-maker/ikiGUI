@@ -83,6 +83,7 @@ ikigui_draw_gradient()  // Fill image with gradient. The source and destination 
 ikigui_draw_solid()     // Fill an image with single color. The source and destination is the same image.    
 ikigui_bmp_include()    // Imports BMP graphics that are included, to be used as graphics. Allocates memory.
 ikigui_fill_bg()        // Draws a background color to an image. The source and destination is the same image.
+ikigui_image_free()     // To realease memory allocated by ikigui_bmp_include() or ikigui_image_empty()
 ```
 
 ## Roadmap
