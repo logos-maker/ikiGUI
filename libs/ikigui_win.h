@@ -116,6 +116,10 @@ void ikigui_fill_bg(ikigui_image *frame,unsigned int color){// A background colo
         }
 }
 
+void ikigui_image_free(struct ikigui_image *frame){
+   free(frame->pixels); // Free memory that was alocated with ikigui init.
+}
+
 void ikigui_image_empty(ikigui_image *frame, uint32_t w,uint32_t h){ // NEW, GIVE BETTER NAME
         frame->w = w;
         frame->h = h;
