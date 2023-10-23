@@ -76,8 +76,11 @@ ikigui_open_plugin_window()  // open a plugin window (child window) in the used 
 ikigui_get_events()          // gets the window events like mouseclicks and so on.
 ikigui_update_window()       // updates the graphics in the plugin window.
 
-ikigui_bmp_include()   // Imports BMP graphics that are included, to be used as graphics.
-ikigui_fill_bg()       // Draws a background color to an image. The source and destination is the same image.
+ikigui_image_empty()    // Creates an empty image. Allocates memory.
+ikigui_draw_gradient()  // Fill image with gradient
+ikigui_draw_solid()     // Fill an image with single color    
+ikigui_bmp_include()    // Imports BMP graphics that are included, to be used as graphics. Allocates memory.
+ikigui_fill_bg()        // Draws a background color to an image. The source and destination is the same image.
 ```
 
 ## Roadmap
