@@ -13,6 +13,7 @@ The smallest cross platform audio plugin GUI library availible. Is about 520 lin
 - To be able to write incredibly fast loading plugins.
 - Faster learing curve as C is many times easier language to learn than C++
 - Faster deep knowledge to improve code base and do innovations by your own.
+- Can make precalculated compositing of images.
 Example code for using it can be found here... https://github.com/logos-maker/VST2
 
 ## Why on earth is it so small?
@@ -77,8 +78,8 @@ ikigui_get_events()          // gets the window events like mouseclicks and so o
 ikigui_update_window()       // updates the graphics in the plugin window.
 
 ikigui_image_empty()    // Creates an empty image. Allocates memory.
-ikigui_draw_gradient()  // Fill image with gradient
-ikigui_draw_solid()     // Fill an image with single color    
+ikigui_draw_gradient()  // Fill image with gradient. The source and destination is the same image.
+ikigui_draw_solid()     // Fill an image with single color. The source and destination is the same image.    
 ikigui_bmp_include()    // Imports BMP graphics that are included, to be used as graphics. Allocates memory.
 ikigui_fill_bg()        // Draws a background color to an image. The source and destination is the same image.
 ```
