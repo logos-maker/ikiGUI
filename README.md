@@ -1,4 +1,4 @@
-![](./thelay.png) 
+![](./thelay.png)  
 _A screenshot of a simple plugin examample using ikiGUI_
 
 # ikiGUI
