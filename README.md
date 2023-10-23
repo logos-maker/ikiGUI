@@ -13,7 +13,7 @@ The smallest cross platform audio plugin GUI library availible. Is about 520 lin
 - To be able to write incredibly fast loading plugins.
 - Faster learing curve as C is many times easier language to learn than C++
 - Faster deep knowledge to improve code base and do innovations by your own.
-- Can make precalculated compositing of images.
+- Can make precalculated compositing of images.  
 Example code for using it can be found here... https://github.com/logos-maker/VST2
 
 ## Why on earth is it so small?
