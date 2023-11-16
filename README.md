@@ -192,6 +192,15 @@ Then finally to display this tilemap and everything else in your plug that you h
 ```
 ikigui_update_window(&mywin); 
 ```
+## How to display text for debugging
+You can do this the same way that you can display arrays of knobs, you can make arrays of monospace characters.
+The simplicity of this is useful for displaying numbers and messages in your editor window when developing.
+It can be used in similar way thar character maps was used in computers in the 1970's an 80's.
+The first part of the image should be space followed by ! and " in the same order as in the ASCII standard.
+Then you can use the standard C lib to write text into your character map.
+This can also be used for making tracker editors for sequencers.
+
+
 ## About the drawing modes of ikigui_map_draw()
 It has 3 different drawing modes 0,1 and 2...
 ```
