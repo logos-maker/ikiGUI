@@ -72,10 +72,6 @@ void ikigui_fill_bg(ikigui_image *frame,unsigned int color){// A background colo
         }
 }
 
-void ikigui_image_free(ikigui_image *frame){
-   free(frame->pixels); // Free memory that was alocated with ikigui init.
-}
-
 void ikigui_image_empty(ikigui_image *frame, uint32_t w,uint32_t h){ // NEW, GIVE BETTER NAME
         frame->w = w;
         frame->h = h;
@@ -142,12 +138,12 @@ void ikigui_image_draw(ikigui_image *mywin,ikigui_image *frame, int x, int y){ /
                 }
         }
 }
-void ikigui_draw_solid(ikigui_image *mywin, unsigned int color){ // Fill window.
+void ikigui_draw_solid(ikigui_image *mywin, unsigned int color){ // Fill image or window.
         for(int i = 0 ; i < mywin->w * mywin->h ; i++){ // All pixels      
                         mywin->pixels[i] = color;
         }
 }
-void ikigui_draw_gradient(ikigui_image *mywin, uint32_t color_top, uint32_t color_bot){ // Fill window.
+void ikigui_draw_gradient(ikigui_image *mywin, uint32_t color_top, uint32_t color_bot){ // Fill image or window.
 	double line_const = (double)255/(double)mywin->h;
         for(int j = 0 ; j < mywin->h ; j++){ // vertical
 		double rise = (double)j * line_const ;	// rising

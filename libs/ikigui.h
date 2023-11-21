@@ -16,6 +16,7 @@ typedef struct ikigui_map {
    unsigned char  char_hight;  // The pixel hight of the characters in the texture
    char  *map;		       // The start address for the character display
    unsigned char  scaling;     // 1 displays graphics as in BMP, 2 doubles pixels in x and Y.
+   unsigned char  direction;   // The direction of the immages in the source image. Is autodetected by ikigui_map_init().
 } ikigui_map;
 
 int ikigui_map_init(struct ikigui_map *display, ikigui_image *renderer, ikigui_image *texture, int columns, int rows,int width,int hight ){
@@ -27,6 +28,7 @@ int ikigui_map_init(struct ikigui_map *display, ikigui_image *renderer, ikigui_i
    display->scaling = 1;        // Set to a default value
    display->renderer = renderer ; // Set to renderer given as input by library user.
    display->texture = texture ;   // Set to texture given as input by library user.
+   if(texture->w == width) display->direction = 0; else display->direction = 1;
    return columns * rows ;
 }
 
@@ -47,30 +49,52 @@ int ikigui_mouse_pos(struct ikigui_map *display, int x, int y){ // returns -1 if
 }
 
 void ikigui_map_draw(struct ikigui_map *display, char filling, int x, int y){  // x y is pixel coordinate to draw it in the window
+   
    ikigui_rect srcrect;
    ikigui_rect dstrect;
 
    srcrect.y = 0; // Top pixel of characters in picture loaded in to texture.
+   srcrect.x = 0; // Top pixel of characters in picture loaded in to texture.
+
    srcrect.w = display->char_width; // character width in loaded picture in texture.
    srcrect.h = display->char_hight; // character hight in loaded picture in texture.
+
+   // renderer has no support for scaling yet
    dstrect.w = display->char_width * display->scaling;  // character width on screen.
    dstrect.h = display->char_hight * display->scaling;  // character hight on screen.
 
    int w = display->columns ;
    int h = display->rows ;
 
-   for(int i = 0 ; i < h ; i++ ){
-      dstrect.y = i * dstrect.h + y;
-      for(int j = 0 ; j < w ; j++ ){
-          dstrect.x = (j * dstrect.w) + x;
-          srcrect.x = srcrect.w * (display->map[i*w + j] - 32) ; // -32 becauce the ASCII code should match to where you catch characters from texture.
-          if(srcrect.x <0)srcrect.x = 0; // Program can segment fault without this line.
-         
-	  switch(filling){ // Draw the character buffer to window.
-		  case 0:       ikigui_blit_alpha (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-		  case 1:	ikigui_blit_filled(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-		  case 2:	ikigui_blit_fast  (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-	  }
-      }
-   }        
+   if(display->direction){ // The direction of the tiles is ordered in the source image is autodetected by the ikigui_map_init() function.
+	   for(int i = 0 ; i < h ; i++ ){	// draw all rows
+	      dstrect.y = i * dstrect.h + y;
+	      for(int j = 0 ; j < w ; j++ ){	// draw all columns
+		  dstrect.x = (j * dstrect.w) + x;
+		  srcrect.x = srcrect.w * (display->map[i*w + j] - 32) ; // -32 becauce the ASCII code should match to where you catch characters from texture.
+		  if(srcrect.x <0)srcrect.x = 0; 			// Program can segment fault without this line if you try to use numbers in map that is less than 32.
+
+		  switch(filling){ // Draw the character buffer to window.
+			  case 0:       ikigui_blit_alpha (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+			  case 1:	ikigui_blit_filled(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+			  case 2:	ikigui_blit_fast  (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+		  }
+	      }
+	   }
+   }else{
+	   for(int i = 0 ; i < h ; i++ ){	// draw all rows
+	      dstrect.y = i * dstrect.h + y;
+	      for(int j = 0 ; j < w ; j++ ){	// draw all columns
+		  dstrect.x = (j * dstrect.w) + x; 
+		  srcrect.y = srcrect.h * (display->map[i*h + j] - 32) ; // -32 becauce the ASCII code should match to where you catch characters from texture.
+		  if(srcrect.y <0)srcrect.y = 0;			// Program can segment fault without this line if you try to use numbers in map that is less than 32.
+
+		  switch(filling){ // Draw the character buffer to window.
+			  case 0:       ikigui_blit_alpha (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+			  case 1:	ikigui_blit_filled(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+			  case 2:	ikigui_blit_fast  (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+		  }
+	      }
+	   } 
+   }
 }
