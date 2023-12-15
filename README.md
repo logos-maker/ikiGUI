@@ -2,7 +2,7 @@
 _A screenshot of a simple plugin examample using ikiGUI_
 
 # ikiGUI
-The smallest cross platform audio plugin GUI library availible. Is about 560 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
+The smallest cross platform audio plugin GUI library availible. Is about 600 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
 - Cross compiles 100% identical code to Linux and Windows
 - Uses no third party libraries.
 - Super small code base
