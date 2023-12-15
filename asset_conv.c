@@ -19,7 +19,7 @@ int main(int argc, char *argv[]){
 	char* end = strrchr(name_array, '.'); 
 	*end = 0;
 	if(!end){
-		printf("no . was found in the file name.\");
+		printf("no . was found in the file name.\n");
 		return 1;
 	}
 
