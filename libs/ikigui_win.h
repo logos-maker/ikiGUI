@@ -1,5 +1,5 @@
-        //HINSTANCE hInstance; // https://stackoverflow.com/questions/15462064/hinstance-in-createwindow
-#define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
+//HINSTANCE hInstance; // https://stackoverflow.com/questions/15462064/hinstance-in-createwindow
+// #define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
 #include <windows.h>
 #include <stdbool.h>
 
@@ -14,7 +14,19 @@ typedef struct{
 
 struct mouse{
 	int x, y;
+	int x_intern, y_intern;
 	unsigned char buttons;
+	unsigned char buttons_intern;
+	int pressed ;
+	int old_x ;
+	int old_y ;
+	int old_button_press;
+	char left_click;  	// mouse down events
+	char middle_click;  	// mouse down events
+	char right_click; 	// mouse down events
+	char left_release;  	// mouse down events
+	char middle_release;  	// mouse down events
+	char right_release; 	// mouse down events
 	POINT pos;
 } ;
 
@@ -24,6 +36,7 @@ typedef struct {
 	unsigned int *pixels;
         unsigned int size;
         unsigned int bg_color; // for filling background
+	unsigned char composit; //
 } ikigui_image;
 
 typedef struct ikigui_window{
@@ -40,6 +53,7 @@ typedef struct ikigui_window{
 
 int old_x;
 int old_y;
+
 
 enum { MOUSE_LEFT = 0b1, MOUSE_MIDDLE = 0b10, MOUSE_RIGHT = 0b100, MOUSE_X1 = 0b1000, MOUSE_X2 = 0b10000 };
 
@@ -66,24 +80,27 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 
 		case WM_MOUSEMOVE: { POINT pos;
 			if(mywin->mouse.buttons == MOUSE_LEFT){ // SetCursorPos();
-				GetCursorPos(&pos);
-				mywin->mouse.y += pos.y - mywin->mouse.pos.y;
+				GetCursorPos(&pos);				// absolute coordinate on screen
+				mywin->mouse.y_intern += pos.y - mywin->mouse.pos.y;
 				mywin->mouse.pos.y = pos.y;
+				mywin->mouse.x_intern += pos.x - mywin->mouse.pos.x;	
+				mywin->mouse.pos.x = pos.x;			
+			
 			}else{
-			mywin->mouse.x = LOWORD(lParam);
-		        mywin->mouse.y = HIWORD(lParam);
+				mywin->mouse.x_intern = LOWORD(lParam);		// coordniate relative to window
+				mywin->mouse.y_intern = HIWORD(lParam);
 			}
 		} break;
 		case WM_MOUSELEAVE: break;
-		case WM_LBUTTONDOWN: mywin->mouse.buttons |=  MOUSE_LEFT;   SetCapture(window_handle); GetCursorPos(&mywin->mouse.pos);break;
-		case WM_LBUTTONUP:   mywin->mouse.buttons &= ~MOUSE_LEFT;   ReleaseCapture();break;
-		case WM_MBUTTONDOWN: mywin->mouse.buttons |=  MOUSE_MIDDLE; break;
-		case WM_MBUTTONUP:   mywin->mouse.buttons &= ~MOUSE_MIDDLE; break;
-		case WM_RBUTTONDOWN: mywin->mouse.buttons |=  MOUSE_RIGHT;  break;
-		case WM_RBUTTONUP:   mywin->mouse.buttons &= ~MOUSE_RIGHT;  break;
+		case WM_LBUTTONDOWN: mywin->mouse.buttons_intern |=  MOUSE_LEFT;   SetCapture(window_handle); GetCursorPos(&mywin->mouse.pos);break;
+		case WM_LBUTTONUP:   mywin->mouse.buttons_intern &= ~MOUSE_LEFT;   ReleaseCapture();break;
+		case WM_MBUTTONDOWN: mywin->mouse.buttons_intern |=  MOUSE_MIDDLE; break;
+		case WM_MBUTTONUP:   mywin->mouse.buttons_intern &= ~MOUSE_MIDDLE; break;
+		case WM_RBUTTONDOWN: mywin->mouse.buttons_intern |=  MOUSE_RIGHT;  break;
+		case WM_RBUTTONUP:   mywin->mouse.buttons_intern &= ~MOUSE_RIGHT;  break;
 
 		case WM_MOUSEWHEEL: {
-			printf("%s\n", wParam & 0b10000000000000000000000000000000 ? "Down" : "Up");
+			// printf("%s\n", wParam & 0b10000000000000000000000000000000 ? "Down" : "Up");
 		} break;
 
 		default: return DefWindowProc(window_handle, message, wParam, lParam);
@@ -116,51 +133,64 @@ void ikigui_fill_bg(ikigui_image *frame,unsigned int color){// A background colo
         }
 }
 
-void ikigui_image_free(ikigui_image *frame){
-   free(frame->pixels); // Free memory that was alocated with ikigui init.
-}
-
 void ikigui_image_empty(ikigui_image *frame, uint32_t w,uint32_t h){ // NEW, GIVE BETTER NAME
         frame->w = w;
         frame->h = h;
         frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
         frame->size = frame->w * frame->h ;
+	frame->composit = 1;
 }
 
-void ikigui_blit_alpha(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
+void ikigui_blit_alpha(ikigui_image *dest,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
         if((x<0) || (y<0))return; // sheilding crash
-        if(mywin->w <= (x+part->w))return; // shielding crash
-        if(mywin->h <= (y+part->h))return; // shielding crash
+        if(dest->w < (x+part->w))return; // shielding crash
+        if(dest->h < (y+part->h))return; // shielding crash
 
         for(int j = 0 ; j < part->h ; j++){ // vertical
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
-			mywin->pixels[(x+i+(hflip(mywin->h,j+y))*mywin->w)] 
-			= alpha_channel(mywin->pixels[(x+i+(hflip(mywin->h,j+y))*mywin->w)], frame->pixels[i+part->x+frame->w*(j+part->y)]);
+			if(!dest->composit){
+				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] 
+				= alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)], frame->pixels[i+part->x+frame->w*(j+part->y)]);
+			}else{
+				dest->pixels[x+i+(j+y)*dest->w] 
+				//dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)]
+				= alpha_channel(dest->pixels[x+i+(j+y)*dest->w], frame->pixels[i+part->x+frame->w*(j+part->y)]);
+				//= alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)], frame->pixels[i+part->x+frame->w*(j+part->y)]);
+			}
                 }
         }
 }
 
-void ikigui_blit_filled(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
+void ikigui_blit_filled(ikigui_image *dest,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
         if((x<0) || (y<0))return; // sheilding crash
-        if(mywin->w <= (x+part->w))return; // shielding crash
-        if(mywin->h <= (y+part->h))return; // shielding crash
+        if(dest->w < (x+part->w))return; // shielding crash
+        if(dest->h < (y+part->h))return; // shielding crash
 
         for(int j = 0 ; j < part->h ; j++){ // vertical
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
-			mywin->pixels[(x+i+(hflip(mywin->h,j+y))*mywin->w)] 
-			= alpha_channel(mywin->bg_color, frame->pixels[i+part->x+frame->w*(j+part->y)]);
+			if(!dest->composit){
+				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] 
+				= alpha_channel(dest->bg_color, frame->pixels[i+part->x+frame->w*(j+part->y)]);
+			}else{
+				dest->pixels[(x+i+(j+y)*dest->w)] 
+				= alpha_channel(dest->bg_color, frame->pixels[i+part->x+frame->w*(j+part->y)]);
+			}	
                 }
         }
 }
 
-void ikigui_blit_fast(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
+void ikigui_blit_fast(ikigui_image *dest,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
         if((x<0) || (y<0))return; // shelding crash
-        if(mywin->w <= (x+part->w))return; // shelding crash
-        if(mywin->h <= (y+part->h))return; // shelding crash
+        if(dest->w < (x+part->w))return; // shelding crash
+        if(dest->h < (y+part->h))return; // shelding crash
 
         for(int j = 0 ; j < part->h ; j++){ // vertical
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
-                        mywin->pixels[(x+i+(hflip(mywin->h,j+y))*mywin->w)] = frame->pixels[i+part->x+frame->w*(j+part->y)];
+			if(!dest->composit){
+        			dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = frame->pixels[i+part->x+frame->w*(j+part->y)];
+			}else{
+				dest->pixels[(x+i+(j+y)*dest->w)] = frame->pixels[i+part->x+frame->w*(j+part->y)];
+			}
                 }
         }
 }
@@ -194,8 +224,11 @@ void ikigui_draw_gradient(ikigui_image *mywin, uint32_t color_top, uint32_t colo
 			uint8_t ro = ((uint16_t)(rise*r1 + fall*r2))>>8;   // color_bot + color_top
 			uint8_t go = ((uint16_t)(rise*g1 + fall*g2))>>8;   // color_bot + color_top
 			uint8_t bo = ((uint16_t)(rise*b1 + fall*b2))>>8;   // color_bot + color_top
-
-			mywin->pixels[i+hflip(mywin->h,j)*mywin->w] = (255<<24) + (ro << 16) + (go<< 8) + bo;
+			if(!mywin->composit)
+				mywin->pixels[i+hflip(mywin->h,j)*mywin->w] = (255<<24) + (ro << 16) + (go<< 8) + bo;
+			else{
+				mywin->pixels[i+(j*mywin->w)] = (255<<24) + (ro << 16) + (go<< 8) + bo;
+			}
                 }
         }
 }
@@ -241,7 +274,7 @@ void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
 
         mywin->window_handle = CreateWindow((PCSTR)window_class_name, "BitBlt Test Program ", WS_CHILD | WS_VISIBLE , CW_USEDEFAULT, CW_USEDEFAULT, w, h, (HWND)ptr, NULL, NULL, NULL);
 	if(mywin->window_handle == NULL) {
-		PRINT_ERROR("CreateWindow() failed. Returned NULL.\n");
+	//	PRINT_ERROR("CreateWindow() failed. Returned NULL.\n");
 	}
 
 	mywin->frame.w = mywin->bitmap_info.bmiHeader.biWidth = w;
@@ -253,7 +286,24 @@ void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
 }
 
 void ikigui_get_events(struct ikigui_window *mywin){
+
+
         while(PeekMessage(&mywin->message, NULL, 0, 0, PM_REMOVE)) { DispatchMessage(&mywin->message); }
+
+        // values for recognicing changes in mousemovements and mouse buttons.
+        mywin->mouse.old_x = mywin->mouse.x ;     // old value for x coordinate.
+        mywin->mouse.old_y = mywin->mouse.y ;     // old value for y coodrinate.
+	mywin->mouse.x=mywin->mouse.x_intern;
+	mywin->mouse.y=mywin->mouse.y_intern;
+	mywin->mouse.old_button_press = mywin->mouse.buttons;  // old value for buttons. For finding changes later on.
+	mywin->mouse.buttons = mywin->mouse.buttons_intern; 
+	mywin->mouse.left_click   = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_LEFT);
+	mywin->mouse.middle_click = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_MIDDLE);
+	mywin->mouse.right_click  = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_RIGHT);
+	mywin->mouse.left_release   = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_LEFT));
+	mywin->mouse.middle_release = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_MIDDLE));
+	mywin->mouse.right_release  = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_RIGHT));
+
 }
 
 void ikigui_update_window(struct ikigui_window *mywin){

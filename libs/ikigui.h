@@ -14,87 +14,84 @@ typedef struct ikigui_map {
    unsigned char  rows;        // Number of rows in the character display
    unsigned char  char_width;  // The pixel width of the characters in the texture
    unsigned char  char_hight;  // The pixel hight of the characters in the texture
-   char  *map;		       // The start address for the character display
-   unsigned char  scaling;     // 1 displays graphics as in BMP, 2 doubles pixels in x and Y.
+   char		  *map;	       // The start address for the character display
    unsigned char  direction;   // The direction of the immages in the source image. Is autodetected by ikigui_map_init().
+   uint16_t       max_index;   // The number of tiles in the map - 1.
+   int		  x_spacing;   // The horizontal spacing between the left sides of the tiles in pixels.
+   int		  y_spacing;   // The vertical spacing between the top sides of the tiles in pixels.
+   signed char	  offset;      // The number offset for the numbers in the map. Can be used to fill it with ASCII text for example.
 } ikigui_map;
 
-int ikigui_map_init(struct ikigui_map *display, ikigui_image *renderer, ikigui_image *texture, int columns, int rows,int width,int hight ){
+int ikigui_map_init(struct ikigui_map *display, ikigui_image *renderer, ikigui_image *texture,  int8_t offset, int x_spacing, int y_spacing, int width, int hight, int columns, int rows ){
    display->map = (char*)calloc(columns*rows,sizeof(char));
+   display->offset = offset ; // value offset to all values in the map array.
    display->char_width = width ;// Set to input given as input by library user.
    display->char_hight = hight ;// Set to input given as input by library user.
+   display->x_spacing = x_spacing ;// Set to input given as input by library user.
+   display->y_spacing = y_spacing ;// Set to input given as input by library user.
+   if(y_spacing == 0) display->y_spacing = display->char_hight ; // if y_spacing is zero, set it to the size of the tile so they are placed side by side.
+   if(x_spacing == 0) display->x_spacing = display->char_width;  // if x_spacing is zero, set it to the size of the tile so they are placed side by side.
    display->columns = columns ; // Set to a default value
    display->rows = rows ;       // Set to a default value
-   display->scaling = 1;        // Set to a default value
+   display->max_index = (texture->w / width) * (texture->h / hight) - 1 ; //
    display->renderer = renderer ; // Set to renderer given as input by library user.
    display->texture = texture ;   // Set to texture given as input by library user.
-   if(texture->w == width) display->direction = 0; else display->direction = 1;
+   if(texture->w == width) display->direction = 0; else display->direction = 1; // Automatic detection for tile-atlas direction (horizontal or vertical).
    return columns * rows ;
 }
 
 void ikigui_map_free(struct ikigui_map *display){
-   free(display->map); // Free memory that was alocated with ikigui init.
+   free(display->map); // Free memory that was allocated with ikigui init.
 }
-
+int ikigui_mouse_hit(ikigui_rect *box, int x, int y){ // is the x y coordinate inside the ikigui_rect
+	if(x<box->x) return 0;
+	if(x>(box->x+box->w)) return 0;
+	if(y<box->y) return 0;
+	if(y>(box->y+box->h)) return 0;
+	return -1; // Return a hit/true value.
+}
+void ikigui_blit_area(int x, int y, ikigui_rect *source_rect,ikigui_rect *destin_rect){ // Fill in the parameters of the destin_rect. Convinience to automatically get the rect area for a hypthetical blit operation parameters.
+	destin_rect->x = x ;
+	destin_rect->y = y ;
+	destin_rect->w = source_rect->w ;
+	destin_rect->h = source_rect->h ; 
+}
 int ikigui_mouse_pos(struct ikigui_map *display, int x, int y){ // returns -1 if outside the character display
-   // x , y is pixel coordinate inside the drawing area
-   if( (x < 0) || (y < 0) ) return -1;
-   if( ( x < (display->char_width * display->scaling * display->columns))
-   &&  ( y < (display->char_hight * display->scaling * display->rows))
-   ) return( // Returns the index of the character in your character array. 
-      (x / (display->char_width * display->scaling)) + 
-      ((y / (display->char_hight * display->scaling)) * display->columns)
-   );
+   if( (x < 0) || (y < 0) ) return -1;			// To the left or over the map
+   if( ( x < (( display->x_spacing) * display->columns))// To the right of the map 
+   &&  ( y < (( display->y_spacing) * display->rows))	// below the map 
+   ){  
+	int col = x / display->x_spacing ;
+	int row = y / display->y_spacing ;
+	if( (x < ( col * display->x_spacing  +display->char_width)) && (y < ( row * display->y_spacing  +display->char_hight)) ) // inside the tile
+	return (col + (row * display->columns)); // Returns the index of the character in your character array.
+   };
    return -1; // Pixel coordinate is outside of the character display. 
 }
 
+enum offset {ASCII = -32 }; // For ikigui_map_draw function.
+enum blit_type { APLHA = 0, FILLED = 1, SOLID = 2 }; // Types of 'filling' for ikigui_map_draw()
 void ikigui_map_draw(struct ikigui_map *display, char filling, int x, int y){  // x y is pixel coordinate to draw it in the window
    
-   ikigui_rect srcrect;
-   ikigui_rect dstrect;
+   ikigui_rect srcrect = { .w = display->char_width, .h = display->char_hight }; // , .x = 0, .y = 0,  } ;
+   ikigui_rect dstrect = { .w = display->char_width, .h = display->char_hight };
 
-   srcrect.y = 0; // Top pixel of characters in picture loaded in to texture.
-   srcrect.x = 0; // Top pixel of characters in picture loaded in to texture.
+   int set_w;
+   if(display->direction) set_w = srcrect.w ;
+   else                   set_w = srcrect.h ;
 
-   srcrect.w = display->char_width; // character width in loaded picture in texture.
-   srcrect.h = display->char_hight; // character hight in loaded picture in texture.
-
-   // renderer has no support for scaling yet
-   dstrect.w = display->char_width * display->scaling;  // character width on screen.
-   dstrect.h = display->char_hight * display->scaling;  // character hight on screen.
-
-   int w = display->columns ;
-   int h = display->rows ;
-
-   if(display->direction){ // The direction of the tiles is ordered in the source image is autodetected by the ikigui_map_init() function.
-	   for(int i = 0 ; i < h ; i++ ){	// draw all rows
-	      dstrect.y = i * dstrect.h + y;
-	      for(int j = 0 ; j < w ; j++ ){	// draw all columns
-		  dstrect.x = (j * dstrect.w) + x;
-		  srcrect.x = srcrect.w * (display->map[i*w + j] - 32) ; // -32 becauce the ASCII code should match to where you catch characters from texture.
-		  if(srcrect.x <0)srcrect.x = 0; 			// Program can segment fault without this line if you try to use numbers in map that is less than 32.
-
-		  switch(filling){ // Draw the character buffer to window.
-			  case 0:       ikigui_blit_alpha (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-			  case 1:	ikigui_blit_filled(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-			  case 2:	ikigui_blit_fast  (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-		  }
-	      }
-	   }
-   }else{
-	   for(int i = 0 ; i < h ; i++ ){	// draw all rows
-	      dstrect.y = i * dstrect.h + y;
-	      for(int j = 0 ; j < w ; j++ ){	// draw all columns
-		  dstrect.x = (j * dstrect.w) + x; 
-		  srcrect.y = srcrect.h * (display->map[i*h + j] - 32) ; // -32 becauce the ASCII code should match to where you catch characters from texture.
-		  if(srcrect.y <0)srcrect.y = 0;			// Program can segment fault without this line if you try to use numbers in map that is less than 32.
-
-		  switch(filling){ // Draw the character buffer to window.
-			  case 0:       ikigui_blit_alpha (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-			  case 1:	ikigui_blit_filled(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-			  case 2:	ikigui_blit_fast  (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-		  }
-	      }
-	   } 
+   for(int i = 0 ; i < display->rows ; i++ ){	// draw all rows
+      dstrect.y = i * display->y_spacing + y;
+      for(int j = 0 ; j < display->columns ; j++ ){	// draw all columns
+	  dstrect.x = (j * display->x_spacing) + x;
+          int val = set_w * (display->map[i*display->columns + j] + display->offset) ;
+	  if(val<0) continue ; // Don't draw tile if given lower value than 0. // val=0; 
+	  if(display->direction)srcrect.x = val ; else srcrect.y = val ;
+	  switch(filling){ // Draw the character buffer to window.
+		  case 0:       ikigui_blit_alpha (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+		  case 1:	ikigui_blit_filled(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+		  case 2:	ikigui_blit_fast  (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+	  }
+      }
    }
 }

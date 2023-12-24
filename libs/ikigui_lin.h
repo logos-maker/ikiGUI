@@ -23,6 +23,19 @@ enum { MOUSE_LEFT = 0b1, MOUSE_MIDDLE = 0b10, MOUSE_RIGHT = 0b100, MOUSE_X1 = 0b
 struct mouse{
 	int x, y, x_rel, y_rel;
 	unsigned char buttons;
+    // new
+	int pressed ;
+	int old_x ;
+	int old_y ;
+	int old_button_press;
+
+    // mouse down events
+	char left_click; 
+	char middle_click; 
+	char right_click;
+	char left_release;  	// mouse down events
+	char middle_release;  	// mouse down events
+	char right_release; 	// mouse down events 
 } ;
 
 typedef struct {
@@ -99,8 +112,8 @@ void ikigui_bmp_include(ikigui_image *frame,const unsigned char* bmp_incl){
 
 void ikigui_blit_alpha(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
         if((x<0) || (y<0))return; // sheilding crash
-        if(mywin->w <= (x+part->w))return; // shelding crash
-        if(mywin->h <= (y+part->h))return; // shelding crash
+        if(mywin->w < (x+part->w))return; // shelding crash
+        if(mywin->h < (y+part->h))return; // shelding crash
         for(int j = 0 ; j < part->h ; j++){ // vertical
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
                         mywin->pixels[x+i+(j+y)*mywin->w] = alpha_channel(mywin->pixels[x+i+(j+y)*mywin->w],frame->pixels[i+part->x+frame->w*(j+part->y)]);
@@ -108,10 +121,10 @@ void ikigui_blit_alpha(ikigui_image *mywin,ikigui_image *frame, int x, int y, ik
         }
 }
 
-void ikigui_blit_filled(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
+void ikigui_blit_filled(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area - can be used if you whant to fill alpha with a solid color.
         if((x<0) || (y<0))return; // sheilding crash
-        if(mywin->w <= (x+part->w))return; // shielding crash
-        if(mywin->h <= (y+part->h))return; // shielding crash
+        if(mywin->w < (x+part->w))return; // shielding crash
+        if(mywin->h < (y+part->h))return; // shielding crash
 
         for(int j = 0 ; j < part->h ; j++){ // vertical
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
@@ -120,10 +133,10 @@ void ikigui_blit_filled(ikigui_image *mywin,ikigui_image *frame, int x, int y, i
         }
 }
 
-void ikigui_blit_fast(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area
+void ikigui_blit_fast(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area - can be used if source has no alpha
         if((x<0) || (y<0))return; // sheilding crash
-        if(mywin->w <= (x+part->w))return; // shelding crash
-        if(mywin->h <= (y+part->h))return; // shelding crash
+        if(mywin->w < (x+part->w))return; // shelding crash
+        if(mywin->h < (y+part->h))return; // shelding crash
         for(int j = 0 ; j < part->h ; j++){ // vertical
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
                         mywin->pixels[x+i+(j+y)*mywin->w] = frame->pixels[i+part->x+frame->w*(j+part->y)];
@@ -173,8 +186,7 @@ void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
    	mywin->screen=DefaultScreen(mywin->dis); // Get the screen
         int x = 0;
         int y = 0;
-	unsigned long black;
-	black=BlackPixel(mywin->dis,mywin->screen),// get the color black
+	unsigned long black = BlackPixel(mywin->dis,mywin->screen);// get the color black
 
         mywin->win=XCreateSimpleWindow(mywin->dis,DefaultRootWindow(mywin->dis),x,y,w, h, 5,black, black); // Create window
 
@@ -209,7 +221,13 @@ void ikigui_update_window(ikigui_window *mywin){
         XPutImage(mywin->dis, mywin->win, mywin->gc, mywin->image, 0, 0, 0, 0, mywin->frame.w, mywin->frame.h);
 };
 
-void ikigui_get_events(ikigui_window *mywin){ 
+void ikigui_get_events(ikigui_window *mywin){
+	// values for recognicing changes in mousemovements and mouse buttons.
+	
+        mywin->mouse.old_button_press =  mywin->mouse.buttons;  // old value for buttons. For finding changes later on.
+        mywin->mouse.old_x =  mywin->mouse.x ;     // old value for x coordinate.
+        mywin->mouse.old_y =  mywin->mouse.y ;     // old value for y coodrinate.
+	
         while( XPending(mywin->dis) > 0 ){ // no of events in que
                 XNextEvent(mywin->dis, &mywin->event); // Get next event
 
@@ -251,4 +269,11 @@ void ikigui_get_events(ikigui_window *mywin){
                         break;
                 }
         } // while loop end
+
+	mywin->mouse.left_click   = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_LEFT);
+	mywin->mouse.middle_click = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_MIDDLE);
+	mywin->mouse.right_click  = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_RIGHT);
+	mywin->mouse.left_release   = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_LEFT));
+	mywin->mouse.middle_release = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_MIDDLE));
+	mywin->mouse.right_release  = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_RIGHT));
 };
