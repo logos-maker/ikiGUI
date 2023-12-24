@@ -170,7 +170,7 @@ ikigui_map knobs; // This will create a tile map called knobs. The name knobs is
 
 Then we need to initialize that tile map with the graphical properties...
 ```
-ikigui_map_init(&knobs, &mywin.frame,&knob_anim,0,0,64,56,5,1);
+ikigui_map_init(&knobs, &mywin.frame,&knob_anim,0,0,0,64,56,5,1);
 ```
 knobs is the tile map, 
 mywin.frame is the destination, 
@@ -178,7 +178,7 @@ mywin.frame is the destination,
 1 is the number of rows,
 64 is the width in pixels of each graphical object in the tile atlas,
 56 is the hight if pixels of each graphical object in the tile atlas.
-And 0,0, is a custom y z distance between tiles in pixels if not set to zero.
+And 0,0,0, is an tile offset (that can be used for writing text) followed by is a custom y z distance between tiles in pixels if not set to zero.
 
 To draw the tile map to the window you write...
 ```
