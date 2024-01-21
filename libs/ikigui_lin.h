@@ -121,6 +121,37 @@ void ikigui_blit_alpha(ikigui_image *mywin,ikigui_image *frame, int x, int y, ik
         }
 }
 
+void ikigui_blit_gradient(ikigui_image *mywin, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ // Fill part of image or window with gradient.
+
+	int x = part->x;
+	int y = part->y;
+
+        if((x<0) || (y<0))return; // sheilding crash
+        if(mywin->w < (x+part->w))return; // shielding crash
+        if(mywin->h < (y+part->h))return; // shielding crash
+
+	double line_const = (double)255/(double)part->h;
+        for(int j = 0 ; j < part->h ; j++){ // vertical
+		double rise = (double)j * line_const ;	// rising
+		double fall = 255-rise;			// falling
+
+                for(int i = 0 ; i < part->w ; i++){   // horizontal
+			uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
+			uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
+			uint8_t b1 = color_bot&0xff;		// Blue color_bot
+			uint8_t r2 = (color_top&0xff0000)>>16;	// Red color_top
+			uint8_t g2 = (color_top&0xff00)>>8;	// Red color_top
+			uint8_t b2 = color_top&0xff;		// Blue color_top
+
+			uint8_t ro = ((uint16_t)(rise*r1 + fall*r2))>>8;   // color_bot + color_top
+			uint8_t go = ((uint16_t)(rise*g1 + fall*g2))>>8;   // color_bot + color_top
+			uint8_t bo = ((uint16_t)(rise*b1 + fall*b2))>>8;   // color_bot + color_top
+
+			mywin->pixels[x+i+(j+y)*mywin->w] = (255<<24) + (ro << 16) + (go<< 8) + bo;
+                }
+        }
+}
+
 void ikigui_blit_filled(ikigui_image *mywin,ikigui_image *frame, int x, int y, ikigui_rect *part){ // Draw area - can be used if you whant to fill alpha with a solid color.
         if((x<0) || (y<0))return; // sheilding crash
         if(mywin->w < (x+part->w))return; // shielding crash
