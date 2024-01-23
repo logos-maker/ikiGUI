@@ -3,6 +3,7 @@ _A screenshot of a simple plugin examample using ikiGUI_
 
 # ikiGUI
 The smallest cross platform audio plugin GUI library availible. Is about 650 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
+There is also a example in the example folder on how to use it with SDL2, to prove that there is other uses for this library also.
 - Cross compiles 100% identical code to Linux and Windows
 - Easy to connect to other libraries like SDL.
 - Uses no third party libraries.
