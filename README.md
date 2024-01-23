@@ -15,6 +15,7 @@ There is also a example in the example folder on how to use it with SDL2, to pro
 - Optimized to be easy to learn and use.
 - To be able to write incredibly fast loading plugins.
 - Faster learing curve as C is many times easier language to learn than C++
+- Can be used with C++ also.
 - Faster deep knowledge to improve code base and do innovations by your own.
 - Can make precalculated compositing of images.
     
