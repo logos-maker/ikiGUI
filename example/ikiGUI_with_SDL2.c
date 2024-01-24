@@ -30,7 +30,7 @@ int main(int argc, char ** argv){
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	SDL_Window * window = SDL_CreateWindow("SDL3 Pixel Drawing",
+	SDL_Window * window = SDL_CreateWindow("SDL2 ikiGUI Pixel Example",
 	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, hight, 0);
 
 	SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
