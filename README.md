@@ -5,13 +5,14 @@ _A screenshot of a simple plugin examample using ikiGUI_
 The smallest cross platform audio plugin GUI library availible. Is about 650 lines of code in total. With a minimum of dependencies, and uses only old standard system libraries for maximum compability.
 There is also a example in the example folder on how to use it with SDL2, to prove that there is other uses for this library also.
 - Cross compiles 100% identical code to Linux and Windows
-- Easy to connect to other libraries like SDL.
+- It sets up a A8R8G8B8 framebuffer for the entire plugin window.
+- Uses 32bit pixels (24bit color and 8bit alpha channel).
+- Easy to connect to other libraries like SDL for usage in stand alone applications.
 - Uses no third party libraries.
 - Super small code base
 - Easy to animate graphics
-- Easy to make columns or rows of knobs, buttons or even letters.
+- Easy to make columns or rows of knobs, buttons or monospace letters.
 - Convenient for debuging, printing text and numbers directly on the plugin GUI.
-- Uses 32bit pixels (24bit color and 8bit alpha channel).
 - Optimized to be easy to learn and use.
 - To be able to write incredibly fast loading plugins.
 - Faster learing curve as C is many times easier language to learn than C++
