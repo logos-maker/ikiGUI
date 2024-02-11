@@ -1,5 +1,5 @@
 ![](./thelay.png)  
-_A screenshot of a simple plugin examample using ikiGUI_
+_A screenshot of a simple plugin example using ikiGUI_
 
 # ikiGUI
 The smallest cross platform audio plugin GUI library availible, with a minimum of dependencies. And it only uses old standard system libraries for maximum compability.
