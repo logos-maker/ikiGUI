@@ -1,10 +1,14 @@
 // for oldschool monospace characters and graphic tiles.
-
+#ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
 #ifdef __linux__ //linux specific code goes here...
 	#include "ikigui_lin.h"	// For window and graphics handling in this case for Linux.
 #elif _WIN32 // windows specific code goes here...
 	#include "windows.h"
 	#include "ikigui_win.h" // For window and graphics handling in this case for Windows.
+#endif
+#endif
+#ifdef IKIGUI_DRAW_ONLY
+	#include "ikigui_regular.h"
 #endif
 
 typedef struct ikigui_map {
@@ -70,7 +74,7 @@ int ikigui_mouse_pos(struct ikigui_map *display, int x, int y){ // returns -1 if
 }
 
 enum offset {ASCII = -32 }; // For ikigui_map_draw function.
-enum blit_type { APLHA = 0, FILLED = 1, SOLID = 2 }; // Types of 'filling' for ikigui_map_draw()
+enum blit_type { APLHA = 0, FILLED = 1, SOLID = 2, HOLLOW = 3 }; // Types of 'filling' for ikigui_map_draw()
 void ikigui_map_draw(struct ikigui_map *display, char filling, int x, int y){  // x y is pixel coordinate to draw it in the window
    
    ikigui_rect srcrect = { .w = display->char_width, .h = display->char_hight }; // , .x = 0, .y = 0,  } ;
@@ -91,6 +95,7 @@ void ikigui_map_draw(struct ikigui_map *display, char filling, int x, int y){  /
 		  case 0:       ikigui_blit_alpha (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
 		  case 1:	ikigui_blit_filled(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
 		  case 2:	ikigui_blit_fast  (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+		  case 3:	ikigui_blit_hollow(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
 	  }
       }
    }
