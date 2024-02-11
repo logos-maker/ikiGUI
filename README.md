@@ -20,7 +20,7 @@ There is also a example in the example folder on how to use it with SDL2, to pro
 - Faster deep knowledge to improve code base and do innovations by your own.
 - Can make precalculated compositing of images.
     
-Example code for using it can be found here... https://github.com/logos-maker/RST
+Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
 ## Why on earth is it so small?
 - So you have much less to learn to do a plugin.
