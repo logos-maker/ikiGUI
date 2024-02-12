@@ -67,7 +67,7 @@ ikigui_image // for making a image data object
 ikigui_map // for making a tile map and hold it's settings.
 ```
 
-## Quick overview of all functions used in ikiGUI
+## Quick overview of functions used in ikiGUI
 ```
 ikigui_map_init()      // allocates memory and configures your tilemap.
 ikigui_map_free()      // release memory allocated with ikigui_init()
@@ -77,7 +77,8 @@ ikigui_mouse_pos()     // Gives the index to the right element of a tile map fro
 ikigui_blit_alpha()    // Blits a part of an image, with alpha channel over the destination graphic.
 ikigui_blit_filled()   // Blits a part of an image, with a background color so the destination graphic gets overwritten.
 ikigui_blit_fast()     // Blits a part of an image, without alpha channel.
-ikigui_blit_gradient() // Blits a color gradient, on a part of an image or to the editor window.
+ikigui_blit_hollow()    // Blits a part of an image, with alpha channel over the destination graphic, replacing the souce color but keeping alpha.
+ikigui_draw_gradient() // Blits a color gradient, on a part of an image or to the editor window.
 ikigui_image_draw()    // Blits a whole image to the destination, without alpha channel.
 
 ikigui_open_plugin_window()  // open a plugin window (child window) in the used DAW.
@@ -85,8 +86,8 @@ ikigui_get_events()          // gets the window events like mouseclicks and so o
 ikigui_update_window()       // updates the graphics in the plugin window.
 
 ikigui_image_empty()    // Creates an empty image. Allocates memory.
-ikigui_draw_gradient()  // Fill image with gradient. The source and destination is the same image.
-ikigui_draw_solid()     // Fill an image with single color. The source and destination is the same image.    
+ikigui_image_gradient()  // Fill image with gradient. The source and destination is the same image.
+ikigui_image_solid()     // Fill an image with single color. The source and destination is the same image.    
 ikigui_bmp_include()    // Imports BMP graphics that are included, to be used as graphics. Allocates memory.
 ikigui_fill_bg()        // Draws a background color to an image. The source and destination is the same image.
 ikigui_image_free()     // To realease memory allocated by ikigui_bmp_include() or ikigui_image_empty()
@@ -208,11 +209,12 @@ This can also be used for making tracker editors for sequencers.
 
 
 ## About the drawing modes of ikigui_map_draw()
-It has 3 different drawing modes 0,1 and 2...
+It has 4 different drawing modes 0,1 and 2...
 ```
-1. uses ikigui_blit_alpha() // Blits a part of an image, with alpha channel over the destination graphic
-2. uses ikigui_blit_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
-3. uses ikigui_blit_fast() // Blits a part of an image, without alpha channel.
+0. uses ikigui_blit_alpha() // Blits a part of an image, with alpha channel over the destination graphic
+1. uses ikigui_blit_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
+2. uses ikigui_blit_fast() // Blits a part of an image, without alpha channel.
+3. uses ikigui_blit_hollow() // Blits a part of an image, with alpha channel overwiting the source color, but uses it's alpha information.
 ```
 ## Compilation
 On linux it compiles with GCC, Clang or TCC. But to compile on Windows you need to install GCC with MinGW-w64. And there is many ways to do that, but I recommend to use [TDM-GCC](https://jmeubank.github.io/tdm-gcc/articles/2021-05/10.3.0-release) as it's the simplest way to do it that I have found.
