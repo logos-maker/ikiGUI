@@ -2,39 +2,26 @@
 _A screenshot of a simple plugin example using ikiGUI_
 
 # ikiGUI
-The smallest cross platform audio plugin GUI library availible, with a minimum of dependencies. And it only uses old standard system libraries for maximum compability.
-There is also a example in the example folder on how to use it with SDL2, to prove that there is other uses for this library also.
-- Cross compiles 100% identical code to Linux and Windows
-- It sets up a A8R8G8B8 framebuffer for the entire plugin window.
+The smallest cross platform audio plugin GUI library availible, that don't use any third party libraries.
+- Can be used for making audio plugin GUI's.
+- Cross compiles 100% identical code to Windows and Linux.
+- 100% identical graphics for all supported platforms.
+- It selects the platform specific code automatically.
+- For self contained plugs, with no external files.
+- Require no build system for compilation.
+- It sets up a A8R8G8B8 framebuffer (also known as ARGB8888) for the entire plugin window.
 - Uses 32bit pixels (24bit color and 8bit alpha channel).
-- Easy to connect to other libraries like SDL for usage in stand alone applications.
-- Uses no third party libraries.
+- Can make precalculated compositing of images with transparancy.
 - Super small code base
-- Easy to animate graphics
-- Easy to make columns or rows of knobs, buttons or monospace letters.
-- Convenient for debuging, printing text and numbers directly on the plugin GUI.
-- Optimized to be easy to learn and use.
-- To be able to write incredibly fast loading plugins.
-- Faster learing curve as C is many times easier language to learn than C++
-- Can be used with C++ also.
-- Faster deep knowledge to improve code base and do innovations by your own.
-- Can make precalculated compositing of images.
+- Makes it easy to animate graphics.
+- Makes it easy to make columns and rows of knobs, buttons or monospace letters.
+- Can be used with C or C++
+- Has compilation flag to strip away 100% of all platform depentant code.
     
 Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
-## Why on earth is it so small?
-- So you have much less to learn to do a plugin.
-- It's so you one day should understand all code.
-- So you can add things yourself if needed.
-- So it gets a lot less possible bugs. Ever heard of crashing audio plugins?
-- So it gets very easy to port it to other languages and platforms.
-- So the plugins opens much faster.
-- So it uses the instruction CPU cache that is 50 times faster than RAM memory.
-
-## GUI lib in C for iki graphics
-It's a new cross platform audio plugin GUI library for tiled graphics with alpha channel and animations, that uses almost no code at all. 
-
-It's currently availible to Windows and Linux, and selects the platform specific code automatically.
+## ikiGUI Graphics/GUI lib in C
+It's a cross platform, graphics library for tiled graphics with alpha channel and animations, that uses almost no code at all. 
 
 You can place graphic elements one by one or use character/tile maps (an old concept widely used in the 80's and in 2D computer games).
 Tile maps it's a simple way to make columns and rows of knobs for example and animate them.
@@ -54,7 +41,7 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 
 ## What ikiGUI will do for you
 - It lets you open audio plugin windows aka child windows.
-- It gives you the mouse cursor position and buttons pressed (from your window object).
+- It gives you the mouse cursor position and buttons/knobs/tiles pressed (from your window object).
 - It loads pictures that you embedd into your plugin (so your plugin is contained in one file).
 - Lets you easily build layers of graphics with [alpha blending](https://en.wikipedia.org/wiki/Alpha_compositing),
 built up of single graphical elements or arrays, rows and columns of pictures aka [tile maps](https://en.wikipedia.org/wiki/Text_mode) (for example knobs for your audio plugin).
@@ -94,22 +81,20 @@ ikigui_image_free()     // To realease memory allocated by ikigui_bmp_include() 
 ```
 
 ## Roadmap
-- Support for more platforms.
+- Support for embeddedd systems (stand alone hardware).
 - Support usage in more languages.
 - More functions for realtime drawing.
-- Tutorials.
-- More examples.
+- Better documentation.
 - Readymade graphics for easy usage.
 - Tools for faster development and rapid GUI design.
-- Better documentation.
 
 ## Tutorial on how to prepare graphics for a plug with ikiGUI
-For your plug you probably whant background graphics as your front panel,
+For your plug you whant background graphics that you can think of as your front panel,
 and some assets like knobs and other graphics that can change it's appearance during usage of your audio plug that will be on top of the background graphics. 
 
 Your assets needs to be saved in a image format that supports alpha channel.
 Alpha channel gives the possibility for transparent graphics for shadows and edges.
-So your assets on top of the background will look right.
+That will assure that your assets like knobs and switches on top of the background will look right.
 
 One good place to find free suitable knobs for your plug is [here.](https://www.g200kg.com/en/webknobman/gallery.php)
 On that page, click on one knob you like and then press 'Easy Rendering'.
@@ -117,21 +102,22 @@ On the next screen press 'Export Exec'.
 Right click on the .png image in your web-browser and save it if it doesn't get downloaded automatically.
 
 Next you need to convert the PNG image to a BMP file.
-Open the image in a program and export the image to a BMP file using ARGB formatting. After saving the image, you can convert it to a C-array that you can include in your project C code.
+Open the image in a program and export the image to a BMP file using A8R8G8B8 formatting. After saving the image, you can convert it to a C-array that you can include in your project C code.
 For conversion to a C-array, there is a program called asset_conv.c included in this repository if you don't have a program to do the job.
 
 Then you also need a background image for your knobs to be displayed upon.
 Use a external graphics program like Gimp or what you like to use.
 And make your background color, text and everything you want visible on your front panel that has a static look.
 It's good to make usage of layers when designing, so you can move and change separate things without problems. If you use layers, you can also try out your assets in the top layers in the graphics program.
+The lib can also make image composition if you need to move stuff in your interface while developing.
 
 Then when you are ready, you can then export it to a BMP image, all except your animated assets like knobs.
 And then convert it to a c-array to include to your project, so your graphics will be embedded into your plug.
 
 ## Integrating other pixel based drawing routines
 Maybe you want to be able to do other things with graphics that ikiGUI doesn't have out of the box.
-Like drawing lines or vector graphics or image processing with colors or whatever.
-Then this can quite easily be done, just get the base address for the pixels and the width and hight
+Like drawing vector graphics, text or whatever.
+This can quite easily be done, just get the base address for the pixels and the width and hight
 of what you want to change and do what you need to do. All pixels are saved in a 32bit ARGB format.
 
 If you want vector graphics maybe you could use something like...  
