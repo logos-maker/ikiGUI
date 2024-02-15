@@ -1,4 +1,4 @@
-![](./screen.png)  
+![](./screenshot.png)  
 _A screenshot of a simple plugin example using ikiGUI_
 
 # ikiGUI
