@@ -1,17 +1,4 @@
-typedef struct {
-        int x;
-        int y;
-        int w;
-        int h;
-} ikigui_rect ;
-
-typedef struct {
-	int w; // width
-	int h; // hight
-	unsigned int *pixels;
-        unsigned int size;
-        unsigned int bg_color; // for filling background
-} ikigui_image;
+/// @file ikigui_regular.h Drawing functions, where the first pixel is in the top left corner (used by X11 on Linux).
 
 #ifdef IKIGUI_DRAW_ONLY
 void map_ikigui_to_sdl(ikigui_image * dest, Uint32 * pixels, int w , int h){
@@ -36,21 +23,21 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
-void ikigui_fill_bg(ikigui_image *dest,unsigned int color){// A background color for automatic filling of transparent pixels.
+void ikigui_fill_bg(ikigui_image *dest,unsigned int color){ /// A background color for automatic filling of transparent pixels.
 	// to precalc graphics for usage with ikigui_blit_part_fast() for faster graphics. Can be convinient in some cases.
         for(int i = 0 ; i < dest->size ; i++){
                 dest->pixels[i] = alpha_channel(color,dest->pixels[i]);
         }
 }
 
-void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ // Allocate pixel memory for a ikigui_image
+void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocate pixel memory for a ikigui_image
         frame->w = w;
         frame->h = h;
         frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
         frame->size = frame->w * frame->h ;
 }
 
-void ikigui_bmp_include(ikigui_image *dest,const unsigned char* bmp_incl){ // Read BMP image in header file
+void ikigui_bmp_include(ikigui_image *dest,const unsigned char* bmp_incl){ /// Read BMP image in header file
         unsigned int start;
         dest->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
         dest->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
@@ -68,7 +55,7 @@ void ikigui_bmp_include(ikigui_image *dest,const unsigned char* bmp_incl){ // Re
         dest->size = dest->w * dest->h ;
 }
 
-void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint32_t shadow, ikigui_rect *part ){ // A filled rect with shaddow
+void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint32_t shadow, ikigui_rect *part ){ /// A filled rect with shaddow
 	int x = part->x;
 	int y = part->y;
 
@@ -96,7 +83,7 @@ void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint3
 		dest->pixels[i+(part->y+part->h-1)*dest->w] = shadow;
         }
 }
-void ikigui_draw_bevel(ikigui_image *dest, uint32_t color, uint32_t shadow, ikigui_rect *part ){ // A unfilled rect with shaddow
+void ikigui_draw_bevel(ikigui_image *dest, uint32_t color, uint32_t shadow, ikigui_rect *part ){ /// A unfilled rect with shaddow
 	int x = part->x;
 	int y = part->y;
 
@@ -118,7 +105,7 @@ void ikigui_draw_bevel(ikigui_image *dest, uint32_t color, uint32_t shadow, ikig
         }
 }
 
-void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ // A unfilled rect (has alpha support)
+void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// A unfilled rect (has alpha support)
 	int x = part->x;
 	int y = part->y;
 
@@ -155,7 +142,7 @@ void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /
 	}
 }
 
-void ikigui_draw_box(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ // To draw a filled rectangle (has alpha support)
+void ikigui_draw_box(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// To draw a filled rectangle (has alpha support)
 	int x = part->x; // to make code easier to read
 	int y = part->y; // to make code easier to read
         if((x<0) || (y<0))return; // sheilding crash
@@ -175,33 +162,33 @@ void ikigui_draw_box(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ //
 		}
 	}
 }
-void ikigui_draw_line_v(ikigui_image *canvas, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ // Draw vertical line (has alpha support)
+void ikigui_draw_line_v(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ /// Draw vertical line (has alpha support)
 	if((x<0||y<0))return; // crash blocking
 	if((color & 0xFF000000) != 0xFF000000){ // Do we use alpha? True if no alpha (alpha is set to 0xFF in the color value)
 		for(int i = y ; i < (y+length) ; i++){ // draw vertical line with alpha
-			canvas->pixels[x + i * canvas->w] = alpha_channel(canvas->pixels[x + i * canvas->w],color);
+			dest->pixels[x + i * dest->w] = alpha_channel(dest->pixels[x + i * dest->w],color);
 		}
 	}else{	// It's a solid color
 		for(int i = y ; i < (y+length) ; i++){ // draw vertical line without alpha
-			canvas->pixels[x + i * canvas->w] = color;
+			dest->pixels[x + i * dest->w] = color;
 		}
 	}
 }
-void ikigui_draw_line_h(ikigui_image *canvas, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ // Draw horizontal line (has alpha support)
+void ikigui_draw_line_h(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ /// Draw horizontal line (has alpha support)
 	if((x<0||y<0))return; // crash blocking
 	if((color & 0xFF000000) != 0xFF000000){ // Do we use alpha? True if no alpha (alpha is set to 0xFF in the color value)
 		for(int i = x ; i < (x+length) ; i++){ // draw horizontal line with alpha
-			canvas->pixels[i + y * canvas->w] = alpha_channel(canvas->pixels[i + y * canvas->w],color);
+			dest->pixels[i + y * dest->w] = alpha_channel(dest->pixels[i + y * dest->w],color);
 		}
 	}
 	else{	// It's a solid color
 		for(int i = x ; i < (x+length) ; i++){ // draw horizontal line without alpha
-			canvas->pixels[i + y * canvas->w] = color;
+			dest->pixels[i + y * dest->w] = color;
 		}
 	}
 }
 
-void ikigui_draw_gradient_4x(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, uint32_t color_left, uint32_t color_right, ikigui_rect *part ){ // Fill part of image or window with gradient.
+void ikigui_draw_gradient_4x(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, uint32_t color_left, uint32_t color_right, ikigui_rect *part ){ /// Fill part of image or window with gradient.
 
 	int x = part->x;
 	int y = part->y;
@@ -245,7 +232,7 @@ void ikigui_draw_gradient_4x(ikigui_image *dest, uint32_t color_top, uint32_t co
         }
 }
 
-void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ // Fill part of image or window with gradient.
+void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ /// Fill part of image or window with gradient.
 
 	int x = part->x;
 	int y = part->y;
@@ -276,7 +263,7 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
                 }
         }
 }
-void ikigui_alpha_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ // Fill part of image or window with gradient.
+void ikigui_alpha_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ /// Fill part of image or window with gradient.
 
 	int x = part->x;
 	int y = part->y;
@@ -311,7 +298,7 @@ void ikigui_alpha_gradient(ikigui_image *dest, uint32_t color_top, uint32_t colo
         }
 }
 
-void ikigui_blit_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ // Draw source area specified by rect, to the x,y, coordinate in the destination.
+void ikigui_blit_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination.
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shelding crash
         if(dest->h < (y+part->h))return; // shelding crash
@@ -321,7 +308,7 @@ void ikigui_blit_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ik
                 }
         }
 }
-void ikigui_blit_filled(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ // Draw area - can be used if you whant to fill low alpha value with a solid color.
+void ikigui_blit_filled(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill low alpha value with a solid color.
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
@@ -332,7 +319,7 @@ void ikigui_blit_filled(ikigui_image *dest,ikigui_image *source, int x, int y, i
                 }
         }
 }
-void ikigui_blit_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ // Draw area - can be used if you whant to fill high alpha value with a solid color.
+void ikigui_blit_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill high alpha value with a solid color.
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
@@ -343,7 +330,7 @@ void ikigui_blit_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, i
                 }
         }
 }
-void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ // Draw area - can be used if source has no alpha
+void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if source has no alpha
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shelding crash
         if(dest->h < (y+part->h))return; // shelding crash
@@ -353,14 +340,14 @@ void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, iki
                 }
         }
 }
-void ikigui_image_draw(ikigui_image *dest,ikigui_image *source, int x, int y){ // Draw area. Flexible to Blit in windows and pixel buffers.
+void ikigui_image_draw(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
         for(int j = 0 ; j < source->h ; j++){ // vertical
                 for(int i = 0 ; i < source->w ; i++){   // horizontal         
                         dest->pixels[x+i+(j+y)*dest->w] = source->pixels[i+source->w*j];
                 }
         }
 }
-void ikigui_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ // Draw area. Flexible to Blit in windows and pixel buffers.
+void ikigui_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
         for(int j = 0 ; j < source->h ; j++){ // vertical
                 for(int i = 0 ; i < source->w ; i++){   // horizontal         
                         dest->pixels[x+i+(j+y)*dest->w] = alpha_channel(dest->pixels[x+i+(j+y)*dest->w],source->pixels[i+source->w*j]);
@@ -372,7 +359,7 @@ void ikigui_image_solid(ikigui_image *dest, unsigned int color){ // Fill image o
                         dest->pixels[i] = color;
         }
 }
-void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ // Fill image or window.
+void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image or window.
 	double line_const = (double)255/(double)dest->h;
         for(int j = 0 ; j < dest->h ; j++){ // vertical
 		double rise = (double)j * line_const ;	// rising

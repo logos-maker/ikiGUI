@@ -1,3 +1,4 @@
+/// @file ikigui_win.h Things that are platform specific to Windows (using GDI from the WIN32 API)
 //HINSTANCE hInstance; // https://stackoverflow.com/questions/15462064/hinstance-in-createwindow
 // #define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
 #include <windows.h>
@@ -6,6 +7,7 @@
 
 bool quit = false;
 
+/// Is referenced and is a member of the window struct
 struct mouse{
 	int x, y;
 	int x_intern, y_intern;
@@ -24,6 +26,7 @@ struct mouse{
 	POINT pos;
 } ;
 
+/// A Window struct
 typedef struct ikigui_window{
         ikigui_image frame;
         struct mouse mouse;
@@ -92,9 +95,8 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 	}
 	return 0;
 }
-/*
 
-*/
+/// Open a child window
 void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
 
 	const wchar_t window_class_name[] = L"Window Class";
@@ -127,7 +129,7 @@ void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
 	SelectObject(mywin->bitmap_device_context, mywin->bitmap);
 	SetWindowLongPtr(mywin->window_handle, GWLP_USERDATA, (LONG_PTR)mywin);
 }
-
+/// Update the event data for the Window
 void ikigui_get_events(struct ikigui_window *mywin){
 
 
@@ -148,7 +150,7 @@ void ikigui_get_events(struct ikigui_window *mywin){
 	mywin->mouse.right_release  = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_RIGHT));
 
 }
-
+/// Updates the Window graphics with new things drawn
 void ikigui_update_window(struct ikigui_window *mywin){
         InvalidateRect(mywin->window_handle, NULL, FALSE);
         UpdateWindow(mywin->window_handle);

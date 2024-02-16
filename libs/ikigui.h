@@ -1,3 +1,5 @@
+/// @file ikigui.h Main file for ikiGUI. Has drawing functions, for making tilemaps that select image parts from a tile atlas.
+
 // for oldschool monospace characters and graphic tiles.
 #ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
 #ifdef __linux__ //linux specific code goes here...
@@ -11,21 +13,41 @@
 	#include "ikigui_regular.h"
 #endif
 
+/// For a rectangle with position and dimensions
+typedef struct{ 
+        int x; ///< x coordinate for the upper left position (in pixels)
+        int y; ///< y coordinate for the upper left position (in pixels)
+        int w; ///< width of the rectangle (in pixels)
+        int h; ///< hight of the rectangle (in pixels)
+} ikigui_rect;
+
+/// For a image with dimensions and pointer to pixel data
+typedef struct {
+	int w; ///< width of image (in pixels)
+	int h; ///< hight of image (in pixels)
+	unsigned int *pixels;   ///< pointer to pixel buffer in ARGB8888 format
+        unsigned int size;      ///< the size of the buffer
+        unsigned int bg_color;  ///< color that may be used of tile map drawing for filling background
+	unsigned char composit; ///< flag for internal usage only
+} ikigui_image;
+
+/// For a tile map that can be drawn to images or windows
 typedef struct ikigui_map {
-   ikigui_image   *renderer;   // The renderer to use for drawing the character display		<- destination
-   ikigui_image   *texture;    // The texture with tiles for the monospace font			<- source
-   unsigned char  columns;     // Number of columns in the character display
-   unsigned char  rows;        // Number of rows in the character display
-   unsigned char  char_width;  // The pixel width of the characters in the texture
-   unsigned char  char_hight;  // The pixel hight of the characters in the texture
-   char		  *map;	       // The start address for the character display
-   unsigned char  direction;   // The direction of the immages in the source image. Is autodetected by ikigui_map_init().
-   uint16_t       max_index;   // The number of tiles in the map - 1.
-   int		  x_spacing;   // The horizontal spacing between the left sides of the tiles in pixels.
-   int		  y_spacing;   // The vertical spacing between the top sides of the tiles in pixels.
-   signed char	  offset;      // The number offset for the numbers in the map. Can be used to fill it with ASCII text for example.
+   ikigui_image   *renderer;   ///< The renderer to use for drawing the character display	<- destination
+   ikigui_image   *texture;    ///< The texture with tiles for the monospace font		<- source
+   unsigned char  columns;     ///< Number of columns in the character display
+   unsigned char  rows;        ///< Number of rows in the character display
+   unsigned char  char_width;  ///< The pixel width of the characters in the texture
+   unsigned char  char_hight;  ///< The pixel hight of the characters in the texture
+   char		  *map;	       ///< The start address for the character display
+   unsigned char  direction;   ///< The direction of the immages in the source image. Is autodetected by ikigui_map_init().
+   uint16_t       max_index;   ///< The number of tiles in the map - 1.
+   int		  x_spacing;   ///< The horizontal spacing between the left sides of the tiles in pixels.
+   int		  y_spacing;   ///< The vertical spacing between the top sides of the tiles in pixels.
+   signed char	  offset;      ///< The number offset for the numbers in the map. Can be used to fill it with ASCII text for example.
 } ikigui_map;
 
+/// To initialize ikigui_map structs and allocate memory for the char map
 int ikigui_map_init(struct ikigui_map *display, ikigui_image *renderer, ikigui_image *texture,  int8_t offset, int x_spacing, int y_spacing, int width, int hight, int columns, int rows ){
    display->map = (char*)calloc(columns*rows,sizeof(char));
    display->offset = offset ; // value offset to all values in the map array.
@@ -44,9 +66,11 @@ int ikigui_map_init(struct ikigui_map *display, ikigui_image *renderer, ikigui_i
    return columns * rows ;
 }
 
+/// To free memory allocated to a ikigui_map with the ikigui_map_init function
 void ikigui_map_free(struct ikigui_map *display){
    free(display->map); // Free memory that was allocated with ikigui init.
 }
+/// To check if a coordinate is inside a specific ikigui rect
 int ikigui_mouse_hit(ikigui_rect *box, int x, int y){ // is the x y coordinate inside the ikigui_rect
 	if(x<box->x) return 0;
 	if(x>(box->x+box->w)) return 0;
@@ -54,12 +78,14 @@ int ikigui_mouse_hit(ikigui_rect *box, int x, int y){ // is the x y coordinate i
 	if(y>(box->y+box->h)) return 0;
 	return -1; // Return a hit/true value.
 }
+/// A helper function
 void ikigui_blit_area(int x, int y, ikigui_rect *source_rect,ikigui_rect *destin_rect){ // Fill in the parameters of the destin_rect. Convinience to automatically get the rect area for a hypthetical blit operation parameters.
 	destin_rect->x = x ;
 	destin_rect->y = y ;
 	destin_rect->w = source_rect->w ;
 	destin_rect->h = source_rect->h ; 
 }
+/// To give the index to a tile from a pixel coordinate
 int ikigui_mouse_pos(struct ikigui_map *display, int x, int y){ // returns -1 if outside the character display
    if( (x < 0) || (y < 0) ) return -1;			// To the left or over the map
    if( ( x < (( display->x_spacing) * display->columns))// To the right of the map 
@@ -75,6 +101,8 @@ int ikigui_mouse_pos(struct ikigui_map *display, int x, int y){ // returns -1 if
 
 enum offset {ASCII = -32 }; // For ikigui_map_draw function.
 enum blit_type { APLHA = 0, FILLED = 1, SOLID = 2, HOLLOW = 3 }; // Types of 'filling' for ikigui_map_draw()
+
+/// To draw a tile map to a window or image
 void ikigui_map_draw(struct ikigui_map *display, char filling, int x, int y){  // x y is pixel coordinate to draw it in the window
    
    ikigui_rect srcrect = { .w = display->char_width, .h = display->char_hight }; // , .x = 0, .y = 0,  } ;

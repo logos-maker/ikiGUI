@@ -1,3 +1,4 @@
+/// @file ikigui_lin.h Things that are platform specific to Linux (using X11)
 // include the X library headers
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
