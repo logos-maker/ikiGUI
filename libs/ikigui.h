@@ -1,17 +1,4 @@
-/// @file ikigui.h Main file for ikiGUI. Has drawing functions, for making tilemaps that select image parts from a tile atlas.
-
-// for oldschool monospace characters and graphic tiles.
-#ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
-#ifdef __linux__ //linux specific code goes here...
-	#include "ikigui_lin.h"	// For window and graphics handling in this case for Linux.
-#elif _WIN32 // windows specific code goes here...
-	#include "windows.h"
-	#include "ikigui_win.h" // For window and graphics handling in this case for Windows.
-#endif
-#endif
-#ifdef IKIGUI_DRAW_ONLY
-	#include "ikigui_regular.h"
-#endif
+/// @file ikigui.h Main file for ikiGUI. Has drawing functions, for making tilemaps that select image parts from a tile atlas, for oldschool monospace characters and graphic tiles.
 
 /// For a rectangle with position and dimensions
 typedef struct{ 
@@ -28,17 +15,29 @@ typedef struct {
 	unsigned int *pixels;   ///< pointer to pixel buffer in ARGB8888 format
         unsigned int size;      ///< the size of the buffer
         unsigned int bg_color;  ///< color that may be used of tile map drawing for filling background
-	unsigned char composit; ///< flag for internal usage only
+	unsigned char composit; ///< flag for internal usage only (for compabillity reasons).
 } ikigui_image;
+
+#ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
+#ifdef __linux__ //linux specific code goes here...
+	#include "ikigui_lin.h"	// For window and graphics handling in this case for Linux.
+#elif _WIN32 // windows specific code goes here...
+	#include "windows.h"
+	#include "ikigui_win.h" // For window and graphics handling in this case for Windows.
+#endif
+#endif
+#ifdef IKIGUI_DRAW_ONLY
+	#include "ikigui_regular.h" // we use regular as it's usual that the first pixel is in the top left corner.  
+#endif
 
 /// For a tile map that can be drawn to images or windows
 typedef struct ikigui_map {
-   ikigui_image   *renderer;   ///< The renderer to use for drawing the character display	<- destination
-   ikigui_image   *texture;    ///< The texture with tiles for the monospace font		<- source
+   ikigui_image   *dest;       ///< The destination image to use for drawing the character display
+   ikigui_image   *source;     ///< The source image with graphics for tiles
    unsigned char  columns;     ///< Number of columns in the character display
    unsigned char  rows;        ///< Number of rows in the character display
-   unsigned char  char_width;  ///< The pixel width of the characters in the texture
-   unsigned char  char_hight;  ///< The pixel hight of the characters in the texture
+   unsigned char  char_width;  ///< The pixel width of the characters/tiles in the source image
+   unsigned char  char_hight;  ///< The pixel hight of the characters/tiles in the source image
    char		  *map;	       ///< The start address for the character display
    unsigned char  direction;   ///< The direction of the immages in the source image. Is autodetected by ikigui_map_init().
    uint16_t       max_index;   ///< The number of tiles in the map - 1.
@@ -47,23 +46,24 @@ typedef struct ikigui_map {
    signed char	  offset;      ///< The number offset for the numbers in the map. Can be used to fill it with ASCII text for example.
 } ikigui_map;
 
+enum offset {OFFSET_ASCII = -32, OFFSET_NORMAL = 0 }; // Used for setting the offset value in ikigui_map_inite later used by the ikigui_map_draw function.
 /// To initialize ikigui_map structs and allocate memory for the char map
-int ikigui_map_init(struct ikigui_map *display, ikigui_image *renderer, ikigui_image *texture,  int8_t offset, int x_spacing, int y_spacing, int width, int hight, int columns, int rows ){
+int ikigui_map_init(struct ikigui_map *display, ikigui_image *dest, ikigui_image *source,  int8_t offset, int x_spacing, int y_spacing, int width, int hight, int columns, int rows ){
    display->map = (char*)calloc(columns*rows,sizeof(char));
-   display->offset = offset ; // value offset to all values in the map array.
-   display->char_width = width ;// Set to input given as input by library user.
-   display->char_hight = hight ;// Set to input given as input by library user.
-   display->x_spacing = x_spacing ;// Set to input given as input by library user.
-   display->y_spacing = y_spacing ;// Set to input given as input by library user.
+   display->offset = offset ;      // index value offset to all values used in the map array.
+   display->char_width = width ;   // The width of the tiles. 
+   display->char_hight = hight ;   // The higth of the tiles.
+   display->x_spacing = x_spacing ;// The number of pixels between left most pixel in each tile.
+   display->y_spacing = y_spacing ;// The number of pixels between top  most pixel in each tile.
    if(y_spacing == 0) display->y_spacing = display->char_hight ; // if y_spacing is zero, set it to the size of the tile so they are placed side by side.
    if(x_spacing == 0) display->x_spacing = display->char_width;  // if x_spacing is zero, set it to the size of the tile so they are placed side by side.
-   display->columns = columns ; // Set to a default value
-   display->rows = rows ;       // Set to a default value
-   display->max_index = (texture->w / width) * (texture->h / hight) - 1 ; //
-   display->renderer = renderer ; // Set to renderer given as input by library user.
-   display->texture = texture ;   // Set to texture given as input by library user.
-   if(texture->w == width) display->direction = 0; else display->direction = 1; // Automatic detection for tile-atlas direction (horizontal or vertical).
-   return columns * rows ;
+   display->columns = columns ;    // Set to a default value
+   display->rows = rows ;          // Set to a default value
+   display->max_index = (source->w / width) * (source->h / hight) - 1 ; //
+   display->dest = dest ;          // Set to dest given as input by library user.
+   display->source = source ;      // Set to source image given as input by library user.
+   if(source->w == width) display->direction = 0; else display->direction = 1; // Automatic detection for tile-atlas direction (horizontal or vertical).
+   return columns * rows ; // returns the total number of tiles in the character display
 }
 
 /// To free memory allocated to a ikigui_map with the ikigui_map_init function
@@ -99,11 +99,9 @@ int ikigui_mouse_pos(struct ikigui_map *display, int x, int y){ // returns -1 if
    return -1; // Pixel coordinate is outside of the character display. 
 }
 
-enum offset {ASCII = -32 }; // For ikigui_map_draw function.
-enum blit_type { APLHA = 0, FILLED = 1, SOLID = 2, HOLLOW = 3 }; // Types of 'filling' for ikigui_map_draw()
-
+enum blit_type { BLIT_APLHA = 0, BLIT_FILLED = 1, BLIT_SOLID = 2, BLIT_HOLLOW = 3 }; /// Blit modes/types for ikigui_map_draw()
 /// To draw a tile map to a window or image
-void ikigui_map_draw(struct ikigui_map *display, char filling, int x, int y){  // x y is pixel coordinate to draw it in the window
+void ikigui_map_draw(struct ikigui_map *display, char blit_type, int x, int y){  // x y is pixel coordinate to draw it in the window
    
    ikigui_rect srcrect = { .w = display->char_width, .h = display->char_hight }; // , .x = 0, .y = 0,  } ;
    ikigui_rect dstrect = { .w = display->char_width, .h = display->char_hight };
@@ -119,11 +117,11 @@ void ikigui_map_draw(struct ikigui_map *display, char filling, int x, int y){  /
           int val = set_w * (display->map[i*display->columns + j] + display->offset) ;
 	  if(val<0) continue ; // Don't draw tile if given lower value than 0. // val=0; 
 	  if(display->direction)srcrect.x = val ; else srcrect.y = val ;
-	  switch(filling){ // Draw the character buffer to window.
-		  case 0:       ikigui_blit_alpha (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-		  case 1:	ikigui_blit_filled(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-		  case 2:	ikigui_blit_fast  (display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
-		  case 3:	ikigui_blit_hollow(display->renderer,display->texture, dstrect.x, dstrect.y, &srcrect);	break;
+	  switch(blit_type){ // Draw the character buffer to window.
+		  case 0:       ikigui_blit_alpha (display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
+		  case 1:	ikigui_blit_filled(display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
+		  case 2:	ikigui_blit_fast  (display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
+		  case 3:	ikigui_blit_hollow(display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
 	  }
       }
    }

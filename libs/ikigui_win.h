@@ -1,13 +1,13 @@
 /// @file ikigui_win.h Things that are platform specific to Windows (using GDI from the WIN32 API)
-//HINSTANCE hInstance; // https://stackoverflow.com/questions/15462064/hinstance-in-createwindow
+// HINSTANCE hInstance; // https://stackoverflow.com/questions/15462064/hinstance-in-createwindow
 // #define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
 #include <windows.h>
 #include <stdbool.h>
-#include "ikigui_goofy.h"
+#include "ikigui_goofy.h" // Windows uses the goofy functions with the first pixel in the lower left in pixel buffers.
 
 bool quit = false;
 
-/// Is referenced and is a member of the window struct
+/// Is referenced and is a member of the window struct, and don't need to be declared separatly.
 struct mouse{
 	int x, y;
 	int x_intern, y_intern;
@@ -26,7 +26,7 @@ struct mouse{
 	POINT pos;
 } ;
 
-/// A Window struct
+/// A window struct, that can be used to open a window with the ikigui_open_plugin_window function.
 typedef struct ikigui_window{
         ikigui_image frame;
         struct mouse mouse;
@@ -45,7 +45,8 @@ int old_y;
 
 enum { MOUSE_LEFT = 0b1, MOUSE_MIDDLE = 0b10, MOUSE_RIGHT = 0b100, MOUSE_X1 = 0b1000, MOUSE_X2 = 0b10000 };
 
-LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM wParam, LPARAM lParam) {
+/// For internal usage only
+LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM wParam, LPARAM lParam) { 
 
 	ikigui_window *mywin = (ikigui_window*)GetWindowLongPtr(window_handle, GWLP_USERDATA);
 

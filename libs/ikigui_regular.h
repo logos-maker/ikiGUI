@@ -1,4 +1,4 @@
-/// @file ikigui_regular.h Drawing functions, where the first pixel is in the top left corner (used by X11 on Linux).
+/// @file ikigui_regular.h Drawing functions, where the first pixel is in the top left corner (used by X11 on Linux)
 
 #ifdef IKIGUI_DRAW_ONLY
 void map_ikigui_to_sdl(ikigui_image * dest, Uint32 * pixels, int w , int h){

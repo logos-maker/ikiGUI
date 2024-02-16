@@ -1,4 +1,4 @@
-/// @file ikigui_goofy.h Drawing functions, where the first pixel is in the bottom left corner. Used by Windows GDI.
+/// @file ikigui_goofy.h Drawing functions, where the first pixel is in the bottom left corner (used by Windows GDI)
 
 int hflip(int hight,int row){ // invert vertical axis
         return (hight - row)-1;
