@@ -126,15 +126,15 @@ VstIntPtr VSTPluginDispatcher(VSTPlugin *vstPlugin, VstInt32 opCode, VstInt32 in
 	case effEditOpen:
 		ikigui_image_create(&bg, 345,90); // ikigui_bmp_include(&bg,bg_array);  // Load background graphics.
 		ikigui_image_gradient(&bg, 0xFFFF0000,0xFF0000FF);
-		ikigui_open_plugin_window(&wrapper->mywin,ptr,345,90);			// Open the editor window in host.
+		ikigui_window_open_editor(&wrapper->mywin,ptr,345,90);			// Open the editor window in host.
 	break; ///< [ptr]: system dependent Window pointer, e.g. HWND on Windows  @see AEffEditor::open
 	case effEditClose:		break; ///< no arguments @see AEffEditor::close
 
 	break;
 
 	case effEditIdle:
-		ikigui_image_draw(&wrapper->mywin.frame,&bg, 0, 0); // Draw gackground.
-		ikigui_update_window(&wrapper->mywin);
+		ikigui_draw_image(&wrapper->mywin.frame,&bg, 0, 0); // Draw gackground.
+		ikigui_window_update(&wrapper->mywin);
 	break;
     // request for the category of the plugin: in this case it is an effect since it is modifying the input (as opposed
     // to generating sound)
@@ -238,10 +238,10 @@ VSTPlugin *VSTPluginMain(VSTHostCallback vstHostCallback)
     new VSTPluginWrapper(vstHostCallback,
                          CCONST('\0', '\0', '\0', '\0'),
                          PLUGIN_VERSION, // version
-                         0,    // no params
-                         0,    // no programs
-                         2,    // 2 inputs
-                         2);   // 2 outputs
+                         0,    // number of parameters
+                         0,    // number of presets
+                         2,    // 2 audio inputs
+                         2);   // 2 audio outputs
 
   return plugin->getVSTPlugin();  // return the plugin per the contract of the API
 }

@@ -38,7 +38,7 @@ int main(int argc, char ** argv){
 
 	map_ikigui_to_sdl(&data.mywin,(unsigned int *)&pixels,width,hight);
 
-	ikigui_image_draw(&data.mywin,&bg, 0, 0);	// Draw background.
+	ikigui_draw_image(&data.mywin,&bg, 0, 0);	// Draw background.
 
 
 	while (!quit){
