@@ -62,26 +62,27 @@ ikigui_map // for making a tile map and hold it's settings.
 ```
 ikigui_map_init()      // allocates memory and configures your tilemap.
 ikigui_map_free()      // release memory allocated with ikigui_init()
-ikigui_map_draw()      // draws the graphics tile map. According to ikigui_init()
-ikigui_mouse_pos()     // Gives the index to the right element of a tile map from an x y coordinte.     
+ikigui_map_draw()      // draws arrays of graphics tiles as a tile map. According to the ikigui_map setup with ikigui_map_init()
+ikigui_mouse_pos_map()     // Gives the index to the right element of a tile map from an x y coordinte.     
 
 ikigui_blit_alpha()    // Blits a part of an image, with alpha channel over the destination graphic.
 ikigui_blit_filled()   // Blits a part of an image, with a background color so the destination graphic gets overwritten.
 ikigui_blit_fast()     // Blits a part of an image, without alpha channel.
 ikigui_blit_hollow()    // Blits a part of an image, with alpha channel over the destination graphic, replacing the souce color but keeping alpha.
-ikigui_draw_gradient() // Blits a color gradient, on a part of an image or to the editor window.
-ikigui_image_draw()    // Blits a whole image to the destination, without alpha channel.
+ikigui_draw_gradient() // Blits a color gradient, on a part of an image or the editor window.
+ikigui_draw_image()    // Blits a whole image to the destination, without alpha channel.
 
-ikigui_open_plugin_window()  // open a plugin window (child window) in the used DAW.
-ikigui_get_events()          // gets the window events like mouseclicks and so on.
-ikigui_update_window()       // updates the graphics in the plugin window.
+ikigui_window_open_editor()  // open a plugin window (child window) in the used DAW.
+ikigui_window_get_events()   // gets the window events like mouseclicks and so on.
+ikigui_window_update()       // updates the graphics in the plugin window.
 
-ikigui_image_empty()    // Creates an empty image. Allocates memory.
-ikigui_image_gradient()  // Fill image with gradient. The source and destination is the same image.
-ikigui_image_solid()     // Fill an image with single color. The source and destination is the same image.    
-ikigui_bmp_include()    // Imports BMP graphics that are included, to be used as graphics. Allocates memory.
-ikigui_fill_bg()        // Draws a background color to an image. The source and destination is the same image.
-ikigui_image_free()     // To realease memory allocated by ikigui_bmp_include() or ikigui_image_empty()
+ikigui_image_create()    // Creates an empty image. Allocates memory.
+ikigui_image_free()     // To realease memory allocated by ikigui_include_bmp() or ikigui_image_create()
+ikigui_image_gradient() // Fill image with gradient. The source and destination is the same image.
+ikigui_image_solid()    // Fill image with single color. Usefull if you create images with the ikigui_image_create() function.    
+ikigui_image_solid_bg() // Draws a background color to an image. The source and destination is the same image.
+
+ikigui_include_bmp()    // Imports BMP graphics from include file, to a ikigui_image. Allocates memory.
 ```
 
 ## Roadmap
@@ -156,7 +157,7 @@ You include this by writing...
 
 Then you need to read in that BMP picture, and get it’s width and hight. You do this by writing...
 ```
-ikigui_bmp_include(&knob_anim,knob_array); // knob_array is the array found in knob.h
+ikigui_include_bmp(&knob_anim,knob_array); // knob_array is the array found in knob.h
 ```
 
 Then we need to have a tile map. You create one by writing...
@@ -187,7 +188,7 @@ the next 10 is the y coordinate.
 
 Then finally to display this tilemap and everything else in your plug that you have drawn to the window. You do this by writing...
 ```
-ikigui_update_window(&mywin); 
+ikigui_window_update(&mywin); 
 ```
 ## How to display text for debugging
 You can do this the same way that you can display arrays of knobs, you can make arrays of monospace characters.
@@ -199,12 +200,12 @@ This can also be used for making tracker editors for sequencers.
 
 
 ## About the drawing modes of ikigui_map_draw()
-It has 4 different drawing modes 0,1 and 2...
+It has 4 different drawing modes ...
 ```
-0. uses ikigui_blit_alpha() // Blits a part of an image, with alpha channel over the destination graphic
-1. uses ikigui_blit_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
-2. uses ikigui_blit_fast() // Blits a part of an image, without alpha channel.
-3. uses ikigui_blit_hollow() // Blits a part of an image, with alpha channel overwiting the source color, but uses it's alpha information.
+BLIT_ALPHA uses ikigui_blit_alpha() // Blits a part of an image, with alpha channel over the destination graphic
+BLIT_FILLED uses ikigui_blit_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
+BLIT_FAST uses ikigui_blit_fast() // Blits a part of an image, without alpha channel.
+BLIT_HOLLOW uses ikigui_blit_hollow() // Blits a part of an image, with alpha channel overwiting the source color, but uses it's alpha information.
 ```
 ## Compilation
 On linux it compiles with GCC, Clang or TCC. But to compile on Windows you need to install GCC with MinGW-w64. And there is many ways to do that, but I recommend to use [TDM-GCC](https://jmeubank.github.io/tdm-gcc/articles/2021-05/10.3.0-release) as it's the simplest way to do it that I have found.
