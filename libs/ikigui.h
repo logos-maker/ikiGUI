@@ -78,8 +78,12 @@ int ikigui_mouse_pos_rect(ikigui_rect *box, int x, int y){ // is the x y coordin
 	if(y>(box->y+box->h)) return 0;
 	return -1; // Return a hit/true value.
 }
-/// A helper function
-void ikigui_rect_find(ikigui_rect *destin_rect, int x, int y, ikigui_rect *source_rect){ // Fill in the parameters of the destin_rect. Convinience to automatically get the destination rect area for a hypthetical blit operation parameters.
+// A helper function
+char* ikigui_map_layout(ikigui_map* find_text_pointer){ /// get the char* pointer to the array that is used for the tile/character array 
+	return find_text_pointer->map;
+}
+// A helper function
+void ikigui_rect_find(ikigui_rect *destin_rect, int x, int y, ikigui_rect *source_rect){ /// Fill in the parameters of the destin_rect. Convinience to automatically get the destination rect area for a hypthetical blit operation parameters.
 	destin_rect->x = x ;
 	destin_rect->y = y ;
 	destin_rect->w = source_rect->w ;
