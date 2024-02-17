@@ -50,6 +50,10 @@ typedef struct {
 int old_x;
 int old_y;
 
+/// A helper function that return the pointer to the ikigui_image inside a ikigui_window
+ikigui_image*	ikigui_image_of_window(ikigui_window* window) return window->frame;
+
+/// Open a child window
 void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
         mywin->frame.w = w;
         mywin->frame.h = h;
@@ -83,15 +87,16 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
         XFlush(mywin->dis);
 }
 
+
 void ikigui_window_close(ikigui_window *mywin){
 	XDestroyWindow(mywin->dis,mywin->win);
 	XCloseDisplay(mywin->dis);				
 };
-
+/// Updates the Window graphics with new things drawn
 void ikigui_window_update(ikigui_window *mywin){
         XPutImage(mywin->dis, mywin->win, mywin->gc, mywin->image, 0, 0, 0, 0, mywin->frame.w, mywin->frame.h);
 };
-
+/// Update the event data for the Window
 void ikigui_window_get_events(ikigui_window *mywin){
 	// values for recognicing changes in mousemovements and mouse buttons.
 	

@@ -1,6 +1,9 @@
 /// @file ikigui_win.h Things that are platform specific to Windows (using GDI from the WIN32 API)
 // HINSTANCE hInstance; // https://stackoverflow.com/questions/15462064/hinstance-in-createwindow
 // #define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
+
+// missing function: void ikigui_window_close(ikigui_window *mywin) // Not thought about it as it's done automatically by the DAW
+
 #include <windows.h>
 #include <stdbool.h>
 #include "ikigui_goofy.h" // Windows uses the goofy functions with the first pixel in the lower left in pixel buffers.
@@ -96,6 +99,9 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 	}
 	return 0;
 }
+
+/// A helper function that return the pointer to the ikigui_image inside a ikigui_window
+ikigui_image*	ikigui_image_of_window(ikigui_window* window) return window->frame;
 
 /// Open a child window
 void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
