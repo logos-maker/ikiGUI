@@ -50,7 +50,7 @@ typedef struct {
 int old_x;
 int old_y;
 
-void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
+void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
         mywin->frame.w = w;
         mywin->frame.h = h;
 	mywin->dis=XOpenDisplay((char *)0);     // Get the display
@@ -83,16 +83,16 @@ void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
         XFlush(mywin->dis);
 }
 
-void ikigui_close_window(ikigui_window *mywin){
+void ikigui_window_close(ikigui_window *mywin){
 	XDestroyWindow(mywin->dis,mywin->win);
 	XCloseDisplay(mywin->dis);				
 };
 
-void ikigui_update_window(ikigui_window *mywin){
+void ikigui_window_update(ikigui_window *mywin){
         XPutImage(mywin->dis, mywin->win, mywin->gc, mywin->image, 0, 0, 0, 0, mywin->frame.w, mywin->frame.h);
 };
 
-void ikigui_get_events(ikigui_window *mywin){
+void ikigui_window_get_events(ikigui_window *mywin){
 	// values for recognicing changes in mousemovements and mouse buttons.
 	
         mywin->mouse.old_button_press =  mywin->mouse.buttons;  // old value for buttons. For finding changes later on.
@@ -104,11 +104,11 @@ void ikigui_get_events(ikigui_window *mywin){
 
                 if (mywin->event.type== ClientMessage){ // User Closes window
                         if ((Atom) mywin->event.xclient.data.l[0] == mywin->wm_delete_window) {
-                            		ikigui_close_window(mywin);
+                            		ikigui_window_close(mywin);
 	                                exit(1);
                         }
                 }
-	        if (mywin->event.type==Expose && mywin->event.xexpose.count==0) ikigui_update_window(mywin); // Window graphics needs a redraw
+	        if (mywin->event.type==Expose && mywin->event.xexpose.count==0) ikigui_window_update(mywin); // Window graphics needs a redraw
                 if (mywin->event.type==KeyPress&& XLookupString(&mywin->event.xkey,mywin->text,255,&mywin->key,0)==1) { // the XLookupString routine to converts the KeyPress event data into regular text.
 		        //printf("You pressed the %c key!\n",mywin.text[0]);
 	        }

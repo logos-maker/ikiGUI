@@ -98,7 +98,7 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 }
 
 /// Open a child window
-void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
+void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
 
 	const wchar_t window_class_name[] = L"Window Class";
 	static WNDCLASS window_class = { 0 };
@@ -131,7 +131,7 @@ void ikigui_open_plugin_window(ikigui_window *mywin,void *ptr,int w, int h){
 	SetWindowLongPtr(mywin->window_handle, GWLP_USERDATA, (LONG_PTR)mywin);
 }
 /// Update the event data for the Window
-void ikigui_get_events(struct ikigui_window *mywin){
+void ikigui_window_get_events(struct ikigui_window *mywin){
 
 
         while(PeekMessage(&mywin->message, NULL, 0, 0, PM_REMOVE)) { DispatchMessage(&mywin->message); }
@@ -152,7 +152,7 @@ void ikigui_get_events(struct ikigui_window *mywin){
 
 }
 /// Updates the Window graphics with new things drawn
-void ikigui_update_window(struct ikigui_window *mywin){
+void ikigui_window_update(struct ikigui_window *mywin){
         InvalidateRect(mywin->window_handle, NULL, FALSE);
         UpdateWindow(mywin->window_handle);
 }

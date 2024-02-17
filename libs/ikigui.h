@@ -14,7 +14,7 @@ typedef struct {
 	int h; ///< hight of image (in pixels)
 	unsigned int *pixels;   ///< pointer to pixel buffer in ARGB8888 format
         unsigned int size;      ///< the size of the buffer
-        unsigned int bg_color;  ///< color that may be used of tile map drawing for filling background
+        unsigned int color;  ///< color that may be used of tile map drawing for filling background
 	unsigned char composit; ///< flag for internal usage only (for compabillity reasons).
 } ikigui_image;
 
@@ -71,7 +71,7 @@ void ikigui_map_free(struct ikigui_map *display){
    free(display->map); // Free memory that was allocated with ikigui init.
 }
 /// To check if a coordinate is inside a specific ikigui rect
-int ikigui_mouse_hit(ikigui_rect *box, int x, int y){ // is the x y coordinate inside the ikigui_rect
+int ikigui_mouse_pos_rect(ikigui_rect *box, int x, int y){ // is the x y coordinate inside the ikigui_rect
 	if(x<box->x) return 0;
 	if(x>(box->x+box->w)) return 0;
 	if(y<box->y) return 0;
@@ -79,14 +79,14 @@ int ikigui_mouse_hit(ikigui_rect *box, int x, int y){ // is the x y coordinate i
 	return -1; // Return a hit/true value.
 }
 /// A helper function
-void ikigui_blit_area(int x, int y, ikigui_rect *source_rect,ikigui_rect *destin_rect){ // Fill in the parameters of the destin_rect. Convinience to automatically get the rect area for a hypthetical blit operation parameters.
+void ikigui_rect_find(ikigui_rect *destin_rect, int x, int y, ikigui_rect *source_rect){ // Fill in the parameters of the destin_rect. Convinience to automatically get the destination rect area for a hypthetical blit operation parameters.
 	destin_rect->x = x ;
 	destin_rect->y = y ;
 	destin_rect->w = source_rect->w ;
 	destin_rect->h = source_rect->h ; 
 }
 /// To give the index to a tile from a pixel coordinate
-int ikigui_mouse_pos(struct ikigui_map *display, int x, int y){ // returns -1 if outside the character display
+int ikigui_mouse_pos_map(struct ikigui_map *display, int x, int y){ // returns -1 if outside the character display
    if( (x < 0) || (y < 0) ) return -1;			// To the left or over the map
    if( ( x < (( display->x_spacing) * display->columns))// To the right of the map 
    &&  ( y < (( display->y_spacing) * display->rows))	// below the map 
