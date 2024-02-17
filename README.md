@@ -38,6 +38,10 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 - It cross compiles with 100% identical code
 - Easy to animate graphics
 - Gives 24bit layered graphics with alpha channel
+- Easier to find stuff with autocompetion in text editors
+- Usage of doxygen for help in text editors with autocompletion
+- Consequent naming and parameter order in the API to make easier to remeber and to understand
+- Possible to use without any OS or library related dependencies other than standard C lib
 
 ## What ikiGUI will do for you
 - It lets you open audio plugin windows aka child windows.
