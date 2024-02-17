@@ -176,7 +176,7 @@ mywin.frame is the destination,
 1 is the number of rows,
 64 is the width in pixels of each graphical object in the tile atlas,
 56 is the hight if pixels of each graphical object in the tile atlas.
-And 0,0,0, is an tile offset (that can be used for writing text) followed by is a custom y z distance between tiles in pixels if not set to zero.
+And 0,0,0, is an tile offset (that can be used for writing text) followed by a custom y z distance between tiles in pixels if not set to zero.
 
 To draw the tile map to the window you write...
 ```
@@ -191,14 +191,13 @@ Then finally to display this tilemap and everything else in your plug that you h
 ```
 ikigui_window_update(&mywin); 
 ```
-## How to display text for debugging
+## How to display text LCD emulation for debugging
 You can do this the same way that you can display arrays of knobs, you can make arrays of monospace characters.
-The simplicity of this is useful for displaying numbers and messages in your editor window when developing.
-It can be used in similar way thar character maps was used in computers in the 1970's an 80's.
+This can be very usefull for emulating LCD screens easily for example or for displaying numbers and messages in your plugin editor window when developing.
+It is done in a similar way that character maps was used in computers and videogames in the 80's.
 The first part of the image should be space followed by ! and " in the same order as in the ASCII standard.
 Then you can use the standard C lib to write text into your character map.
 This can also be used for making tracker editors for sequencers.
-
 
 ## About the drawing modes of ikigui_map_draw()
 It has 4 different drawing modes ...
