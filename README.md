@@ -17,6 +17,7 @@ The smallest cross platform audio plugin GUI library availible, that don't use a
 - Makes it easy to make columns and rows of knobs, buttons or monospace letters.
 - Can be used with C or C++
 - Has compilation flag to strip away 100% of all platform depentant code.
+- Can be used with doxygen for automatic generation of documentation.
     
 Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
