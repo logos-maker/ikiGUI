@@ -23,38 +23,6 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
-void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A background color for automatic filling of transparent pixels.
-	// to precalc graphics for usage with ikigui_blit_part_fast() for faster graphics. Can be convinient in some cases.
-        for(int i = 0 ; i < dest->size ; i++){
-                dest->pixels[i] = alpha_channel(color,dest->pixels[i]);
-        }
-}
-
-void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocate pixel memory for a ikigui_image
-        frame->w = w;
-        frame->h = h;
-        frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
-        frame->size = frame->w * frame->h ;
-}
-
-void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// Read BMP image in header file
-        unsigned int start;
-        dest->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
-        dest->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
-        start =    bmp_incl[0x0a] + (bmp_incl[0x0a+1]<<8) + (bmp_incl[0x0a+2]<<16) + (bmp_incl[0x0a+3]<<24);
-
-        dest->pixels = (unsigned int*)malloc(dest->w*dest->h*4);
-
-        int counter = 0 ; 
-        for(int j = dest->h -1 ; j >= 0 ; j--){
-                for(int i = 0 ; i < dest->w ; i++){
-                        int pixl_addr = (i+(j*dest->w))*4+start;
-                        dest->pixels[counter++]= bmp_incl[pixl_addr]+ (bmp_incl[pixl_addr+1]<<8)+ (bmp_incl[pixl_addr+2]<<16)+ (bmp_incl[pixl_addr+3]<<24);
-                }
-        }
-        dest->size = dest->w * dest->h ;
-}
-
 void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint32_t shadow, ikigui_rect *part ){ /// A filled rect with shaddow
 	int x = part->x;
 	int y = part->y;
@@ -354,9 +322,18 @@ void ikigui_image_composite(ikigui_image *dest,ikigui_image *source, int x, int 
                 }
         }
 }
+
+// Functions for image manipulation follows... 
+
 void ikigui_image_solid(ikigui_image *dest, unsigned int color){ // Fill image or window.
         for(int i = 0 ; i < dest->w * dest->h ; i++){ // All pixels      
                         dest->pixels[i] = color;
+        }
+}
+void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A background color for automatic filling of transparent pixels.
+	// to precalc graphics for usage with ikigui_blit_part_fast() for faster graphics. Can be convinient in some cases.
+        for(int i = 0 ; i < dest->size ; i++){
+                dest->pixels[i] = alpha_channel(color,dest->pixels[i]);
         }
 }
 void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image or window.
@@ -381,3 +358,27 @@ void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t colo
                 }
         }
 }
+void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocate pixel memory for a ikigui_image
+        frame->w = w;
+        frame->h = h;
+        frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
+        frame->size = frame->w * frame->h ;
+}
+void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// Read BMP image in header file
+        unsigned int start;
+        dest->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
+        dest->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
+        start =    bmp_incl[0x0a] + (bmp_incl[0x0a+1]<<8) + (bmp_incl[0x0a+2]<<16) + (bmp_incl[0x0a+3]<<24);
+
+        dest->pixels = (unsigned int*)malloc(dest->w*dest->h*4);
+
+        int counter = 0 ; 
+        for(int j = dest->h -1 ; j >= 0 ; j--){
+                for(int i = 0 ; i < dest->w ; i++){
+                        int pixl_addr = (i+(j*dest->w))*4+start;
+                        dest->pixels[counter++]= bmp_incl[pixl_addr]+ (bmp_incl[pixl_addr+1]<<8)+ (bmp_incl[pixl_addr+2]<<16)+ (bmp_incl[pixl_addr+3]<<24);
+                }
+        }
+        dest->size = dest->w * dest->h ;
+}
+

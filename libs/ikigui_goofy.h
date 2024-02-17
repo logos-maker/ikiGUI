@@ -1,6 +1,6 @@
 /// @file ikigui_goofy.h Drawing functions, where the first pixel is in the bottom left corner (used by Windows GDI)
 
-int hflip(int hight,int row){ // invert vertical axis
+int hflip(int hight,int row){ // Internal for useage in other functions // invert vertical axis
         return (hight - row)-1;
 }
 
@@ -19,21 +19,7 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
-void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A background color for automatic filling of transparent pixels.
-	// to precalc graphics for usage with ikigui_blit_part_fast() for faster graphics. Can be convinient in some cases.
-        for(int i = 0 ; i < dest->size ; i++){
-                dest->pixels[i] = alpha_channel(color,dest->pixels[i]);
-        }
-}
-
-void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocates memory for a ikigui_image and initializes it, if ikigui_bmp_include function isn't used.
-        frame->w = w;
-        frame->h = h;
-        frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
-        frame->size = frame->w * frame->h ;
-	frame->composit = 1;
-}
-
+// Functions that affects a part of a ikigui_image
 void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ /// Fill part of image or window with gradient.
 
 	int x = part->x;
@@ -137,7 +123,6 @@ void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, iki
                 }
         }
 }
-
 void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /// draw source image to the x,y coordinate in destination image
         for(int j = 0 ; j < source->h ; j++){ // vertical
                 for(int i = 0 ; i < source->w ; i++){   // horizontal
@@ -145,9 +130,19 @@ void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /
                 }
         }
 }
+// missing function: ikigui_image_composite()
+
+// Functions for image manipulation follows... 
+
 void ikigui_image_solid(ikigui_image *dest, unsigned int color){ /// Fill destination image/window with a specific ARGB color
         for(int i = 0 ; i < dest->w * dest->h ; i++){ // All pixels      
                         dest->pixels[i] = color;
+        }
+}
+void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A background color for automatic filling of transparent pixels.
+	// to precalc graphics for usage with ikigui_blit_part_fast() for faster graphics. Can be convinient in some cases.
+        for(int i = 0 ; i < dest->size ; i++){
+                dest->pixels[i] = alpha_channel(color,dest->pixels[i]);
         }
 }
 void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill destination image/window with a ARGB color gradient
@@ -175,7 +170,13 @@ void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t colo
                 }
         }
 }
-
+void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocates memory for a ikigui_image and initializes it, if ikigui_bmp_include function isn't used.
+        frame->w = w;
+        frame->h = h;
+        frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
+        frame->size = frame->w * frame->h ;
+	frame->composit = 1;
+}
 void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// Read BMP image in header file to the destination image/window
         unsigned int start;
         dest->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
