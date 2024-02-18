@@ -51,6 +51,12 @@ int old_x;
 int old_y;
 
 //#ifdef IKIGUI_STANDALONE
+
+
+// The <windows.h> header file gives the function Sleep() that gives a waits a period of x milliseconds. This is a similar function for Linux.
+// #include <unistd.h>
+// void Sleep(int milisec){	usleep(milisec *1000);  } // pause
+
 void ikigui_window_open(ikigui_window *mywin,int w, int h) { // input is the size of the window to create
         mywin->frame.w = w;
         mywin->frame.h = h;
