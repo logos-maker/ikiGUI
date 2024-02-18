@@ -1,6 +1,6 @@
 /// @file ikigui_win.h Things that are platform specific to Windows (using GDI from the WIN32 API)
 // HINSTANCE hInstance; // https://stackoverflow.com/questions/15462064/hinstance-in-createwindow
-// #define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
+#define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
 
 // missing function: void ikigui_window_close(ikigui_window *mywin) // Not thought about it as it's done automatically by the DAW
 
@@ -54,8 +54,8 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 	ikigui_window *mywin = (ikigui_window*)GetWindowLongPtr(window_handle, GWLP_USERDATA);
 
 	switch(message) {
-		case WM_CLOSE: break;// Someone has pressed x on window
-		case WM_QUIT:  break;// This function is usually called when the main window receives WM_DESTROY
+		case WM_CLOSE: DestroyWindow(window_handle); break;// Someone has pressed x on window
+		case WM_QUIT:     break;// This function is usually called when the main window receives WM_DESTROY
 		case WM_DESTROY: DestroyWindow(window_handle); break;// Window is about to be destroyed, and can not be hindered.
 		case WM_PAINT: {
 			PAINTSTRUCT paint;
@@ -101,10 +101,11 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 }
 
 /// A helper function that return the pointer to the ikigui_image inside a ikigui_window
-ikigui_image*	ikigui_image_of_window(ikigui_window* window) return window->frame;
+ikigui_image*	ikigui_image_of_window(ikigui_window* window){ return &window->frame; }
 
-/// Open a child window
-void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
+
+/// Open a child window (for a audio plugin window)
+void ikigui_window_open_editor(ikigui_window *mywin,void *ptr, int w, int h){
 
 	const wchar_t window_class_name[] = L"Window Class";
 	static WNDCLASS window_class = { 0 };
@@ -124,7 +125,8 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
 	mywin->bitmap_info.bmiHeader.biCompression = BI_RGB;
 	mywin->bitmap_device_context = CreateCompatibleDC(0);
 
-        mywin->window_handle = CreateWindow((PCSTR)window_class_name, "BitBlt Test Program ", WS_CHILD | WS_VISIBLE , CW_USEDEFAULT, CW_USEDEFAULT, w, h, (HWND)ptr, NULL, NULL, NULL);
+	if(ptr == NULL)mywin->window_handle = CreateWindow((PCSTR)window_class_name, "BitBlt Test Program ", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_BORDER, CW_USEDEFAULT, CW_USEDEFAULT, w, h, NULL, NULL, GetModuleHandle(NULL), NULL);
+        else mywin->window_handle = CreateWindow((PCSTR)window_class_name, "BitBlt Test Program ", WS_CHILD | WS_VISIBLE , CW_USEDEFAULT, CW_USEDEFAULT, w, h, (HWND)ptr, NULL, NULL, NULL);
 	if(mywin->window_handle == NULL) {
 	//	PRINT_ERROR("CreateWindow() failed. Returned NULL.\n");
 	}
@@ -136,6 +138,13 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
 	SelectObject(mywin->bitmap_device_context, mywin->bitmap);
 	SetWindowLongPtr(mywin->window_handle, GWLP_USERDATA, (LONG_PTR)mywin);
 }
+
+/// Open window (for a standalone application)
+void ikigui_window_open(ikigui_window *mywin, int w, int h){
+	ikigui_window_open_editor(mywin,NULL, w, h);
+	mywin->mouse.buttons_intern = 0 ;
+}
+
 /// Update the event data for the Window
 void ikigui_window_get_events(struct ikigui_window *mywin){
 
