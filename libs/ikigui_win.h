@@ -1,6 +1,6 @@
 /// @file ikigui_win.h Things that are platform specific to Windows (using GDI from the WIN32 API)
 // HINSTANCE hInstance; // https://stackoverflow.com/questions/15462064/hinstance-in-createwindow
-#define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
+// #define PRINT_ERROR(a, args...) printf("ERROR %s() %s Line %d: " a, __FUNCTION__, __FILE__, __LINE__, ##args);
 
 // missing function: void ikigui_window_close(ikigui_window *mywin) // Not thought about it as it's done automatically by the DAW
 
@@ -139,12 +139,6 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr, int w, int h){
 	SetWindowLongPtr(mywin->window_handle, GWLP_USERDATA, (LONG_PTR)mywin);
 }
 
-/// Open window (for a standalone application)
-void ikigui_window_open(ikigui_window *mywin, int w, int h){
-	ikigui_window_open_editor(mywin,NULL, w, h);
-	mywin->mouse.buttons_intern = 0 ;
-}
-
 /// Update the event data for the Window
 void ikigui_window_get_events(struct ikigui_window *mywin){
 
@@ -171,3 +165,13 @@ void ikigui_window_update(struct ikigui_window *mywin){
         InvalidateRect(mywin->window_handle, NULL, FALSE);
         UpdateWindow(mywin->window_handle);
 }
+
+#ifdef IKIGUI_STANDALONE
+	void ikigui_breathe(int milisec){ Sleep(milisec); } // Pause function, gives CPU over to the OS
+
+	/// Open window (for a standalone application)
+	void ikigui_window_open(ikigui_window *mywin, int w, int h){
+		ikigui_window_open_editor(mywin,NULL, w, h);
+		mywin->mouse.buttons_intern = 0 ;
+	}
+#endif

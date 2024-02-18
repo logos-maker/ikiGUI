@@ -50,44 +50,6 @@ typedef struct {
 int old_x;
 int old_y;
 
-//#ifdef IKIGUI_STANDALONE
-
-
-// The <windows.h> header file gives the function Sleep() that gives a waits a period of x milliseconds. This is a similar function for Linux.
-// #include <unistd.h>
-// void Sleep(int milisec){	usleep(milisec *1000);  } // pause
-
-void ikigui_window_open(ikigui_window *mywin,int w, int h) { // input is the size of the window to create
-        mywin->frame.w = w;
-        mywin->frame.h = h;
-	mywin->dis=XOpenDisplay((char *)0);     // Get the display
-   	mywin->screen=DefaultScreen(mywin->dis); // Get the screen
-
-	unsigned long black,white;         // get the colors black and white (see section for details)
-	black=BlackPixel(mywin->dis,mywin->screen),
-	white=WhitePixel(mywin->dis, mywin->screen);
-
-   	mywin->win=XCreateSimpleWindow(mywin->dis,DefaultRootWindow(mywin->dis),0,0,w, h, 5,black, white); // Create window
-
-        // To get evet to close window
-        mywin->wm_delete_window = XInternAtom(mywin->dis, "WM_DELETE_WINDOW", False);
-        XSetWMProtocols(mywin->dis, mywin->win, &mywin->wm_delete_window, 1);
-
-	XSelectInput(mywin->dis, mywin->win, ExposureMask|PointerMotionMask|ButtonPressMask|ButtonReleaseMask|KeyPressMask|KeyReleaseMask|FocusChangeMask|EnterWindowMask|LeaveWindowMask); // Select event types to get
-
-        mywin->gc=DefaultGC(mywin->dis,mywin->screen); // alternativ som funkar är... mywin->gc=XCreateGC(mywin->dis, mywin->win, 0,0);
-
-	XMapRaised(mywin->dis, mywin->win);
-
-        XWindowAttributes wa = {0};
-        XGetWindowAttributes(mywin->dis, mywin->win, &wa);
-
-	mywin->frame.pixels = (unsigned int *)malloc(w * h * 4);
-	mywin->bitmap = XCreatePixmap(mywin->dis, mywin->win, w, h, 1);
-	mywin->image = XCreateImage(mywin->dis, wa.visual, wa.depth, ZPixmap, 0, (char*)mywin->frame.pixels, w, h, 32, w * 4);
-};
-//#endif
-
 /// A helper function that return the pointer to the ikigui_image inside a ikigui_window
 ikigui_image*	ikigui_image_of_window(ikigui_window* window){ return &window->frame; }
 
@@ -191,3 +153,38 @@ void ikigui_window_get_events(ikigui_window *mywin){
 	mywin->mouse.middle_release = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_MIDDLE));
 	mywin->mouse.right_release  = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_RIGHT));
 };
+
+#ifdef IKIGUI_STANDALONE
+	#include <unistd.h> // Needed for usleep() function
+	void ikigui_breathe(int milisec){	usleep(milisec *1000);  } // pause
+
+	void ikigui_window_open(ikigui_window *mywin,int w, int h) { // input is the size of the window to create
+		mywin->frame.w = w;
+		mywin->frame.h = h;
+		mywin->dis=XOpenDisplay((char *)0);     // Get the display
+	   	mywin->screen=DefaultScreen(mywin->dis); // Get the screen
+
+		unsigned long black,white;         // get the colors black and white (see section for details)
+		black=BlackPixel(mywin->dis,mywin->screen),
+		white=WhitePixel(mywin->dis, mywin->screen);
+
+	   	mywin->win=XCreateSimpleWindow(mywin->dis,DefaultRootWindow(mywin->dis),0,0,w, h, 5,black, white); // Create window
+
+		// To get evet to close window
+		mywin->wm_delete_window = XInternAtom(mywin->dis, "WM_DELETE_WINDOW", False);
+		XSetWMProtocols(mywin->dis, mywin->win, &mywin->wm_delete_window, 1);
+
+		XSelectInput(mywin->dis, mywin->win, ExposureMask|PointerMotionMask|ButtonPressMask|ButtonReleaseMask|KeyPressMask|KeyReleaseMask|FocusChangeMask|EnterWindowMask|LeaveWindowMask); // Select event types to get
+
+		mywin->gc=DefaultGC(mywin->dis,mywin->screen); // alternativ som funkar är... mywin->gc=XCreateGC(mywin->dis, mywin->win, 0,0);
+
+		XMapRaised(mywin->dis, mywin->win);
+
+		XWindowAttributes wa = {0};
+		XGetWindowAttributes(mywin->dis, mywin->win, &wa);
+
+		mywin->frame.pixels = (unsigned int *)malloc(w * h * 4);
+		mywin->bitmap = XCreatePixmap(mywin->dis, mywin->win, w, h, 1);
+		mywin->image = XCreateImage(mywin->dis, wa.visual, wa.depth, ZPixmap, 0, (char*)mywin->frame.pixels, w, h, 32, w * 4);
+	};
+#endif
