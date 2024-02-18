@@ -94,7 +94,8 @@ ikigui_include_bmp()    // Imports BMP graphics from include file, to a ikigui_i
 - Readymade graphics for easy usage.
 - Tools for faster development and rapid GUI design.
 - Create bindings for other languages like Python or maybe Lua and Wren.
-- Addopt version control when the API interface for ikiGUI is stable (it's geting close now).
+- Adopt version control when the API interface for ikiGUI is stable (it's geting close now).
+- Make it possible to make stand alone applications with ikiGUI without extra libs.
 
 ## Tutorial on how to prepare graphics for a plug with ikiGUI
 For your plug you whant background graphics that you can think of as your front panel,
