@@ -3,7 +3,9 @@ _A screenshot of a simple plugin example using ikiGUI_
 
 # ikiGUI
 The smallest cross platform audio plugin GUI library availible, that don't use any third party libraries.
+
 - Can be used for making audio plugin GUI's.
+- Can be used to make stand alone applications (currently only on Linux).
 - Cross compiles 100% identical code to Windows and Linux.
 - 100% identical graphics for all supported platforms.
 - It selects the platform specific code automatically.
