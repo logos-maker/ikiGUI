@@ -1,5 +1,7 @@
-// to comile...
+// to compile dor linux...
 // gcc ikigui_standalone.c -o standalone -lX11
+// for windows... (-mwindows gets rid of terminal opening)
+// gcc ikigui_standalone.c -o standalone.exe -lgdi32 -mwindows
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -9,9 +11,10 @@
 #include "bmp.h"
 #define IKIGUI_STANDALONE
 
-#include <unistd.h>
-void Sleep(int milisec){ usleep(milisec *1000); } //pass in microseconds
-
+#ifdef __linux__
+	#include <unistd.h>
+	void Sleep(int milisec){ usleep(milisec *1000); } //pass in microseconds
+#endif
 /*
 void main(){
 	ikigui_window mywin;
@@ -25,7 +28,7 @@ void main(){
 }
 */
 
-int main () {
+void main () {
         ikigui_image pic ;
 	ikigui_window mywin ; // create our variables/struct
 	ikigui_window_open(&mywin,1024,800); // Create window
