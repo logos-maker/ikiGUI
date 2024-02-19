@@ -31,7 +31,7 @@ struct mouse{
 
 /// A window struct, that can be used to open a window with the ikigui_open_plugin_window function.
 typedef struct ikigui_window{
-        ikigui_image frame;
+        ikigui_image image;
         struct mouse mouse;
         HWND window_handle;
         BITMAPINFO bitmap_info;
@@ -101,7 +101,7 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 }
 
 /// A helper function that return the pointer to the ikigui_image inside a ikigui_window
-ikigui_image*	ikigui_image_of_window(ikigui_window* window){ return &window->frame; }
+ikigui_image*	ikigui_image_of_window(ikigui_window* window){ return &window->image; }
 
 
 /// Open a child window (for a audio plugin window)
@@ -131,10 +131,10 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr, int w, int h){
 	//	PRINT_ERROR("CreateWindow() failed. Returned NULL.\n");
 	}
 
-	mywin->frame.w = mywin->bitmap_info.bmiHeader.biWidth = w;
-	mywin->frame.h = mywin->bitmap_info.bmiHeader.biHeight = h;
+	mywin->image.w = mywin->bitmap_info.bmiHeader.biWidth = w;
+	mywin->image.h = mywin->bitmap_info.bmiHeader.biHeight = h;
 	if(mywin->bitmap) DeleteObject(mywin->bitmap);
-	mywin->bitmap = CreateDIBSection(NULL, &mywin->bitmap_info, DIB_RGB_COLORS, (void**)&mywin->frame.pixels, 0, 0);
+	mywin->bitmap = CreateDIBSection(NULL, &mywin->bitmap_info, DIB_RGB_COLORS, (void**)&mywin->image.pixels, 0, 0);
 	SelectObject(mywin->bitmap_device_context, mywin->bitmap);
 	SetWindowLongPtr(mywin->window_handle, GWLP_USERDATA, (LONG_PTR)mywin);
 }

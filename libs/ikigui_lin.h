@@ -42,21 +42,21 @@ typedef struct {
         struct mouse mouse;
 
         // To have pixels
-	XImage* image;
+	XImage* ximage;
 	Pixmap bitmap;
-        ikigui_image frame;
+        ikigui_image image;
 } ikigui_window;                     
 
 int old_x;
 int old_y;
 
 /// A helper function that return the pointer to the ikigui_image inside a ikigui_window
-ikigui_image*	ikigui_image_of_window(ikigui_window* window){ return &window->frame; }
+ikigui_image*	ikigui_image_of_window(ikigui_window* window){ return &window->image; }
 
 /// Open a child window
 void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
-        mywin->frame.w = w;
-        mywin->frame.h = h;
+        mywin->image.w = w;
+        mywin->image.h = h;
 	mywin->dis=XOpenDisplay((char *)0);     // Get the display
    	mywin->screen=DefaultScreen(mywin->dis); // Get the screen
         int x = 0;
@@ -79,9 +79,9 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
         XWindowAttributes wa = {0};
         XGetWindowAttributes(mywin->dis, mywin->win, &wa);
 
-	mywin->frame.pixels = (unsigned int *)malloc(w * h * 4);
+	mywin->image.pixels = (unsigned int *)malloc(w * h * 4);
 	mywin->bitmap = XCreatePixmap(mywin->dis, mywin->win, w, h, 1);
-	mywin->image = XCreateImage(mywin->dis, wa.visual, wa.depth, ZPixmap, 0, (char*)mywin->frame.pixels, w, h, 32, w * 4);
+	mywin->ximage = XCreateImage(mywin->dis, wa.visual, wa.depth, ZPixmap, 0, (char*)mywin->image.pixels, w, h, 32, w * 4);
 
         XReparentWindow(mywin->dis, mywin->win,(Window)ptr, 0, 0);
         XFlush(mywin->dis);
@@ -94,7 +94,7 @@ void ikigui_window_close(ikigui_window *mywin){
 };
 /// Updates the Window graphics with new things drawn
 void ikigui_window_update(ikigui_window *mywin){
-        XPutImage(mywin->dis, mywin->win, mywin->gc, mywin->image, 0, 0, 0, 0, mywin->frame.w, mywin->frame.h);
+        XPutImage(mywin->dis, mywin->win, mywin->gc, mywin->ximage, 0, 0, 0, 0, mywin->image.w, mywin->image.h);
 };
 /// Update the event data for the Window
 void ikigui_window_get_events(ikigui_window *mywin){
@@ -159,8 +159,8 @@ void ikigui_window_get_events(ikigui_window *mywin){
 	void ikigui_breathe(int milisec){	usleep(milisec *1000);  } // pause
 
 	void ikigui_window_open(ikigui_window *mywin,int w, int h) { // input is the size of the window to create
-		mywin->frame.w = w;
-		mywin->frame.h = h;
+		mywin->image.w = w;
+		mywin->image.h = h;
 		mywin->dis=XOpenDisplay((char *)0);     // Get the display
 	   	mywin->screen=DefaultScreen(mywin->dis); // Get the screen
 
@@ -183,8 +183,8 @@ void ikigui_window_get_events(ikigui_window *mywin){
 		XWindowAttributes wa = {0};
 		XGetWindowAttributes(mywin->dis, mywin->win, &wa);
 
-		mywin->frame.pixels = (unsigned int *)malloc(w * h * 4);
+		mywin->image.pixels = (unsigned int *)malloc(w * h * 4);
 		mywin->bitmap = XCreatePixmap(mywin->dis, mywin->win, w, h, 1);
-		mywin->image = XCreateImage(mywin->dis, wa.visual, wa.depth, ZPixmap, 0, (char*)mywin->frame.pixels, w, h, 32, w * 4);
+		mywin->ximage = XCreateImage(mywin->dis, wa.visual, wa.depth, ZPixmap, 0, (char*)mywin->image.pixels, w, h, 32, w * 4);
 	};
 #endif

@@ -32,13 +32,12 @@ void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint3
         if(dest->h < (y+part->h))return; // shielding crash
 
         for(int j = 0 ; j < part->h ; j++){ // vertical
-
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
 			dest->pixels[x+i+(j+y)*dest->w] = color ;
                 }
 	}
 
-  for(int i = part->x ; i < (part->x+part->w) ; i++){   // horizontal
+	for(int i = part->x ; i < (part->x+part->w) ; i++){   // horizontal
 		dest->pixels[i+part->y*dest->w] = light;
         }
 
@@ -80,33 +79,26 @@ void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
-	if((color & 0xFF000000) != 0xFF000000){ // Do we use alpha? True if no alpha (alpha is set to 0xFF in the color value)
+	if((color & 0xFF000000) == 0xFF000000){ // Do we use alpha? True if no alpha (alpha is set to 0xFF in the color value)
 		for(int i = part->x ; i < (part->x+part->w) ; i++){   // horizontal
 			dest->pixels[i+part->y*dest->w] = color;
+			dest->pixels[i+(part->y+part->h-1)*dest->w] = color;
 		}
 
 		for(int j = part->y ; j < (part->y + part->h -1) ; j++){ // vertical
 			dest->pixels[part->x+j*dest->w] = color;
 			dest->pixels[(part->x+part->w-1)+j*dest->w] = color;
 		}
-
-		for(int i = part->x; i < (part->x+part->w ); i++){   // horizontal
-			dest->pixels[i+(part->y+part->h-1)*dest->w] = color;
-		}
 	}else{ // Draw With alpha
 		for(int i = part->x ; i < (part->x+part->w) ; i++){   // horizontal
-			dest->pixels[i+part->y*dest->w] = alpha_channel(dest->pixels[i+part->y*dest->w],color);
+			dest->pixels[i+part->y*dest->w] = 		alpha_channel(dest->pixels[i+ part->y*dest->w],color);
+			dest->pixels[i+(part->y+part->h-1)*dest->w] =	alpha_channel(dest->pixels[i+(part->y+part->h-1)*dest->w],color);
 		}
 
 		for(int j = part->y ; j < (part->y + part->h -1) ; j++){ // vertical
-			dest->pixels[part->x+j*dest->w] = alpha_channel(dest->pixels[part->x+j*dest->w],color);
-			dest->pixels[(part->x+part->w-1)+j*dest->w] = alpha_channel(dest->pixels[(part->x+part->w-1)+j*dest->w],color);
+			dest->pixels[part->x+j*dest->w] =		alpha_channel(dest->pixels[part->x+j*dest->w],color);
+			dest->pixels[(part->x+part->w-1)+j*dest->w] =	alpha_channel(dest->pixels[(part->x+part->w-1)+j*dest->w],color);
 		}
-
-		for(int i = part->x; i < (part->x+part->w ); i++){   // horizontal
-			dest->pixels[i+(part->y+part->h-1)*dest->w] = alpha_channel(dest->pixels[i+(part->y+part->h-1)*dest->w],color);
-		}
-
 	}
 }
 
@@ -116,7 +108,7 @@ void ikigui_draw_box(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ //
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
-	if((color & 0xFF000000) != 0xFF000000){ // Do we use alpha? True if no alpha (alpha is set to 0xFF in the color value)
+	if((color & 0xFF000000) == 0xFF000000){ // Do we use alpha? True if no alpha (alpha is set to 0xFF in the color value)
 		for(int j = 0 ; j < part->h ; j++){ // vertical
 		        for(int i = 0 ; i < part->w ; i++){   // horizontal
 				dest->pixels[x+i+(j+y)*dest->w] = color ; // without alpha

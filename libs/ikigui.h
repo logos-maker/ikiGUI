@@ -17,7 +17,11 @@ typedef struct {
         unsigned int color;  ///< color that may be used of tile map drawing for filling background
 	unsigned char composit; ///< flag for internal usage only (for compabillity reasons).
 } ikigui_image;
-
+#ifdef IKIGUI_STANDALONE
+	#include <stdint.h>
+	#include <stdlib.h>
+	#include <stdio.h>
+#endif
 #ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
 #ifdef __linux__ //linux specific code goes here...
 	#include "ikigui_lin.h"	// For window and graphics handling in this case for Linux.

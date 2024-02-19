@@ -19,6 +19,80 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
+void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// A unfilled rect (has alpha support)
+	int x = part->x;
+	int y = part->y;
+
+        if((x<0) || (y<0))return; // sheilding crash
+        if(dest->w < (x+part->w))return; // shielding crash
+        if(dest->h < (y+part->h))return; // shielding crash
+	if(!dest->composit){
+		for(int i = part->x ; i < (part->x+part->w) ; i++){   // horizontal
+			dest->pixels[i+hflip(dest->h,part->y)*dest->w] = 		alpha_channel(dest->pixels[i+hflip(dest->h,part->y)*dest->w],color);
+			dest->pixels[i+hflip(dest->h,(part->y+part->h-1))*dest->w] =	alpha_channel(dest->pixels[i+hflip(dest->h,(part->y+part->h-1))*dest->w],color);
+		}
+
+		for(int j = part->y ; j < (part->y + part->h -1) ; j++){ // vertical
+			dest->pixels[part->x+hflip(dest->h,j)*dest->w] =		alpha_channel(dest->pixels[part->x+hflip(dest->h,j)*dest->w],color);
+			dest->pixels[(part->x+part->w-1)+hflip(dest->h,j)*dest->w] =	alpha_channel(dest->pixels[(part->x+part->w-1)+hflip(dest->h,j)*dest->w],color);
+		}
+	}else{ // Draw With alpha
+		for(int i = part->x ; i < (part->x+part->w) ; i++){   // horizontal
+			dest->pixels[i+part->y*dest->w] = 		alpha_channel(dest->pixels[i+ part->y*dest->w],color);
+			dest->pixels[i+(part->y+part->h-1)*dest->w] =	alpha_channel(dest->pixels[i+(part->y+part->h-1)*dest->w],color);
+		}
+
+		for(int j = part->y ; j < (part->y + part->h -1) ; j++){ // vertical
+			dest->pixels[part->x+j*dest->w] =		alpha_channel(dest->pixels[part->x+j*dest->w],color);
+			dest->pixels[(part->x+part->w-1)+j*dest->w] =	alpha_channel(dest->pixels[(part->x+part->w-1)+j*dest->w],color);
+		}
+	}
+}
+void ikigui_draw_box(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// To draw a filled rectangle (has alpha support)
+	int x = part->x; // to make code easier to read
+	int y = part->y; // to make code easier to read
+        if((x<0) || (y<0))return; // sheilding crash
+        if(dest->w < (x+part->w))return; // shielding crash
+        if(dest->h < (y+part->h))return; // shielding crash
+	if(!dest->composit){
+		for(int j = 0 ; j < part->h ; j++){ // vertical
+		        for(int i = 0 ; i < part->w ; i++){   // horizontal
+				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = alpha_channel( dest->pixels[x+i+(j+y)*dest->w], color ); // with alpha
+		        }
+		}
+	}else{
+		for(int j = 0 ; j < part->h ; j++){ // vertical
+		        for(int i = 0 ; i < part->w ; i++){   // horizontal
+				dest->pixels[x+i+(j+y)*dest->w] = alpha_channel( dest->pixels[x+i+(j+y)*dest->w], color ); // with alpha
+		        }
+		}
+	}
+}
+void ikigui_draw_line_v(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ /// Draw vertical line (has alpha support)
+	if((x<0||y<0))return; // crash blocking
+	if(!dest->composit){
+		for(int i = y ; i < (y+length) ; i++){ // draw vertical line with alpha
+			dest->pixels[x + hflip(dest->h,i) * dest->w] = alpha_channel(dest->pixels[x + hflip(dest->h,i) * dest->w],color);
+		}
+	}else{	// It's a solid color
+		for(int i = y ; i < (y+length) ; i++){ // draw vertical line with alpha
+			dest->pixels[x + i * dest->w] = alpha_channel(dest->pixels[x + i * dest->w],color);
+		}
+	}
+}
+void ikigui_draw_line_h(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ /// Draw horizontal line (has alpha support)
+	if((x<0||y<0))return; // crash blocking
+	if(!dest->composit){
+		for(int i = x ; i < (x+length) ; i++){ // draw horizontal line with alpha
+			dest->pixels[i + hflip(dest->h,y) * dest->w] = alpha_channel(dest->pixels[i + hflip(dest->h,y) * dest->w],color);
+		}
+	}
+	else{	// It's a solid color
+		for(int i = x ; i < (x+length) ; i++){ // draw horizontal line with alpha
+			dest->pixels[i + y * dest->w] = alpha_channel(dest->pixels[i + y * dest->w],color);
+		}
+	}
+}
 
 // Functions that affects a part of a ikigui_image
 void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ /// Fill part of image or window with gradient.
@@ -122,7 +196,7 @@ void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, iki
 			if(!dest->composit){
         			dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = source->pixels[i+part->x+source->w*(j+part->y)];
 			}else{
-				dest->pixels[(x+i+(j+y)*dest->w)] = source->pixels[i+part->x+source->w*(j+part->y)];
+				dest->pixels[(x+i+(j+y)*dest->w)] = 		   source->pixels[i+part->x+source->w*(j+part->y)];
 			}
                 }
         }
@@ -130,14 +204,22 @@ void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, iki
 void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /// draw source image to the x,y coordinate in destination image
         for(int j = 0 ; j < source->h ; j++){ // vertical
                 for(int i = 0 ; i < source->w ; i++){   // horizontal
-                        dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = source->pixels[i+source->w*(j)];
+			if(!dest->composit){
+        			dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = source->pixels[i+source->w*(j)];
+			}else{
+				dest->pixels[(x+i+(j+y)*dest->w)] = 		   source->pixels[i+source->w*(j)];
+			}                       
                 }
         }
 }
 void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// draw source image to the x,y coordinate in destination image
         for(int j = 0 ; j < source->h ; j++){ // vertical
                 for(int i = 0 ; i < source->w ; i++){   // horizontal
-                        dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)],source->pixels[i+source->w*(j)]);
+			if(!dest->composit){
+        			dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)],source->pixels[i+source->w*(j)]);
+			}else{
+				dest->pixels[x+i+(j+y)*dest->w] = 		   alpha_channel(dest->pixels[x+i+(j+y)*dest->w],source->pixels[i+source->w*j]);
+			}    
                 }
         }
 }
