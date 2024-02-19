@@ -209,37 +209,6 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
 
-	uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
-	uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
-	uint8_t b1 = color_bot&0xff;		// Blue color_bot
-	uint8_t r2 = (color_top&0xff0000)>>16;	// Red color_top
-	uint8_t g2 = (color_top&0xff00)>>8;	// Red color_top
-	uint8_t b2 = color_top&0xff;		// Blue color_top
-
-
-	double line_const = (double)255/(double)part->h;
-        for(int j = 0 ; j < part->h ; j++){ // vertical
-		double rise = (double)j * line_const ;	// rising
-		double fall = 255-rise;			// falling
-
-                for(int i = 0 ; i < part->w ; i++){   // horizontal
-			uint8_t ro = ((uint16_t)(rise*r1 + fall*r2))>>8;   // color_bot + color_top
-			uint8_t go = ((uint16_t)(rise*g1 + fall*g2))>>8;   // color_bot + color_top
-			uint8_t bo = ((uint16_t)(rise*b1 + fall*b2))>>8;   // color_bot + color_top
-
-			dest->pixels[x+i+(j+y)*dest->w] = (255<<24) + (ro << 16) + (go<< 8) + bo;
-                }
-        }
-}
-void ikigui_alpha_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ /// Fill part of image or window with gradient.
-
-	int x = part->x;
-	int y = part->y;
-
-        if((x<0) || (y<0))return; // sheilding crash
-        if(dest->w < (x+part->w))return; // shielding crash
-        if(dest->h < (y+part->h))return; // shielding crash
-
 	uint8_t a1 = (color_bot&0xff000000)>>24;// alpha color_bot
 	uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
 	uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
@@ -261,7 +230,7 @@ void ikigui_alpha_gradient(ikigui_image *dest, uint32_t color_top, uint32_t colo
 			uint8_t go = ((uint16_t)(rise*g1 + fall*g2))>>8;   // color_bot + color_top
 			uint8_t bo = ((uint16_t)(rise*b1 + fall*b2))>>8;   // color_bot + color_top
 
-			dest->pixels[x+i+(j+y)*dest->w] = alpha_channel(dest->pixels[x+i+(j+y)*dest->w],(ro << 24) + (ro << 16) + (go<< 8) + bo);
+			dest->pixels[x+i+(j+y)*dest->w] = alpha_channel(dest->pixels[x+i+(j+y)*dest->w],(ao << 24) + (ro << 16) + (go<< 8) + bo);
                 }
         }
 }
@@ -308,6 +277,8 @@ void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, iki
                 }
         }
 }
+
+
 void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
         for(int j = 0 ; j < source->h ; j++){ // vertical
                 for(int i = 0 ; i < source->w ; i++){   // horizontal         
@@ -315,7 +286,7 @@ void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /
                 }
         }
 }
-void ikigui_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
+void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
         for(int j = 0 ; j < source->h ; j++){ // vertical
                 for(int i = 0 ; i < source->w ; i++){   // horizontal         
                         dest->pixels[x+i+(j+y)*dest->w] = alpha_channel(dest->pixels[x+i+(j+y)*dest->w],source->pixels[i+source->w*j]);
@@ -326,37 +297,14 @@ void ikigui_image_composite(ikigui_image *dest,ikigui_image *source, int x, int 
 // Functions for image manipulation follows... 
 
 void ikigui_image_solid(ikigui_image *dest, unsigned int color){ // Fill image or window.
-        for(int i = 0 ; i < dest->w * dest->h ; i++){ // All pixels      
-                        dest->pixels[i] = color;
-        }
+        for(int i = 0 ; i < dest->w * dest->h ; i++){	dest->pixels[i] = color; }
 }
 void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A background color for automatic filling of transparent pixels.
-	// to precalc graphics for usage with ikigui_blit_part_fast() for faster graphics. Can be convinient in some cases.
-        for(int i = 0 ; i < dest->size ; i++){
-                dest->pixels[i] = alpha_channel(color,dest->pixels[i]);
-        }
+        for(int i = 0 ; i < dest->size ; i++){		dest->pixels[i] = alpha_channel(color,dest->pixels[i]);	}
 }
 void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image or window.
-	double line_const = (double)255/(double)dest->h;
-        for(int j = 0 ; j < dest->h ; j++){ // vertical
-		double rise = (double)j * line_const ;	// rising
-		double fall = 255-rise;			// falling
-
-                for(int i = 0 ; i < dest->w ; i++){   // horizontal
-			uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
-			uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
-			uint8_t b1 = color_bot&0xff;		// Blue color_bot
-			uint8_t r2 = (color_top&0xff0000)>>16;	// Red color_top
-			uint8_t g2 = (color_top&0xff00)>>8;	// Red color_top
-			uint8_t b2 = color_top&0xff;		// Blue color_top
-
-			uint8_t ro = ((uint16_t)(rise*r1 + fall*r2))>>8;   // color_bot + color_top
-			uint8_t go = ((uint16_t)(rise*g1 + fall*g2))>>8;   // color_bot + color_top
-			uint8_t bo = ((uint16_t)(rise*b1 + fall*b2))>>8;   // color_bot + color_top
-
-			dest->pixels[i+j*dest->w] = (255<<24) + (ro << 16) + (go<< 8) + bo;
-                }
-        }
+	ikigui_rect all = {.x=0,.y=0,.w= dest->w,.h= dest->h};
+	ikigui_draw_gradient(dest,color_top,color_bot,&all);
 }
 void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocate pixel memory for a ikigui_image
         frame->w = w;

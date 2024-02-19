@@ -19,6 +19,7 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
+
 // Functions that affects a part of a ikigui_image
 void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ /// Fill part of image or window with gradient.
 
@@ -29,32 +30,35 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
 
+	uint8_t a1 = (color_bot&0xff000000)>>24;// alpha color_bot
+	uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
+	uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
+	uint8_t b1 = color_bot&0xff;		// Blue color_bot
+
+	uint8_t a2 = (color_top&0xff000000)>>24;// alpha color_bot
+	uint8_t r2 = (color_top&0xff0000)>>16;	// Red color_top
+	uint8_t g2 = (color_top&0xff00)>>8;	// Red color_top
+	uint8_t b2 = color_top&0xff;		// Blue color_top
+
 	double line_const = (double)255/(double)part->h;
         for(int j = 0 ; j < part->h ; j++){ // vertical
 		double rise = (double)j * line_const ;	// rising
 		double fall = 255-rise;			// falling
 
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
-			uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
-			uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
-			uint8_t b1 = color_bot&0xff;		// Blue color_bot
-			uint8_t r2 = (color_top&0xff0000)>>16;	// Red color_top
-			uint8_t g2 = (color_top&0xff00)>>8;	// Red color_top
-			uint8_t b2 = color_top&0xff;		// Blue color_top
-
+			uint8_t ao = ((uint16_t)(rise*a1 + fall*a2))>>8;   // color_bot + color_top
 			uint8_t ro = ((uint16_t)(rise*r1 + fall*r2))>>8;   // color_bot + color_top
 			uint8_t go = ((uint16_t)(rise*g1 + fall*g2))>>8;   // color_bot + color_top
 			uint8_t bo = ((uint16_t)(rise*b1 + fall*b2))>>8;   // color_bot + color_top
 
 			if(!dest->composit){
-				 dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = (255<<24) + (ro << 16) + (go<< 8) + bo;
+				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)],(ao << 24) + (ro << 16) + (go<< 8) + bo);
 			}else{
-				dest->pixels[x+i+(j+y)*dest->w] = (255<<24) + (ro << 16) + (go<< 8) + bo;
+				dest->pixels[x+i+(j+y)*dest->w] = alpha_channel(dest->pixels[x+i+(j+y)*dest->w],(ao << 24) + (ro << 16) + (go<< 8) + bo);
 			}
                 }
         }
 }
-
 void ikigui_blit_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination.
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
@@ -130,7 +134,14 @@ void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /
                 }
         }
 }
-// missing function: ikigui_image_composite()
+void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// draw source image to the x,y coordinate in destination image
+        for(int j = 0 ; j < source->h ; j++){ // vertical
+                for(int i = 0 ; i < source->w ; i++){   // horizontal
+                        dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)],source->pixels[i+source->w*(j)]);
+                }
+        }
+}
+
 
 // Functions for image manipulation follows... 
 
@@ -145,30 +156,9 @@ void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A backgro
                 dest->pixels[i] = alpha_channel(color,dest->pixels[i]);
         }
 }
-void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill destination image/window with a ARGB color gradient
-	double line_const = (double)255/(double)dest->h;
-        for(int j = 0 ; j < dest->h ; j++){ // vertical
-		double rise = (double)j * line_const ;	// rising
-		double fall = 255-rise;			// falling
-
-                for(int i = 0 ; i < dest->w ; i++){   // horizontal
-			uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
-			uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
-			uint8_t b1 = color_bot&0xff;		// Blue color_bot
-			uint8_t r2 = (color_top&0xff0000)>>16;	// Red color_top
-			uint8_t g2 = (color_top&0xff00)>>8;	// Red color_top
-			uint8_t b2 = color_top&0xff;		// Blue color_top
-
-			uint8_t ro = ((uint16_t)(rise*r1 + fall*r2))>>8;   // color_bot + color_top
-			uint8_t go = ((uint16_t)(rise*g1 + fall*g2))>>8;   // color_bot + color_top
-			uint8_t bo = ((uint16_t)(rise*b1 + fall*b2))>>8;   // color_bot + color_top
-			if(!dest->composit)
-				dest->pixels[i+hflip(dest->h,j)*dest->w] = (255<<24) + (ro << 16) + (go<< 8) + bo;
-			else{
-				dest->pixels[i+(j*dest->w)] = (255<<24) + (ro << 16) + (go<< 8) + bo;
-			}
-                }
-        }
+void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image or window.
+	ikigui_rect all = {.x=0,.y=0,.w= dest->w,.h= dest->h};
+	ikigui_draw_gradient(dest,color_top,color_bot,&all);
 }
 void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocates memory for a ikigui_image and initializes it, if ikigui_bmp_include function isn't used.
         frame->w = w;
