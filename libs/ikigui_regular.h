@@ -465,7 +465,7 @@ void ikigui_tile_fast(ikigui_image *dest,ikigui_image *source, int x, int y, iki
 void ikigui_image_solid(ikigui_image *dest, unsigned int color){ // Fill image or window.
         for(int i = 0 ; i < dest->w * dest->h ; i++){	dest->pixels[i] = color; }
 }
-void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A background color for automatic filling of transparent pixels.
+void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// Fill background in destination. Doesn't overwrite the image.
         for(int i = 0 ; i < dest->size ; i++){		dest->pixels[i] = alpha_channel(color,dest->pixels[i]);	}
 }
 void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image with a color gradient.
@@ -478,13 +478,15 @@ void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Alloca
         frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
         frame->size = frame->w * frame->h ;
 }
-void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// Read BMP image in header file
+void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// Read BMP image in header file to a ikigui_image (and allocates memory for it)
         unsigned int start;
         dest->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
         dest->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
         start =    bmp_incl[0x0a] + (bmp_incl[0x0a+1]<<8) + (bmp_incl[0x0a+2]<<16) + (bmp_incl[0x0a+3]<<24);
 
-        dest->pixels = (unsigned int*)malloc(dest->w*dest->h*4);
+	uint32_t* pixels_to_free = dest->pixels ; 	
+        dest->pixels = (unsigned int*)malloc(dest->w*dest->h*4); // Doesn't make sense if we read it in to a image that allready have allocated memory!!!
+	free(pixels_to_free);
 
         int counter = 0 ; 
         for(int j = dest->h -1 ; j >= 0 ; j--){
