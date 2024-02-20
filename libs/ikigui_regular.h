@@ -162,6 +162,74 @@ void ikigui_draw_line(ikigui_image *dest, uint32_t color, int x0, int y0, int x1
 	}
 }
 
+void ikigui_draw_line_bh(ikigui_image *dest, uint32_t color,int x0, int y0, int x1, int y1){
+	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
+	int dx, dy, p, x, y;
+
+	dx=x1-x0;
+	dy=y1-y0;
+
+	x=x0;
+	y=y0;
+
+	p=2*dy-dx;
+ 
+	while(x<x1){
+		if(p>=0){
+			plot(x,y);
+			y=y+1;
+			p=p+2*dy-2*dx;
+		}
+		else{
+			plot(x,y);
+			p=p+2*dy;
+		}
+		x=x+1;
+	}
+}
+
+/*
+#include <math.h>
+void ikigui_draw_cubic_bezier(ikigui_image *dest, uint32_t color,
+        unsigned int x1, unsigned int y1,
+        unsigned int x2, unsigned int y2,
+        unsigned int x3, unsigned int y3,
+        unsigned int x4, unsigned int y4)
+{
+	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
+
+#define N_SEG 20 // number of segments for the curve
+    unsigned int i;
+    double pts[N_SEG+1][2];
+    for (i=0; i <= N_SEG; ++i)
+    {
+        double t = (double)i / (double)N_SEG;
+
+        double a = pow((1.0 - t), 3.0);
+        double b = 3.0 * t * pow((1.0 - t), 2.0);
+        double c = 3.0 * pow(t, 2.0) * (1.0 - t);
+        double d = pow(t, 3.0);
+
+        double x = a * x1 + b * x2 + c * x3 + d * x4;
+        double y = a * y1 + b * y2 + c * y3 + d * y4;
+        pts[i][0] = x;
+        pts[i][1] = y;
+    }
+ 
+
+    // draw only points
+    for (i=0; i <= N_SEG; ++i)
+    {
+        plot( pts[i][0],
+              pts[i][1] );
+    }
+    // draw segments
+    for (i=0; i < N_SEG; ++i){
+        int j = i + 1;
+	ikigui_draw_line(dest,color, pts[i][0], pts[i][1],pts[j][0], pts[j][1] );
+    }
+}
+*/
 
 void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsigned int radius){
 	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
@@ -322,7 +390,32 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
         }
 }
 
-void ikigui_blit_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination.
+
+void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
+	int inter_w = source->w ;
+	if(dest->w < (source->w + x)) inter_w = dest->w - (x) ; // clip off right part of image and block crash
+
+        for(int j = 0 ; j < source->h ; j++){ // vertical
+                //for(int i = 0 ; i < source->w ; i++){   // horizontal
+		for(int i = 0 ; i < inter_w ; i++){   // horizontal
+                        dest->pixels[x+i+(j+y)*dest->w] = source->pixels[i+source->w*j];
+                }
+        }
+}
+void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
+	int inter_w = source->w ;
+	if(dest->w < (source->w + x)) inter_w = dest->w - (x) ; // clip off right part of image and block crash
+
+        for(int j = 0 ; j < source->h ; j++){ // vertical
+                for(int i = 0 ; i < inter_w ; i++){   // horizontal         
+                        dest->pixels[x+i+(j+y)*dest->w] = alpha_channel(dest->pixels[x+i+(j+y)*dest->w],source->pixels[i+source->w*j]);
+                }
+        }
+}
+
+
+void ikigui_tile_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the destination, if part is NULL we print the whole image instead. 
+	if(NULL == part){ ikigui_draw_image_composite(dest,source,x,y); return; } // if part is NULL we print the whole image instead. 
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shelding crash
         if(dest->h < (y+part->h))return; // shelding crash
@@ -332,7 +425,7 @@ void ikigui_blit_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ik
                 }
         }
 }
-void ikigui_blit_filled(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill low alpha value with a solid color.
+void ikigui_tile_filled(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill low alpha value with a solid color.
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
@@ -343,7 +436,7 @@ void ikigui_blit_filled(ikigui_image *dest,ikigui_image *source, int x, int y, i
                 }
         }
 }
-void ikigui_blit_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill high alpha value with a solid color.
+void ikigui_tile_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill high alpha value with a solid color.
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
@@ -354,7 +447,8 @@ void ikigui_blit_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, i
                 }
         }
 }
-void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if source has no alpha
+void ikigui_tile_fast(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if source has no alpha
+	if(NULL == part){ ikigui_draw_image(dest,source,x,y); return; }
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shelding crash
         if(dest->h < (y+part->h))return; // shelding crash
@@ -365,21 +459,6 @@ void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, iki
         }
 }
 
-
-void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
-        for(int j = 0 ; j < source->h ; j++){ // vertical
-                for(int i = 0 ; i < source->w ; i++){   // horizontal         
-                        dest->pixels[x+i+(j+y)*dest->w] = source->pixels[i+source->w*j];
-                }
-        }
-}
-void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
-        for(int j = 0 ; j < source->h ; j++){ // vertical
-                for(int i = 0 ; i < source->w ; i++){   // horizontal         
-                        dest->pixels[x+i+(j+y)*dest->w] = alpha_channel(dest->pixels[x+i+(j+y)*dest->w],source->pixels[i+source->w*j]);
-                }
-        }
-}
 
 // Functions for image manipulation follows... 
 

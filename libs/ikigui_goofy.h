@@ -133,74 +133,7 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
                 }
         }
 }
-void ikigui_blit_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination.
-        if((x<0) || (y<0))return; // sheilding crash
-        if(dest->w < (x+part->w))return; // shielding crash
-        if(dest->h < (y+part->h))return; // shielding crash
 
-        for(int j = 0 ; j < part->h ; j++){ // vertical
-                for(int i = 0 ; i < part->w ; i++){   // horizontal
-			if(!dest->composit){
-				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] 
-				= alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)], source->pixels[i+part->x+source->w*(j+part->y)]);
-			}else{
-				dest->pixels[x+i+(j+y)*dest->w] 
-				//dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)]
-				= alpha_channel(dest->pixels[x+i+(j+y)*dest->w], source->pixels[i+part->x+source->w*(j+part->y)]);
-				//= alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)], source->pixels[i+part->x+source->w*(j+part->y)]);
-			}
-                }
-        }
-}
-void ikigui_blit_filled(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination. With a background color.
-        if((x<0) || (y<0))return; // sheilding crash
-        if(dest->w < (x+part->w))return; // shielding crash
-        if(dest->h < (y+part->h))return; // shielding crash
-
-        for(int j = 0 ; j < part->h ; j++){ // vertical
-                for(int i = 0 ; i < part->w ; i++){   // horizontal
-			if(!dest->composit){
-				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] 
-				= alpha_channel(dest->color, source->pixels[i+part->x+source->w*(j+part->y)]);
-			}else{
-				dest->pixels[(x+i+(j+y)*dest->w)] 
-				= alpha_channel(dest->color, source->pixels[i+part->x+source->w*(j+part->y)]);
-			}	
-                }
-        }
-}
-void ikigui_blit_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill 'high alpha value'/low transparancy with a solid color.
-        if((x<0) || (y<0))return; // sheilding crash
-        if(dest->w < (x+part->w))return; // shielding crash
-        if(dest->h < (y+part->h))return; // shielding crash
-
-        for(int j = 0 ; j < part->h ; j++){ // vertical
-                for(int i = 0 ; i < part->w ; i++){   // horizontal
-			if(!dest->composit){
-				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] 
-				= alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)], (source->color&0x00FFFFFF) | (0xFF000000 & source->pixels[i+part->x+source->w*(j+part->y)]));
-			}else{
-				dest->pixels[x+i+(j+y)*dest->w] 
-				= alpha_channel(dest->pixels[x+i+(j+y)*dest->w], (source->color&0x00FFFFFF) | (0xFF000000 & source->pixels[i+part->x+source->w*(j+part->y)]));
-			}
-                }
-        }
-}
-void ikigui_blit_fast(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination. Simple memory copying overwriting the dest pixels.
-        if((x<0) || (y<0))return; // shelding crash
-        if(dest->w < (x+part->w))return; // shelding crash
-        if(dest->h < (y+part->h))return; // shelding crash
-
-        for(int j = 0 ; j < part->h ; j++){ // vertical
-                for(int i = 0 ; i < part->w ; i++){   // horizontal
-			if(!dest->composit){
-        			dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = source->pixels[i+part->x+source->w*(j+part->y)];
-			}else{
-				dest->pixels[(x+i+(j+y)*dest->w)] = 		   source->pixels[i+part->x+source->w*(j+part->y)];
-			}
-                }
-        }
-}
 void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /// draw source image to the x,y coordinate in destination image
         for(int j = 0 ; j < source->h ; j++){ // vertical
                 for(int i = 0 ; i < source->w ; i++){   // horizontal
@@ -224,6 +157,76 @@ void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x,
         }
 }
 
+void ikigui_tile_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination.
+	if(NULL == part){ ikigui_draw_image_composite(dest,source,x,y); return; }
+        if((x<0) || (y<0))return; // sheilding crash
+        if(dest->w < (x+part->w))return; // shielding crash
+        if(dest->h < (y+part->h))return; // shielding crash
+
+        for(int j = 0 ; j < part->h ; j++){ // vertical
+                for(int i = 0 ; i < part->w ; i++){   // horizontal
+			if(!dest->composit){
+				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] 
+				= alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)], source->pixels[i+part->x+source->w*(j+part->y)]);
+			}else{
+				dest->pixels[x+i+(j+y)*dest->w] 
+				//dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)]
+				= alpha_channel(dest->pixels[x+i+(j+y)*dest->w], source->pixels[i+part->x+source->w*(j+part->y)]);
+				//= alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)], source->pixels[i+part->x+source->w*(j+part->y)]);
+			}
+                }
+        }
+}
+void ikigui_tile_filled(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination. With a background color.
+        if((x<0) || (y<0))return; // sheilding crash
+        if(dest->w < (x+part->w))return; // shielding crash
+        if(dest->h < (y+part->h))return; // shielding crash
+
+        for(int j = 0 ; j < part->h ; j++){ // vertical
+                for(int i = 0 ; i < part->w ; i++){   // horizontal
+			if(!dest->composit){
+				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] 
+				= alpha_channel(dest->color, source->pixels[i+part->x+source->w*(j+part->y)]);
+			}else{
+				dest->pixels[(x+i+(j+y)*dest->w)] 
+				= alpha_channel(dest->color, source->pixels[i+part->x+source->w*(j+part->y)]);
+			}	
+                }
+        }
+}
+void ikigui_tile_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill 'high alpha value'/low transparancy with a solid color.
+        if((x<0) || (y<0))return; // sheilding crash
+        if(dest->w < (x+part->w))return; // shielding crash
+        if(dest->h < (y+part->h))return; // shielding crash
+
+        for(int j = 0 ; j < part->h ; j++){ // vertical
+                for(int i = 0 ; i < part->w ; i++){   // horizontal
+			if(!dest->composit){
+				dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] 
+				= alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)], (source->color&0x00FFFFFF) | (0xFF000000 & source->pixels[i+part->x+source->w*(j+part->y)]));
+			}else{
+				dest->pixels[x+i+(j+y)*dest->w] 
+				= alpha_channel(dest->pixels[x+i+(j+y)*dest->w], (source->color&0x00FFFFFF) | (0xFF000000 & source->pixels[i+part->x+source->w*(j+part->y)]));
+			}
+                }
+        }
+}
+void ikigui_tile_fast(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the x,y, coordinate in the destination. Simple memory copying overwriting the dest pixels.
+	if(NULL == part){ ikigui_draw_image(dest,source,x,y); return; }
+        if((x<0) || (y<0))return; // shelding crash
+        if(dest->w < (x+part->w))return; // shelding crash
+        if(dest->h < (y+part->h))return; // shelding crash
+
+        for(int j = 0 ; j < part->h ; j++){ // vertical
+                for(int i = 0 ; i < part->w ; i++){   // horizontal
+			if(!dest->composit){
+        			dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = source->pixels[i+part->x+source->w*(j+part->y)];
+			}else{
+				dest->pixels[(x+i+(j+y)*dest->w)] = 		   source->pixels[i+part->x+source->w*(j+part->y)];
+			}
+                }
+        }
+}
 
 // Functions for image manipulation follows... 
 
