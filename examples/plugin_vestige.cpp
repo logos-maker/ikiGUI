@@ -133,7 +133,7 @@ VstIntPtr VSTPluginDispatcher(VSTPlugin *vstPlugin, VstInt32 opCode, VstInt32 in
 	break;
 
 	case effEditIdle:
-		ikigui_draw_image(&wrapper->mywin.frame,&bg, 0, 0); // Draw gackground.
+		ikigui_draw_image(&wrapper->mywin.image,&bg, 0, 0); // Draw gackground.
 		ikigui_window_update(&wrapper->mywin);
 	break;
     // request for the category of the plugin: in this case it is an effect since it is modifying the input (as opposed

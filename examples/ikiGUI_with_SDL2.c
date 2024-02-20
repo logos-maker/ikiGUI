@@ -36,7 +36,7 @@ int main(int argc, char ** argv){
 
 	// Create a background image - a color gradient
 	ikigui_image_create(&bg, width,hight );
-	ikigui_image_gradient(&bg,0x00eeeedd, 0x00999999);
+	ikigui_image_gradient(&bg,0xffeeeedd, 0xff999999);
 
 	map_ikigui_to_sdl(&data.mywin,(unsigned int *)&pixels,width,hight);
 
@@ -56,7 +56,7 @@ int main(int argc, char ** argv){
 				if (leftMouseButtonDown){
 					int mouseX = event.motion.x;
 					int mouseY = event.motion.y;
-					pixels[mouseY * width + mouseX] = 0x00FF0000;
+					pixels[mouseY * width + mouseX] = 0xFFFF0000;
 				}
 			break;
 		}
