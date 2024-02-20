@@ -23,7 +23,7 @@ void main(){
 
 	while(1) { // Event loop! look for events forever...
 	        ikigui_window_get_events(&mywin); // get the window events. Get events from mouse and window interactions. 
-		if(mywin.mouse.buttons & MOUSE_LEFT){ ikigui_blit_fast(&mywin.image,&pic,mywin.mouse.x,mywin.mouse.y,&rect); } // blit image part to window if mouse down
+		if(mywin.mouse.buttons & MOUSE_LEFT){ ikigui_tile_fast(&mywin.image,&pic,mywin.mouse.x,mywin.mouse.y,&rect); } // blit image part to window if mouse down
 
                 sprintf((char*)menubar.map,"%04d",mywin.mouse.y); // Generate text bytes
                 ikigui_map_draw(&menubar,1,0,0);	// Draw menubar
