@@ -238,7 +238,7 @@ void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A backgro
                 dest->pixels[i] = alpha_channel(color,dest->pixels[i]);
         }
 }
-void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image or window.
+void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image with a color gradient.
 	ikigui_rect all = {.x=0,.y=0,.w= dest->w,.h= dest->h};
 	ikigui_draw_gradient(dest,color_top,color_bot,&all);
 }

@@ -148,6 +148,101 @@ void ikigui_draw_line_h(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t
 	}
 }
 
+void ikigui_draw_line(ikigui_image *dest, uint32_t color, int x0, int y0, int x1, int y1) {
+	int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
+	int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1; 
+	int err = (dx>dy ? dx : -dy)/2, e2;
+
+	for(;;){
+		dest->pixels[dest->w * y0 + x0] = color;
+		if(x0==x1 && y0==y1) break;
+		e2 = err;
+		if(e2 >-dx) { err -= dy; x0 += sx; }
+		if(e2 < dy) { err += dx; y0 += sy; }
+	}
+}
+
+
+void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsigned int radius){
+	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
+
+	int f = 1 - radius;
+	int ddF_x = 0;
+	int ddF_y = -2 * radius;
+	int x = 0;
+	int y = radius;
+
+	plot(x0 + radius, y0); // right  NE  
+	plot(x0, y0 - radius); // Top    NW
+	plot(x0 - radius, y0); // left   SW
+	plot(x0, y0 + radius); // bottom SE
+
+	while(x < y){
+		if(f >= 0){
+			y--;
+			ddF_y += 2;
+			f += ddF_y;
+		}
+		x++;
+		ddF_x += 2;
+		f += ddF_x + 1;    
+
+		plot(x0 + y, y0 - x); // 1 , 1cuad //
+		plot(x0 + x, y0 - y); // 2 , 1cuad //
+		plot(x0 - x, y0 - y); // 3 , 2cuad //
+		plot(x0 - y, y0 - x); // 4 , 2cuad //
+		plot(x0 - y, y0 + x); // 5,  3cuad //
+		plot(x0 - x, y0 + y); // 6 , 3cuad //
+		plot(x0 + x, y0 + y); // 7 , 4cuad //
+		plot(x0 + y, y0 + x); // 8,  4cuad //		
+	}
+}
+
+
+enum cuadrants{ NE = 1, NW = 2, SW = 4, SE = 8};
+void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color, int x0, int y0, unsigned int radius){
+	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
+
+	int f = 1 - radius;
+	int ddF_x = 0;
+	int ddF_y = -2 * radius;
+	int x = 0;
+	int y = radius;
+
+	if((quad_flags & 2) || (quad_flags & 1)) plot(x0 + radius, y0); // right
+	if((quad_flags & 2) || (quad_flags & 1)) plot(x0, y0 - radius); // Top
+	if((quad_flags & 3) || (quad_flags & 2))plot(x0 - radius, y0); // left
+	if((quad_flags & 4) || (quad_flags & 3))plot(x0, y0 + radius); // bottom
+
+	while(x < y){
+		if(f >= 0){
+			y--;
+			ddF_y += 2;
+			f += ddF_y;
+		}
+		x++;
+		ddF_x += 2;
+		f += ddF_x + 1;    
+
+		if((quad_flags & 1)){
+			plot(x0 + y, y0 - x); // 1 , 1cuad
+			plot(x0 + x, y0 - y); // 2 , 1cuad
+		}
+		if((quad_flags & 2)){
+			plot(x0 - x, y0 - y); // 3 , 2cuad
+			plot(x0 - y, y0 - x); // 4 , 2cuad
+		}
+		if((quad_flags & 4)){
+			plot(x0 - y, y0 + x); // 5,  3cuad
+			plot(x0 - x, y0 + y); // 6 , 3cuad
+		}
+		if((quad_flags & 8)){
+			plot(x0 + x, y0 + y); // 7 , 4cuad
+			plot(x0 + y, y0 + x); // 8,  4cuad
+		}
+	}
+}
+
 void ikigui_draw_gradient_4x(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, uint32_t color_left, uint32_t color_right, ikigui_rect *part ){ /// Fill part of image or window with gradient.
 
 	int x = part->x;
@@ -294,7 +389,7 @@ void ikigui_image_solid(ikigui_image *dest, unsigned int color){ // Fill image o
 void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// A background color for automatic filling of transparent pixels.
         for(int i = 0 ; i < dest->size ; i++){		dest->pixels[i] = alpha_channel(color,dest->pixels[i]);	}
 }
-void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image or window.
+void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image with a color gradient.
 	ikigui_rect all = {.x=0,.y=0,.w= dest->w,.h= dest->h};
 	ikigui_draw_gradient(dest,color_top,color_bot,&all);
 }
