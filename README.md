@@ -68,12 +68,13 @@ ikigui_map_free()      // release memory allocated with ikigui_init()
 ikigui_map_draw()      // draws arrays of graphics tiles as a tile map. According to the ikigui_map setup with ikigui_map_init()
 ikigui_mouse_pos_map()     // Gives the index to the right element of a tile map from an x y coordinte.     
 
-ikigui_blit_alpha()    // Blits a part of an image, with alpha channel over the destination graphic.
-ikigui_blit_filled()   // Blits a part of an image, with a background color so the destination graphic gets overwritten.
-ikigui_blit_fast()     // Blits a part of an image, without alpha channel.
-ikigui_blit_hollow()    // Blits a part of an image, with alpha channel over the destination graphic, replacing the souce color but keeping alpha.
-ikigui_draw_gradient() // Blits a color gradient, on a part of an image or the editor window.
-ikigui_draw_image()    // Blits a whole image to the destination, without alpha channel.
+ikigui_tile_alpha()    // Blits a part of an image, with alpha channel over the destination graphic.
+ikigui_tile_filled()   // Blits a part of an image, with a background color for the graphics moved.
+ikigui_tile_fast()     // Blits a part of an image, without alpha channel so you get a image composition.
+ikigui_tile_hollow()   // Blits a part of an image, with the source alpha channel replacing the souce color but keeping alpha.
+ikigui_draw_gradient() // Draws a color gradient, on a part of the destinon image or the editor window.
+ikigui_draw_image()    // Draws a whole image to the destination image or editor window (without alpha channel).
+ikigui_draw_composite()// draws a whole image to the destination image or editor window (with alpha channel).
 
 ikigui_window_open_editor()  // open a plugin window (child window) in the used DAW.
 ikigui_window_get_events()   // gets the window events like mouseclicks and so on.
