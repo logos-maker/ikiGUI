@@ -40,8 +40,8 @@ typedef struct ikigui_map {
    ikigui_image   *source;     ///< The source image with graphics for tiles
    unsigned char  columns;     ///< Number of columns in the character display
    unsigned char  rows;        ///< Number of rows in the character display
-   unsigned char  char_width;  ///< The pixel width of the characters/tiles in the source image
-   unsigned char  char_hight;  ///< The pixel hight of the characters/tiles in the source image
+   unsigned char  tile_width;  ///< The pixel width of the characters/tiles in the source image
+   unsigned char  tile_hight;  ///< The pixel hight of the characters/tiles in the source image
    char		  *map;	       ///< The start address for the character display
    unsigned char  direction;   ///< The direction of the immages in the source image. Is autodetected by ikigui_map_init().
    uint16_t       max_index;   ///< The number of tiles in the map - 1.
@@ -55,12 +55,12 @@ enum offset {OFFSET_ASCII = -32, OFFSET_NORMAL = 0 }; // Used for setting the of
 int ikigui_map_init(struct ikigui_map *display, ikigui_image *dest, ikigui_image *source,  int8_t offset, int x_spacing, int y_spacing, int width, int hight, int columns, int rows ){
    display->map = (char*)calloc(columns*rows,sizeof(char));
    display->offset = offset ;      // index value offset to all values used in the map array.
-   display->char_width = width ;   // The width of the tiles. 
-   display->char_hight = hight ;   // The higth of the tiles.
+   display->tile_width = width ;   // The width of the tiles. 
+   display->tile_hight = hight ;   // The higth of the tiles.
    display->x_spacing = x_spacing ;// The number of pixels between left most pixel in each tile.
    display->y_spacing = y_spacing ;// The number of pixels between top  most pixel in each tile.
-   if(y_spacing == 0) display->y_spacing = display->char_hight ; // if y_spacing is zero, set it to the size of the tile so they are placed side by side.
-   if(x_spacing == 0) display->x_spacing = display->char_width;  // if x_spacing is zero, set it to the size of the tile so they are placed side by side.
+   if(x_spacing == 0) display->x_spacing = display->tile_width;  // if x_spacing is zero, set it to the size of the tile so they are placed side by side.
+   if(y_spacing == 0) display->y_spacing = display->tile_hight ; // if y_spacing is zero, set it to the size of the tile so they are placed side by side.
    display->columns = columns ;    // Set to a default value
    display->rows = rows ;          // Set to a default value
    display->max_index = (source->w / width) * (source->h / hight) - 1 ; //
@@ -101,7 +101,7 @@ int ikigui_mouse_pos_map(struct ikigui_map *display, int x, int y){ // returns -
    ){  
 	int col = x / display->x_spacing ;
 	int row = y / display->y_spacing ;
-	if( (x < ( col * display->x_spacing  +display->char_width)) && (y < ( row * display->y_spacing  +display->char_hight)) ) // inside the tile
+	if( (x < ( col * display->x_spacing  +display->tile_width)) && (y < ( row * display->y_spacing  +display->tile_hight)) ) // inside the tile
 	return (col + (row * display->columns)); // Returns the index of the character in your character array.
    };
    return -1; // Pixel coordinate is outside of the character display. 
@@ -111,8 +111,8 @@ enum blit_type { BLIT_APLHA = 0, BLIT_FILLED = 1, BLIT_SOLID = 2, BLIT_HOLLOW = 
 /// To draw a tile map to a window or image
 void ikigui_map_draw(struct ikigui_map *display, char blit_type, int x, int y){  // x y is pixel coordinate to draw it in the window
    
-   ikigui_rect srcrect = { .w = display->char_width, .h = display->char_hight }; // , .x = 0, .y = 0,  } ;
-   ikigui_rect dstrect = { .w = display->char_width, .h = display->char_hight };
+   ikigui_rect srcrect = { .w = display->tile_width, .h = display->tile_hight }; // , .x = 0, .y = 0,  } ;
+   ikigui_rect dstrect = { .w = display->tile_width, .h = display->tile_hight };
 
    int set_w;
    if(display->direction) set_w = srcrect.w ;
