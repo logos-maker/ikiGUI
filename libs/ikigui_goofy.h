@@ -19,6 +19,9 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
+uint32_t ikigui_pixel_get(ikigui_image* source,int x, int y){ return source->pixels[source->w * y + x];}  // not ready for usage for windows in all cases yet.
+void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){ dest->pixels[dest->w * y + x] = color;} // not ready for usage for windows in all cases yet.
+
 void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// A unfilled rect (has alpha support)
 	int x = part->x;
 	int y = part->y;
@@ -258,9 +261,9 @@ void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// R
         dest->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
         start =    bmp_incl[0x0a] + (bmp_incl[0x0a+1]<<8) + (bmp_incl[0x0a+2]<<16) + (bmp_incl[0x0a+3]<<24);
 
-	uint32_t* pixels_to_free = dest->pixels ; 	
+	//uint32_t* pixels_to_free = dest->pixels ; 	
         dest->pixels = (unsigned int*)malloc(dest->w*dest->h*4); // Doesn't make sense if we read it in to a image that allready have allocated memory!!!
-	free(pixels_to_free);
+	//free(pixels_to_free);
 
         int counter = 0 ; 
         for(int j = dest->h -1 ; j >= 0 ; j--){ 

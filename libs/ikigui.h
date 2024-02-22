@@ -34,6 +34,11 @@ typedef struct {
 	#include "ikigui_regular.h" // we use regular as it's usual that the first pixel is in the top left corner.  
 #endif
 
+typedef uint32_t ikigui_color; /// An less unambiguous way to rembemer how to make a color variable and not color constants.
+
+/// to make a color by it's separate components
+uint32_t ikigui_color_make(char a, char r, char g, char b){ return (a << 24) + (r << 16) + (g << 8) + (b) ;}
+
 /// For a tile map that can be drawn to images or windows
 typedef struct ikigui_map {
    ikigui_image   *dest;       ///< The destination image to use for drawing the character display
