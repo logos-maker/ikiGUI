@@ -19,8 +19,8 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
-uint32_t ikigui_pixel_get(ikigui_image* source,int x, int y){ return source->pixels[source->w * y + x];}  // not ready for usage for windows in all cases yet.
-void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){ dest->pixels[dest->w * y + x] = color;} // not ready for usage for windows in all cases yet.
+uint32_t ikigui_pixel_get(ikigui_image* source,int x, int y){ return source->pixels[source->w * hflip(source->h,y) + x];}  // not ready for usage for windows in all cases yet.
+void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){ dest->pixels[dest->w * hflip(source->h,y) + x] = color;} // not ready for usage for windows in all cases yet.
 
 void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// A unfilled rect (has alpha support)
 	int x = part->x;
