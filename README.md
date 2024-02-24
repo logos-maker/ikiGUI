@@ -20,6 +20,7 @@ The smallest cross platform GUI library for applications and audio plugins avail
 - Can be used with C or C++
 - Has compilation flag to strip away 100% of all platform depentant code.
 - Can be used with doxygen for automatic generation of documentation.
+- Can draw text with TTF fonts.
     
 Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
@@ -80,7 +81,7 @@ ikigui_window_open_editor()  // open a plugin window (child window) in the used 
 ikigui_window_get_events()   // gets the window events like mouseclicks and so on.
 ikigui_window_update()       // updates the graphics in the plugin window.
 
-ikigui_image_create()    // Creates an empty image. Allocates memory.
+ikigui_image_make()    // Creates an empty image. Allocates memory.
 ikigui_image_free()     // To realease memory allocated by ikigui_include_bmp() or ikigui_image_create()
 ikigui_image_gradient() // Fill image with gradient. The source and destination is the same image.
 ikigui_image_solid()    // Fill image with single color. Usefull if you create images with the ikigui_image_create() function.    
