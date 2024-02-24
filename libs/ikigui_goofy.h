@@ -20,7 +20,7 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 }
 
 uint32_t ikigui_pixel_get(ikigui_image* source,int x, int y){ return source->pixels[source->w * hflip(source->h,y) + x];}  // not ready for usage for windows in all cases yet.
-void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){ dest->pixels[dest->w * hflip(source->h,y) + x] = color;} // not ready for usage for windows in all cases yet.
+void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){ dest->pixels[dest->w * hflip(dest->h,y) + x] = color;} // not ready for usage for windows in all cases yet.
 
 void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// A unfilled rect (has alpha support)
 	int x = part->x;
@@ -248,7 +248,7 @@ void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t colo
 	ikigui_rect all = {.x=0,.y=0,.w= dest->w,.h= dest->h};
 	ikigui_draw_gradient(dest,color_top,color_bot,&all);
 }
-void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocates memory for a ikigui_image and initializes it, if ikigui_bmp_include function isn't used.
+void ikigui_image_make(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocates memory for a ikigui_image and initializes it, if ikigui_bmp_include function isn't used.
         frame->w = w;
         frame->h = h;
         frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);

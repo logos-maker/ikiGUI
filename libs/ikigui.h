@@ -21,6 +21,10 @@ typedef struct {
 	#include <stdint.h>
 	#include <stdlib.h>
 	#include <stdio.h>
+	#include "ikigui_ttf.h"
+#endif
+#ifdef IKIGUI_TTF
+	#include "ikigui_ttf.h"
 #endif
 #ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
 #ifdef __linux__ //linux specific code goes here...
@@ -37,7 +41,7 @@ typedef struct {
 typedef uint32_t ikigui_color; /// An less unambiguous way to rembemer how to make a color variable and not color constants.
 
 /// to make a color by it's separate components
-uint32_t ikigui_color_make(char a, char r, char g, char b){ return (a << 24) + (r << 16) + (g << 8) + (b) ;}
+uint32_t ikigui_color_make(uint8_t a, uint8_t r, uint8_t g, uint8_t b){ return (a << 24) + (r << 16) + (g << 8) + (b << 0) ;}
 
 /// For a tile map that can be drawn to images or windows
 typedef struct ikigui_map {

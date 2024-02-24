@@ -476,7 +476,7 @@ void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t colo
 	ikigui_rect all = {.x=0,.y=0,.w= dest->w,.h= dest->h};
 	ikigui_draw_gradient(dest,color_top,color_bot,&all);
 }
-void ikigui_image_create(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocate pixel memory for a ikigui_image
+void ikigui_image_make(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocate pixel memory for a ikigui_image
         frame->w = w;
         frame->h = h;
         frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
