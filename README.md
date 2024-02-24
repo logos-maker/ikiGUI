@@ -48,7 +48,7 @@ The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with
 - Possible to use without any OS or library related dependencies other than standard C lib
 
 ## What ikiGUI will do for you
-- It lets you open audio plugin windows aka child windows.
+- It lets you open audio plugin windows aka child windows (can open main windows also for stand alone applications)
 - It gives you the mouse cursor position and buttons/knobs/tiles pressed (from your window object).
 - It loads pictures that you embedd into your plugin (so your plugin is contained in one file).
 - Lets you easily build layers of graphics with [alpha blending](https://en.wikipedia.org/wiki/Alpha_compositing),
