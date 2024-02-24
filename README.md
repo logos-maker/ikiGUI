@@ -196,7 +196,7 @@ Then finally to display this tilemap and everything else in your plug that you h
 ```
 ikigui_window_update(&mywin); 
 ```
-## How to display text LCD emulation for debugging
+## How to display text for LCD emulation or debugging
 You can do this the same way that you can display arrays of knobs, you can make arrays of monospace characters.
 This can be very usefull for emulating LCD screens easily for example or for displaying numbers and messages in your plugin editor window when developing.
 It is done in a similar way that character maps was used in computers and videogames in the 80's.
