@@ -20,7 +20,7 @@ The smallest cross platform GUI library for applications and audio plugins avail
 - Can be used with C or C++
 - Has compilation flag to strip away 100% of all platform depentant code.
 - Can be used with doxygen for automatic generation of documentation.
-- Can draw text with TTF fonts.
+- Can generate and draw text with TTF fonts.
     
 Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
