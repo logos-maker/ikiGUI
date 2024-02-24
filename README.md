@@ -141,8 +141,7 @@ And here you can find a interesting video about image processing...
 ## What is a [tile map](https://en.wikipedia.org/wiki/Text_mode)?
 A tile map is used to create a 2D grid of graphics. Examples of this is found everywhere in 80's computers and video games, and was used to display characters and build levels in computer games.
 The tile map is stored in a array, where the first elements is the first row, followed by the second row and so on. And the first element is the upper left.
-By changing the numbers in the array, you selects what graphical element to show in each position in the tile map. Historically this used built in graphics modes in the computers graphics chips.
-And this tile map/character map told what character should be placed for every position of the intire screen.  
+By changing the numbers in the array, you selects what graphical element to show in each position in the tile map.
 
 ## How to create and make use of tile maps with ikiGUI
 To have a place to put your graphics, need to define an object for a window. You simply do this by writing...
