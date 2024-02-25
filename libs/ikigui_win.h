@@ -174,4 +174,9 @@ void ikigui_window_update(struct ikigui_window *mywin){
 		ikigui_window_open_editor(mywin,NULL, w, h);
 		mywin->mouse.buttons_intern = 0 ;
 	}
+	void ikigui_window_till(ikigui_window* win, int delay){ /// Helper for simplicity
+		ikigui_breathe(delay);
+		ikigui_window_get_events(win);
+		ikigui_window_update(win);
+	}
 #endif

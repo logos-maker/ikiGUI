@@ -21,10 +21,12 @@ typedef struct {
 	#include <stdint.h>
 	#include <stdlib.h>
 	#include <stdio.h>
-	#include "ikigui_ttf.h"
 #endif
 #ifdef IKIGUI_TTF
 	#include "ikigui_ttf.h"
+#endif
+#ifdef IKIGUI_IMAGE
+	#include "ikigui_image.h"
 #endif
 #ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
 #ifdef __linux__ //linux specific code goes here...

@@ -187,4 +187,9 @@ void ikigui_window_get_events(ikigui_window *mywin){
 		mywin->bitmap = XCreatePixmap(mywin->dis, mywin->win, w, h, 1);
 		mywin->ximage = XCreateImage(mywin->dis, wa.visual, wa.depth, ZPixmap, 0, (char*)mywin->image.pixels, w, h, 32, w * 4);
 	};
+	void ikigui_window_till(ikigui_window* win, int delay){ /// Helper for simplicity
+		ikigui_breathe(delay);
+		ikigui_window_get_events(win);
+		ikigui_window_update(win);
+	}
 #endif

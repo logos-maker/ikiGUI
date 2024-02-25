@@ -167,7 +167,7 @@ void ikigui_draw_line(ikigui_image *dest, uint32_t color, int x0, int y0, int x1
 }
 
 void ikigui_draw_line_bh(ikigui_image *dest, uint32_t color,int x0, int y0, int x1, int y1){
-	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
+	//void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
 	int dx, dy, p, x, y;
 
 	dx=x1-x0;
@@ -180,12 +180,12 @@ void ikigui_draw_line_bh(ikigui_image *dest, uint32_t color,int x0, int y0, int 
  
 	while(x<x1){
 		if(p>=0){
-			plot(x,y);
+			ikigui_pixel_set(dest,x,y,color);
 			y=y+1;
 			p=p+2*dy-2*dx;
 		}
 		else{
-			plot(x,y);
+			ikigui_pixel_set(dest,x,y,color);
 			p=p+2*dy;
 		}
 		x=x+1;
@@ -236,7 +236,7 @@ void ikigui_draw_cubic_bezier(ikigui_image *dest, uint32_t color,
 */
 
 void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsigned int radius){
-	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
+	//void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
 
 	int f = 1 - radius;
 	int ddF_x = 0;
@@ -244,10 +244,10 @@ void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsi
 	int x = 0;
 	int y = radius;
 
-	plot(x0 + radius, y0); // right  NE  
-	plot(x0, y0 - radius); // Top    NW
-	plot(x0 - radius, y0); // left   SW
-	plot(x0, y0 + radius); // bottom SE
+	ikigui_pixel_set(dest,x0 + radius, y0,color); // right  NE  
+	ikigui_pixel_set(dest,x0, y0 - radius,color); // Top    NW
+	ikigui_pixel_set(dest,x0 - radius, y0,color); // left   SW
+	ikigui_pixel_set(dest,x0, y0 + radius,color); // bottom SE
 
 	while(x < y){
 		if(f >= 0){
@@ -259,21 +259,20 @@ void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsi
 		ddF_x += 2;
 		f += ddF_x + 1;    
 
-		plot(x0 + y, y0 - x); // 1 , 1cuad //
-		plot(x0 + x, y0 - y); // 2 , 1cuad //
-		plot(x0 - x, y0 - y); // 3 , 2cuad //
-		plot(x0 - y, y0 - x); // 4 , 2cuad //
-		plot(x0 - y, y0 + x); // 5,  3cuad //
-		plot(x0 - x, y0 + y); // 6 , 3cuad //
-		plot(x0 + x, y0 + y); // 7 , 4cuad //
-		plot(x0 + y, y0 + x); // 8,  4cuad //		
+		ikigui_pixel_set(dest,x0 + y, y0 - x,color); // 1 , 1cuad //
+		ikigui_pixel_set(dest,x0 + x, y0 - y,color); // 2 , 1cuad //
+		ikigui_pixel_set(dest,x0 - x, y0 - y,color); // 3 , 2cuad //
+		ikigui_pixel_set(dest,x0 - y, y0 - x,color); // 4 , 2cuad //
+		ikigui_pixel_set(dest,x0 - y, y0 + x,color); // 5,  3cuad //
+		ikigui_pixel_set(dest,x0 - x, y0 + y,color); // 6 , 3cuad //
+		ikigui_pixel_set(dest,x0 + x, y0 + y,color); // 7 , 4cuad //
+		ikigui_pixel_set(dest,x0 + y, y0 + x,color); // 8,  4cuad //		
 	}
 }
 
 
 enum cuadrants{ NE = 1, NW = 2, SW = 4, SE = 8};
 void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color, int x0, int y0, unsigned int radius){
-	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
 
 	int f = 1 - radius;
 	int ddF_x = 0;
@@ -281,10 +280,10 @@ void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color
 	int x = 0;
 	int y = radius;
 
-	if((quad_flags & 2) || (quad_flags & 1)) plot(x0 + radius, y0); // right
-	if((quad_flags & 2) || (quad_flags & 1)) plot(x0, y0 - radius); // Top
-	if((quad_flags & 3) || (quad_flags & 2))plot(x0 - radius, y0); // left
-	if((quad_flags & 4) || (quad_flags & 3))plot(x0, y0 + radius); // bottom
+	if((quad_flags & 2) || (quad_flags & 1))ikigui_pixel_set(dest,x0 + radius, y0,color); // right
+	if((quad_flags & 2) || (quad_flags & 1))ikigui_pixel_set(dest,x0, y0 - radius,color); // Top
+	if((quad_flags & 3) || (quad_flags & 2))ikigui_pixel_set(dest,x0 - radius, y0,color); // left
+	if((quad_flags & 4) || (quad_flags & 3))ikigui_pixel_set(dest,x0, y0 + radius,color); // bottom
 
 	while(x < y){
 		if(f >= 0){
@@ -297,20 +296,20 @@ void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color
 		f += ddF_x + 1;    
 
 		if((quad_flags & 1)){
-			plot(x0 + y, y0 - x); // 1 , 1cuad
-			plot(x0 + x, y0 - y); // 2 , 1cuad
+			ikigui_pixel_set(dest,x0 + y, y0 - x,color); // 1 , 1cuad
+			ikigui_pixel_set(dest,x0 + x, y0 - y,color); // 2 , 1cuad
 		}
 		if((quad_flags & 2)){
-			plot(x0 - x, y0 - y); // 3 , 2cuad
-			plot(x0 - y, y0 - x); // 4 , 2cuad
+			ikigui_pixel_set(dest,x0 - x, y0 - y,color); // 3 , 2cuad
+			ikigui_pixel_set(dest,x0 - y, y0 - x,color); // 4 , 2cuad
 		}
 		if((quad_flags & 4)){
-			plot(x0 - y, y0 + x); // 5,  3cuad
-			plot(x0 - x, y0 + y); // 6 , 3cuad
+			ikigui_pixel_set(dest,x0 - y, y0 + x,color); // 5,  3cuad
+			ikigui_pixel_set(dest,x0 - x, y0 + y,color); // 6 , 3cuad
 		}
 		if((quad_flags & 8)){
-			plot(x0 + x, y0 + y); // 7 , 4cuad
-			plot(x0 + y, y0 + x); // 8,  4cuad
+			ikigui_pixel_set(dest,x0 + x, y0 + y,color); // 7 , 4cuad
+			ikigui_pixel_set(dest,x0 + y, y0 + x,color); // 8,  4cuad
 		}
 	}
 }
