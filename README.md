@@ -133,8 +133,8 @@ This can quite easily be done, just get the base address for the pixels and the 
 of what you want to change and do what you need to do. All pixels are saved in a 32bit ARGB format.
 
 If you want vector graphics maybe you could use something like...  
-[Olive](https://github.com/tsoding/olive.c),  
-[PlutoVG](https://github.com/sammycage/plutovg/tree/main)  
+[PlutoVG](https://github.com/sammycage/plutovg/tree/main)
+[Cairo](https://www.cairographics.org/)
 And here you can find a interesting video about image processing...  
 [Video: How Blurs & Filters Work](https://youtu.be/C_zFhWdM4ic?si=F9bRqaaNlFn7qX06)
 
@@ -207,10 +207,10 @@ This can also be used for making tracker editors for sequencers.
 ## About the drawing modes of ikigui_map_draw()
 It has 4 different drawing modes ...
 ```
-BLIT_ALPHA uses ikigui_blit_alpha() // Blits a part of an image, with alpha channel over the destination graphic
-BLIT_FILLED uses ikigui_blit_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
-BLIT_FAST uses ikigui_blit_fast() // Blits a part of an image, without alpha channel.
-BLIT_HOLLOW uses ikigui_blit_hollow() // Blits a part of an image, with alpha channel overwiting the source color, but uses it's alpha information.
+BLIT_ALPHA uses ikigui_tile_alpha() // Blits a part of an image, with alpha channel over the destination graphic
+BLIT_FILLED uses ikigui_tile_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
+BLIT_FAST uses ikigui_tile_fast() // Blits a part of an image, without alpha channel.
+BLIT_HOLLOW uses ikigui_tile_hollow() // Blits a part of an image, with alpha channel overwiting the source color, but uses it's alpha information.
 ```
 ## Compilation
 On linux it compiles with GCC, Clang or TCC. But to compile on Windows you need to install GCC with MinGW-w64. And there is many ways to do that, but I recommend to use [TDM-GCC](https://jmeubank.github.io/tdm-gcc/articles/2021-05/10.3.0-release) as it's the simplest way to do it that I have found.
