@@ -118,9 +118,9 @@ int ikigui_mouse_pos_map(struct ikigui_map *display, int x, int y){ // returns -
    return -1; // Pixel coordinate is outside of the character display. 
 }
 
-enum blit_type { BLIT_APLHA = 0, BLIT_FILLED = 1, BLIT_SOLID = 2, BLIT_HOLLOW = 3 }; /// Blit modes/types for ikigui_map_draw()
+enum tile_type { TILE_APLHA = 0, TILE_FILLED = 1, TILE_SOLID = 2, TILE_HOLLOW = 3 }; /// Blit modes/types for ikigui_map_draw()
 /// To draw a tile map to a window or image
-void ikigui_map_draw(struct ikigui_map *display, char blit_type, int x, int y){  // x y is pixel coordinate to draw it in the window
+void ikigui_map_draw(struct ikigui_map *display, char tile_type, int x, int y){  // x y is pixel coordinate to draw it in the window
    
    ikigui_rect srcrect = { .w = display->tile_width, .h = display->tile_hight }; // , .x = 0, .y = 0,  } ;
    ikigui_rect dstrect = { .w = display->tile_width, .h = display->tile_hight };
