@@ -207,10 +207,10 @@ This can also be used for making tracker editors for sequencers.
 ## About the drawing modes of ikigui_map_draw()
 It has 4 different drawing modes ...
 ```
-BLIT_ALPHA uses ikigui_tile_alpha() // Blits a part of an image, with alpha channel over the destination graphic
-BLIT_FILLED uses ikigui_tile_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
-BLIT_FAST uses ikigui_tile_fast() // Blits a part of an image, without alpha channel.
-BLIT_HOLLOW uses ikigui_tile_hollow() // Blits a part of an image, with alpha channel overwiting the source color, but uses it's alpha information.
+TILE_ALPHA uses ikigui_tile_alpha() // Blits a part of an image, with alpha channel over the destination graphic
+TILE_FILLED uses ikigui_tile_filled() // Blits a part of an image, with a background color so the destination graphic gets overwritten.
+TILE_FAST uses ikigui_tile_fast() // Blits a part of an image, without alpha channel.
+TILE_HOLLOW uses ikigui_tile_hollow() // Blits a part of an image, with alpha channel overwiting the source color, but uses it's alpha information.
 ```
 ## Compilation
 On linux it compiles with GCC, Clang or TCC. But to compile on Windows you need to install GCC with MinGW-w64. And there is many ways to do that, but I recommend to use [TDM-GCC](https://jmeubank.github.io/tdm-gcc/articles/2021-05/10.3.0-release) as it's the simplest way to do it that I have found.
