@@ -138,8 +138,13 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
 }
 
 void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /// draw source image to the x,y coordinate in destination image
-        for(int j = 0 ; j < source->h ; j++){ // vertical
-                for(int i = 0 ; i < source->w ; i++){   // horizontal
+	int inter_w = source->w ;
+	int inter_h = source->h ;
+	if(dest->w < (source->w + x)) inter_w = dest->w - (x) ; // clip off right  part of image and block crash
+	if(dest->h < (source->h + y)) inter_h = dest->h - (y) ; // clip off bottom part of image and block crash
+
+        for(int j = 0 ; j < inter_h ; j++){ // vertical
+                for(int i = 0 ; i < inter_w ; i++){   // horizontal
 			if(!dest->composit){
         			dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = source->pixels[i+source->w*(j)];
 			}else{
@@ -149,8 +154,13 @@ void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /
         }
 }
 void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// draw source image to the x,y coordinate in destination image
-        for(int j = 0 ; j < source->h ; j++){ // vertical
-                for(int i = 0 ; i < source->w ; i++){   // horizontal
+	int inter_w = source->w ;
+	int inter_h = source->h ;
+	if(dest->w < (source->w + x)) inter_w = dest->w - (x) ; // clip off right  part of image and block crash
+	if(dest->h < (source->h + y)) inter_h = dest->h - (y) ; // clip off bottom part of image and block crash
+
+        for(int j = 0 ; j < inter_w ; j++){ // vertical
+                for(int i = 0 ; i < inter_h ; i++){   // horizontal
 			if(!dest->composit){
         			dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)] = alpha_channel(dest->pixels[(x+i+(hflip(dest->h,j+y))*dest->w)],source->pixels[i+source->w*(j)]);
 			}else{
