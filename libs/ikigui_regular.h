@@ -23,9 +23,11 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
-uint32_t ikigui_pixel_get(ikigui_image* source,int x, int y){ return source->pixels[source->w * y + x];}  
-void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){ dest->pixels[dest->w * y + x] = color;}
-
+uint32_t ikigui_pixel_get(ikigui_image* source,int x, int y){ return source->pixels[source->w * y + x];} 		/// Get pixel ARGB value
+void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){ dest->pixels[dest->w * y + x] = color;}	/// Set pixel ARGB value
+void     ikigui_pixel_draw(ikigui_image* dest,int x, int y, uint32_t color){						/// Draw transparant pixel
+	dest->pixels[dest->w * y + x] = alpha_channel(dest->pixels[dest->w * y + x],color);
+}
 
 void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint32_t shadow, ikigui_rect *part ){ /// A filled rect with shaddow
 	int x = part->x;

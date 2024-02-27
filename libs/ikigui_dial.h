@@ -6,13 +6,13 @@
 //     Different type of popups
 //     ...with similar API
 
-void ikigui_dial_popup_info(char * title_text, char * message_text){ /// Notification popup for info
-	tinyfd_notifyPopup( title_text, message_text, "info");
+void ikigui_dial_popup_info(char * title_text, char * message_text){ /// Notification popup for info, no icon
+	tinyfd_notifyPopup( title_text, message_text, NULL); // Shows no icon, "info" looks like something else if non existing.
 }
-void ikigui_dial_popup_warning(char * title_text, char * message_text){ /// Notification popup for warnings
+void ikigui_dial_popup_warning(char * title_text, char * message_text){ /// Notification popup for warnings icon
 	tinyfd_notifyPopup( title_text, message_text, "warning");
 }
-void ikigui_dial_popup_error(char * title_text, char * message_text){ /// Notification popup for errors
+void ikigui_dial_popup_error(char * title_text, char * message_text){ /// Notification popup for errors icon
 	tinyfd_notifyPopup( title_text, message_text, "error");
 }
 
@@ -21,11 +21,23 @@ void ikigui_dial_popup_error(char * title_text, char * message_text){ /// Notifi
 //     ...with similar API
 
 char * ikigui_dial_text_field(char * title_text, char * message_text){ ///  text input field
-	tinyfd_inputBox( title_text, message_text, ""); // returns NULL on cancel 
+	return tinyfd_inputBox( title_text, message_text, ""); // returns NULL on cancel 
 }
 char * ikigui_dial_text_pass(char * title_text, char * message_text, char * type){ ///  password input field
-	tinyfd_inputBox( title_text, message_text, NULL); // returns NULL on cancel 
+	return tinyfd_inputBox( title_text, message_text, NULL); // returns NULL on cancel 
 }
+char * ikigui_dial_color_select(uint32_t color_default, uint32_t* color_answer){ /// Opens a color picker (can't set alpha value.
+	unsigned char theRGB[3];
+	unsigned char resRGB[3];
+	theRGB[0] = (color_default & 0x00FF0000) >> 16 ;
+	theRGB[1] = (color_default & 0x0000FF00) >> 8  ;
+	theRGB[2] = (color_default & 0x000000FF) ;
+
+	char * returns = tinyfd_colorChooser("Select Color", NULL, theRGB, (unsigned char *)&resRGB); // Returns NULL on cancel
+	*color_answer = (resRGB[3] << 24) + (resRGB[0] << 16) + (resRGB[1] << 8) + resRGB[2] ;
+	return returns;
+}
+
 
 // /////////////////////////////
 //     Dialogs for answering
