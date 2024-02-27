@@ -25,7 +25,11 @@ The smallest cross platform GUI library for applications and audio plugins avail
 Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
 ## ikiGUI Graphics/GUI lib in C
-It's a cross platform, graphics library for tiled graphics with alpha channel and animations, that uses almost no code at all. 
+It's a cross platform, graphics library for tiled graphics with alpha channel and animations, that uses almost no code at all.
+It can be used for audio plugins (it doesn't use static or global variables that will mess up your programs).
+
+Include ikigui.h to your project for usage. Easy to test out by making standalone applications...
+#define IKIGUI_STANDALONE before #include 'ikigui.h'
 
 You can place graphic elements one by one or use character/tile maps (an old concept widely used in the 80's and in 2D computer games).
 Tile maps it's a simple way to make columns and rows of knobs for example and animate them.
@@ -35,17 +39,17 @@ And it's well suited for displaying prerendered skeuomorphic or flat vector grap
 The name is a wordplay with the Japanese words 'iki' and 'ikigai', combined with GUI (Graphical User Interface).
 
 ## Reasons to use GUI lib for graphics
-- Plugs that load and opens the editor incedibly fast.
-- The small code base gives less bugs
-- It's easy to understand and gain knowledge of what is actually happening.
+- Possible to use without any OS or library related dependencies other than standard C lib
+- Simple cross platform compilation with 100% idental code
+- Small code base gives less bugs
 - It's easy to modify
-- It cross compiles with 100% identical code
+- Plugs that load and opens the editor incedibly fast.
+- It's easy to understand and gain knowledge of what is actually happening.
 - Easy to animate graphics
 - Gives 24bit layered graphics with alpha channel
-- Easier to find stuff with autocompetion in text editors
+- Easier to find stuff with code-competion in text editors
 - Usage of doxygen for help in text editors with autocompletion
 - Consequent naming and parameter order in the API to make easier to remeber and to understand
-- Possible to use without any OS or library related dependencies other than standard C lib
 
 ## What ikiGUI will do for you
 - It lets you open audio plugin windows aka child windows (can open main windows also for stand alone applications)
