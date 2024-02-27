@@ -97,14 +97,20 @@ ikigui_include_bmp()    // Imports BMP graphics from include file, to a ikigui_i
 ## Roadmap
 - Load and save BMP and PNG images (near future).
 - Open native load and save dialogs (near future).
-- More functions for realtime drawing (2024).
 - Better documentation (2024).
 - Readymade graphics for easy usage (2024).
+- More functions for realtime drawing (2024).
+- Support for audio in standalone applications (2024).
+- Support for MIDI in standalone applications (2024).
+- Support for audio generation with oscillators envelopes and LFO's (2024).
+- Support for audio effects on audio streams (2024).
+- Support for loading audio plugins in standalone applications (2025).
 - Adopt version control when the API interface for ikiGUI is stable (2024).
 - Better support for TTF True Type fonts for realtime usage (2024).
 - Support for 'embeddedd systems'/'stand alone hardware'(2025).
 - Tools for faster development and rapid GUI design (2025).
 - Support usage in more languages  (bindings for Python or maybe Lua and Wren, 2025).
+- Better support for game making with full screen mode (2025).
 
 ## Tutorial on how to prepare graphics for a plug with ikiGUI
 For your plug you whant background graphics that you can think of as your front panel,
