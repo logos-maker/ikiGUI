@@ -20,7 +20,7 @@ The smallest cross platform GUI library for applications and audio plugins avail
 - Can be used with C or C++
 - Has compilation flag to strip away 100% of all platform depentant code.
 - Can be used with doxygen for automatic generation of documentation.
-- Can generate and draw text with TTF fonts.
+- Can generate and draw text with TTF True Type fonts.
     
 Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
@@ -97,6 +97,7 @@ ikigui_include_bmp()    // Imports BMP graphics from include file, to a ikigui_i
 - Better documentation (2024).
 - Readymade graphics for easy usage (2024).
 - Adopt version control when the API interface for ikiGUI is stable (2024).
+- Better support for TTF True Type fonts for realtime usage (2025).
 - Support for 'embeddedd systems'/'stand alone hardware'(2025).
 - Tools for faster development and rapid GUI design (2025).
 - Support usage in more languages  (bindings for Python or maybe Lua and Wren, 2025).
