@@ -2,7 +2,11 @@
 // This API is not finished. It may change! Not tested on window yet
 #include "tinyfiledialogs.c"
 
-void ikigui_dial_popup(char * title_text, char * message_text){ /// Notification popup for info
+// ////////////////////////////////
+//     Different type of popups
+//     ...with similar API
+
+void ikigui_dial_popup_info(char * title_text, char * message_text){ /// Notification popup for info
 	tinyfd_notifyPopup( title_text, message_text, "info");
 }
 void ikigui_dial_popup_warning(char * title_text, char * message_text){ /// Notification popup for warnings
@@ -12,31 +16,39 @@ void ikigui_dial_popup_error(char * title_text, char * message_text){ /// Notifi
 	tinyfd_notifyPopup( title_text, message_text, "error");
 }
 
-char * ikigui_dial_field(char * title_text, char * message_text){ ///  text field input box
+// //////////////////////////////////////////////
+//     Different type of text fields for input
+//     ...with similar API
+
+char * ikigui_dial_text_field(char * title_text, char * message_text){ ///  text input field
 	tinyfd_inputBox( title_text, message_text, ""); // returns NULL on cancel 
 }
-char * ikigui_dial_pass(char * title_text, char * message_text, char * type){ ///  password field input box
+char * ikigui_dial_text_pass(char * title_text, char * message_text, char * type){ ///  password input field
 	tinyfd_inputBox( title_text, message_text, NULL); // returns NULL on cancel 
 }
+
+// /////////////////////////////
+//     Dialogs for answering
+//
 
 int ikigui_dial_message(char * title_text, char * message_text, char * type, char * type2, int b_default){ /// enum type : "ok" "okcancel" "yesno" "yesnocancel"
 // title text :  NULL or "" 
 // message_text : NULL or "" may contain \n \t
 // type :  "ok" "okcancel" "yesno" "yesnocancel"
 // type2:  "info" "warning" "error" "question" 
-// default: 0 for cancel/no , 1 for ok/yes , 2 for no in yesnocancel
+// default: 0 for cancel/no , 1 for ok/yes , 2 for no in yesnocancel // Set default return alternative
 	return tinyfd_messageBox( title_text, message_text, type, type2, b_default); // returns :  0 for cancel/no , 1 for ok/yes , 2 for no in yesnocancel
 }
 
-char *  ikigui_dial_load_image(char * path_text){  /// To load supported image files
+char *  ikigui_dial_load_image(char * path_text){  /// To load supported image files. Returns path, or NULL on cancel
 	char const * lFilterPatterns[3]={"*.png","*.jpg","*.png"};
 	return tinyfd_openFileDialog("Load image", path_text, 3,lFilterPatterns, NULL, 0 ); // returns NULL on cancel 
 }
-void ikigui_dial_load(char * path_text){ /// To load any type of file
+char * ikigui_dial_load_file(char * path_text){ /// To load any type of file. Returns path, or NULL on cancel
 	char const * lFilterPatterns[3]={"*.png","*.jpg","*.png"};
-	tinyfd_openFileDialog("Load file", path_text, 0,NULL, NULL, 0 );
+	return tinyfd_openFileDialog("Load file", path_text, 0,NULL, NULL, 0 ); // returns NULL on cancel 
 }
-char * ikigui_dial_folder(char * path){ /// Let the user select a folder, returns NULL on cancel.
+char * ikigui_dial_folder(char * path){ /// Let the user select a folder. Returns path, or NULL on cancel
 	return	tinyfd_selectFolderDialog("Select folder",path ); // Path :  NULL or "" for your path
 }
 char *  ikigui_dial_save(char * title_text, char * path_text){ /// To save as any file type
