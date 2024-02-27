@@ -49,6 +49,25 @@ int ikigui_draw_font(ikigui_image *iki_image, stbtt_fontinfo* info, int x, int y
 }
 
 typedef stbtt_fontinfo ikigui_font ;
-int ikigui_font_init(stbtt_fontinfo *info, const unsigned char *data, int offset){
+int ikigui_font_init(ikigui_font *info, const unsigned char *data, int offset){
 	return stbtt_InitFont(info, data, offset);
+}
+int ikigui_load_font(ikigui_font *info, char* path){
+
+	/* load font file */
+	long size;
+	unsigned char* font_buffer;
+
+	FILE* fontFile = fopen(path, "rb");
+	fseek(fontFile, 0, SEEK_END);
+	size = ftell(fontFile); /* how long is the file ? */
+	fseek(fontFile, 0, SEEK_SET); /* reset */
+
+	font_buffer = malloc(size);
+
+	fread(font_buffer, size, 1, fontFile);
+	fclose(fontFile);
+
+	/* prepare font */
+	return ikigui_font_init(info, font_buffer, 0);
 }

@@ -136,7 +136,7 @@ void ikigui_map_draw(struct ikigui_map *display, char tile_type, int x, int y){ 
           int val = set_w * (display->map[i*display->columns + j] + display->offset) ;
 	  if(val<0) continue ; // Don't draw tile if given lower value than 0. // val=0; 
 	  if(display->direction)srcrect.x = val ; else srcrect.y = val ;
-	  switch(blit_type){ // Draw the character buffer to window.
+	  switch(tile_type){ // Draw the character buffer to window.
 		  case 0:       ikigui_tile_alpha (display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
 		  case 1:	ikigui_tile_filled(display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
 		  case 2:	ikigui_tile_fast  (display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
