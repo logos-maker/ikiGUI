@@ -53,11 +53,10 @@ int ikigui_dial_message(char * title_text, char * message_text, char * type, cha
 }
 
 char *  ikigui_dial_load_image(char * path_text){  /// Open dialog for loading supported image files. Returns path, or NULL on cancel.
-	char const * lFilterPatterns[3]={"*.png","*.jpg","*.png"};
+	char const * lFilterPatterns[3]={"*.png","*.jpg","*.bmp"};
 	return tinyfd_openFileDialog("Load image", path_text, 3,lFilterPatterns, NULL, 0 ); // returns NULL on cancel 
 }
 char * ikigui_dial_load_file(char * path_text){ /// Open dialog for to load any type of file. Returns path, or NULL on cancel.
-	char const * lFilterPatterns[3]={"*.png","*.jpg","*.png"};
 	return tinyfd_openFileDialog("Load file", path_text, 0,NULL, NULL, 0 ); // returns NULL on cancel 
 }
 char * ikigui_dial_folder(char * path){ ///  Open dialog for the user to select a folder. Returns path, or NULL on cancel.
@@ -72,4 +71,7 @@ char *  ikigui_dial_save(char * title_text, char * path_text){ ///  Open dialog 
 		/* returns NULL on cancel */
 	return tinyfd_saveFileDialog( title_text, path_text, 0, NULL, NULL); // Returns NULL on cancel
 }
-
+char *  ikigui_dial_save_image(char * path_text){  /// Open dialog for loading supported image files. Returns path, or NULL on cancel.
+	char const * lFilterPatterns[3]={"*.png","*.bmp"};
+	return tinyfd_saveFileDialog("Save image", path_text, 2,lFilterPatterns, NULL ); // returns NULL on cancel 
+}

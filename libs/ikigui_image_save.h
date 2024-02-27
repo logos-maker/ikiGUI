@@ -1,10 +1,7 @@
 /// @file ikigui_image.h To be able to load imageuse in formats like JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC.
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
-
 int ikigui_save_png(ikigui_image* source, char * file_path_name){ /// Not ready, need conversion from ARGB32 to RGBA32, channels will get mixed up in generated file.
     if (!stbi_write_png(file_path_name, source->w, source->h, 4, source->pixels, sizeof(uint32_t)*source->w)) return 1;
     else return 0;
