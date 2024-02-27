@@ -31,23 +31,23 @@ void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /
         if(dest->h < (y+part->h))return; // shielding crash
 	if(!dest->composit){
 		for(int i = part->x ; i < (part->x+part->w) ; i++){   // horizontal
-			dest->pixels[i+hflip(dest->h,part->y)*dest->w] = 		alpha_channel(dest->pixels[i+hflip(dest->h,part->y)*dest->w],color);
-			dest->pixels[i+hflip(dest->h,(part->y+part->h-1))*dest->w] =	alpha_channel(dest->pixels[i+hflip(dest->h,(part->y+part->h-1))*dest->w],color);
+			dest->pixels[i+hflip(dest->h, part->y) * dest->w] = 		alpha_channel(dest->pixels[i+hflip(dest->h, part->y)*dest->w], color);
+			dest->pixels[i+hflip(dest->h, (part->y+part->h-1)) * dest->w] =	alpha_channel(dest->pixels[i+hflip(dest->h,(part->y+part->h-1))*dest->w], color);
 		}
 
 		for(int j = part->y ; j < (part->y + part->h -1) ; j++){ // vertical
-			dest->pixels[part->x+hflip(dest->h,j)*dest->w] =		alpha_channel(dest->pixels[part->x+hflip(dest->h,j)*dest->w],color);
-			dest->pixels[(part->x+part->w-1)+hflip(dest->h,j)*dest->w] =	alpha_channel(dest->pixels[(part->x+part->w-1)+hflip(dest->h,j)*dest->w],color);
+			dest->pixels[ part->x+hflip(dest->h, j) *dest->w] =		alpha_channel(dest->pixels[ part->x+hflip(dest->h,j)*dest->w], color);
+			dest->pixels[(part->x+part->w-1)+hflip(dest->h, j) * dest->w] =	alpha_channel(dest->pixels[(part->x+part->w-1)+hflip(dest->h, j)*dest->w], color);
 		}
 	}else{ // Draw With alpha
 		for(int i = part->x ; i < (part->x+part->w) ; i++){   // horizontal
-			dest->pixels[i+part->y*dest->w] = 		alpha_channel(dest->pixels[i+ part->y*dest->w],color);
-			dest->pixels[i+(part->y+part->h-1)*dest->w] =	alpha_channel(dest->pixels[i+(part->y+part->h-1)*dest->w],color);
+			dest->pixels[i+ part->y*dest->w] = 		alpha_channel(dest->pixels[i+ part->y*dest->w], color);
+			dest->pixels[i+(part->y+part->h-1)*dest->w] =	alpha_channel(dest->pixels[i+(part->y+part->h-1)*dest->w], color);
 		}
 
 		for(int j = part->y ; j < (part->y + part->h -1) ; j++){ // vertical
-			dest->pixels[part->x+j*dest->w] =		alpha_channel(dest->pixels[part->x+j*dest->w],color);
-			dest->pixels[(part->x+part->w-1)+j*dest->w] =	alpha_channel(dest->pixels[(part->x+part->w-1)+j*dest->w],color);
+			dest->pixels[ part->x+j*dest->w] =		alpha_channel(dest->pixels[ part->x+j*dest->w], color);
+			dest->pixels[(part->x+part->w-1)+j*dest->w] =	alpha_channel(dest->pixels[(part->x+part->w-1)+j*dest->w], color);
 		}
 	}
 }
@@ -75,11 +75,11 @@ void ikigui_draw_line_v(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t
 	if((x<0||y<0))return; // crash blocking
 	if(!dest->composit){
 		for(int i = y ; i < (y+length) ; i++){ // draw vertical line with alpha
-			dest->pixels[x + hflip(dest->h,i) * dest->w] = alpha_channel(dest->pixels[x + hflip(dest->h,i) * dest->w],color);
+			dest->pixels[x + hflip(dest->h,i) * dest->w] = alpha_channel(dest->pixels[x + hflip(dest->h,i) * dest->w], color);
 		}
 	}else{	// It's a solid color
 		for(int i = y ; i < (y+length) ; i++){ // draw vertical line with alpha
-			dest->pixels[x + i * dest->w] = alpha_channel(dest->pixels[x + i * dest->w],color);
+			dest->pixels[x + i * dest->w] = alpha_channel(dest->pixels[x + i * dest->w], color);
 		}
 	}
 }
@@ -87,12 +87,12 @@ void ikigui_draw_line_h(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t
 	if((x<0||y<0))return; // crash blocking
 	if(!dest->composit){
 		for(int i = x ; i < (x+length) ; i++){ // draw horizontal line with alpha
-			dest->pixels[i + hflip(dest->h,y) * dest->w] = alpha_channel(dest->pixels[i + hflip(dest->h,y) * dest->w],color);
+			dest->pixels[i + hflip(dest->h,y) * dest->w] = alpha_channel(dest->pixels[i + hflip(dest->h,y) * dest->w], color);
 		}
 	}
 	else{	// It's a solid color
 		for(int i = x ; i < (x+length) ; i++){ // draw horizontal line with alpha
-			dest->pixels[i + y * dest->w] = alpha_channel(dest->pixels[i + y * dest->w],color);
+			dest->pixels[i + y * dest->w] = alpha_channel(dest->pixels[i + y * dest->w], color);
 		}
 	}
 }
@@ -107,15 +107,15 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
 
-	uint8_t a1 = (color_bot&0xff000000)>>24;// alpha color_bot
-	uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
-	uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
-	uint8_t b1 = color_bot&0xff;		// Blue color_bot
+	uint8_t a1 = (color_bot & 0xff000000)>>24;// alpha color_bot
+	uint8_t r1 = (color_bot & 0xff0000)>>16;  // Red color_bot
+	uint8_t g1 = (color_bot & 0xff00)>>8;	  // Green color_bot
+	uint8_t b1 =  color_bot & 0xff;		  // Blue color_bot
 
-	uint8_t a2 = (color_top&0xff000000)>>24;// alpha color_bot
-	uint8_t r2 = (color_top&0xff0000)>>16;	// Red color_top
-	uint8_t g2 = (color_top&0xff00)>>8;	// Red color_top
-	uint8_t b2 = color_top&0xff;		// Blue color_top
+	uint8_t a2 = (color_top & 0xff000000)>>24;// alpha color_bot
+	uint8_t r2 = (color_top & 0xff0000)>>16;  // Red color_top
+	uint8_t g2 = (color_top & 0xff00)>>8;	  // Red color_top
+	uint8_t b2 =  color_top & 0xff;		  // Blue color_top
 
 	double line_const = (double)255/(double)part->h;
         for(int j = 0 ; j < part->h ; j++){ // vertical

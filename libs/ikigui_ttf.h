@@ -1,3 +1,4 @@
+/// @file ikigui_ttf.h To be able to use true type fonts.
 #define STB_TRUETYPE_IMPLEMENTATION 
 #include "stb_truetype.h" /* http://nothings.org/stb/stb_truetype.h */
 

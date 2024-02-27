@@ -28,6 +28,9 @@ typedef struct {
 #ifdef IKIGUI_IMAGE
 	#include "ikigui_image.h"
 #endif
+#ifdef IKIGUI_DIAL
+	#include "ikigui_dial.h"
+#endif
 #ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
 #ifdef __linux__ //linux specific code goes here...
 	#include "ikigui_lin.h"	// For window and graphics handling in this case for Linux.

@@ -1,4 +1,4 @@
-/// @file ikigui_regular.h Drawing functions, where the first pixel is in the top left corner (used by X11 on Linux)
+/// @file ikigui_regular.h Drawing functions, where the first pixel is in the top left corner (used by X11 on Linux) it uses a identical API as ikigui_goofy.c
 
 #ifdef IKIGUI_DRAW_ONLY
 void map_ikigui_to_sdl(ikigui_image * dest, Uint32 * pixels, int w , int h){
@@ -31,9 +31,9 @@ void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint3
 	int x = part->x;
 	int y = part->y;
 
-        if((x<0) || (y<0))return; // sheilding crash
-        if(dest->w < (x+part->w))return; // shielding crash
-        if(dest->h < (y+part->h))return; // shielding crash
+        if((x<0) || (y<0)) return; // sheilding crash
+        if(dest->w < (x+part->w)) return; // shielding crash
+        if(dest->h < (y+part->h)) return; // shielding crash
 
         for(int j = 0 ; j < part->h ; j++){ // vertical
                 for(int i = 0 ; i < part->w ; i++){   // horizontal
@@ -180,12 +180,12 @@ void ikigui_draw_line_bh(ikigui_image *dest, uint32_t color,int x0, int y0, int 
  
 	while(x<x1){
 		if(p>=0){
-			ikigui_pixel_set(dest,x,y,color);
+			ikigui_pixel_set(dest, x, y, color);
 			y=y+1;
 			p=p+2*dy-2*dx;
 		}
 		else{
-			ikigui_pixel_set(dest,x,y,color);
+			ikigui_pixel_set(dest, x, y, color);
 			p=p+2*dy;
 		}
 		x=x+1;
@@ -244,10 +244,10 @@ void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsi
 	int x = 0;
 	int y = radius;
 
-	ikigui_pixel_set(dest,x0 + radius, y0,color); // right  NE  
-	ikigui_pixel_set(dest,x0, y0 - radius,color); // Top    NW
-	ikigui_pixel_set(dest,x0 - radius, y0,color); // left   SW
-	ikigui_pixel_set(dest,x0, y0 + radius,color); // bottom SE
+	ikigui_pixel_set(dest, x0 + radius, y0, color); // right  NE  
+	ikigui_pixel_set(dest, x0, y0 - radius, color); // Top    NW
+	ikigui_pixel_set(dest, x0 - radius, y0, color); // left   SW
+	ikigui_pixel_set(dest, x0, y0 + radius, color); // bottom SE
 
 	while(x < y){
 		if(f >= 0){
@@ -259,14 +259,14 @@ void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsi
 		ddF_x += 2;
 		f += ddF_x + 1;    
 
-		ikigui_pixel_set(dest,x0 + y, y0 - x,color); // 1 , 1cuad //
-		ikigui_pixel_set(dest,x0 + x, y0 - y,color); // 2 , 1cuad //
-		ikigui_pixel_set(dest,x0 - x, y0 - y,color); // 3 , 2cuad //
-		ikigui_pixel_set(dest,x0 - y, y0 - x,color); // 4 , 2cuad //
-		ikigui_pixel_set(dest,x0 - y, y0 + x,color); // 5,  3cuad //
-		ikigui_pixel_set(dest,x0 - x, y0 + y,color); // 6 , 3cuad //
-		ikigui_pixel_set(dest,x0 + x, y0 + y,color); // 7 , 4cuad //
-		ikigui_pixel_set(dest,x0 + y, y0 + x,color); // 8,  4cuad //		
+		ikigui_pixel_set(dest, x0 + y, y0 - x, color); // 1 , 1cuad //
+		ikigui_pixel_set(dest, x0 + x, y0 - y, color); // 2 , 1cuad //
+		ikigui_pixel_set(dest, x0 - x, y0 - y, color); // 3 , 2cuad //
+		ikigui_pixel_set(dest, x0 - y, y0 - x, color); // 4 , 2cuad //
+		ikigui_pixel_set(dest, x0 - y, y0 + x, color); // 5,  3cuad //
+		ikigui_pixel_set(dest, x0 - x, y0 + y, color); // 6 , 3cuad //
+		ikigui_pixel_set(dest, x0 + x, y0 + y, color); // 7 , 4cuad //
+		ikigui_pixel_set(dest, x0 + y, y0 + x, color); // 8,  4cuad //		
 	}
 }
 
@@ -280,10 +280,10 @@ void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color
 	int x = 0;
 	int y = radius;
 
-	if((quad_flags & 2) || (quad_flags & 1))ikigui_pixel_set(dest,x0 + radius, y0,color); // right
-	if((quad_flags & 2) || (quad_flags & 1))ikigui_pixel_set(dest,x0, y0 - radius,color); // Top
-	if((quad_flags & 3) || (quad_flags & 2))ikigui_pixel_set(dest,x0 - radius, y0,color); // left
-	if((quad_flags & 4) || (quad_flags & 3))ikigui_pixel_set(dest,x0, y0 + radius,color); // bottom
+	if((quad_flags & 2) || (quad_flags & 1)) ikigui_pixel_set(dest, x0 + radius, y0, color); // right
+	if((quad_flags & 2) || (quad_flags & 1)) ikigui_pixel_set(dest, x0, y0 - radius, color); // Top
+	if((quad_flags & 3) || (quad_flags & 2)) ikigui_pixel_set(dest, x0 - radius, y0, color); // left
+	if((quad_flags & 4) || (quad_flags & 3)) ikigui_pixel_set(dest, x0, y0 + radius, color); // bottom
 
 	while(x < y){
 		if(f >= 0){
@@ -296,20 +296,20 @@ void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color
 		f += ddF_x + 1;    
 
 		if((quad_flags & 1)){
-			ikigui_pixel_set(dest,x0 + y, y0 - x,color); // 1 , 1cuad
-			ikigui_pixel_set(dest,x0 + x, y0 - y,color); // 2 , 1cuad
+			ikigui_pixel_set(dest, x0 + y, y0 - x, color); // 1 , 1cuad
+			ikigui_pixel_set(dest, x0 + x, y0 - y, color); // 2 , 1cuad
 		}
 		if((quad_flags & 2)){
-			ikigui_pixel_set(dest,x0 - x, y0 - y,color); // 3 , 2cuad
-			ikigui_pixel_set(dest,x0 - y, y0 - x,color); // 4 , 2cuad
+			ikigui_pixel_set(dest, x0 - x, y0 - y, color); // 3 , 2cuad
+			ikigui_pixel_set(dest, x0 - y, y0 - x, color); // 4 , 2cuad
 		}
 		if((quad_flags & 4)){
-			ikigui_pixel_set(dest,x0 - y, y0 + x,color); // 5,  3cuad
-			ikigui_pixel_set(dest,x0 - x, y0 + y,color); // 6 , 3cuad
+			ikigui_pixel_set(dest, x0 - y, y0 + x, color); // 5,  3cuad
+			ikigui_pixel_set(dest, x0 - x, y0 + y, color); // 6 , 3cuad
 		}
 		if((quad_flags & 8)){
-			ikigui_pixel_set(dest,x0 + x, y0 + y,color); // 7 , 4cuad
-			ikigui_pixel_set(dest,x0 + y, y0 + x,color); // 8,  4cuad
+			ikigui_pixel_set(dest, x0 + x, y0 + y, color); // 7 , 4cuad
+			ikigui_pixel_set(dest, x0 + y, y0 + x, color); // 8,  4cuad
 		}
 	}
 }
@@ -367,15 +367,15 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
 
-	uint8_t a1 = (color_bot&0xff000000)>>24;// alpha color_bot
-	uint8_t r1 = (color_bot&0xff0000)>>16;	// Red color_bot
-	uint8_t g1 = (color_bot&0xff00)>>8;	// Green color_bot
-	uint8_t b1 = color_bot&0xff;		// Blue color_bot
+	uint8_t a1 = (color_bot & 0xff000000)>>24;// alpha color_bot
+	uint8_t r1 = (color_bot & 0xff0000)>>16;	// Red color_bot
+	uint8_t g1 = (color_bot & 0xff00)>>8;	// Green color_bot
+	uint8_t b1 =  color_bot & 0xff;		// Blue color_bot
 
-	uint8_t a2 = (color_top&0xff000000)>>24;// alpha color_bot
-	uint8_t r2 = (color_top&0xff0000)>>16;	// Red color_top
-	uint8_t g2 = (color_top&0xff00)>>8;	// Red color_top
-	uint8_t b2 = color_top&0xff;		// Blue color_top
+	uint8_t a2 = (color_top & 0xff000000)>>24;// alpha color_bot
+	uint8_t r2 = (color_top & 0xff0000)>>16;	// Red color_top
+	uint8_t g2 = (color_top & 0xff00)>>8;	// Red color_top
+	uint8_t b2 =  color_top & 0xff;		// Blue color_top
 
 	double line_const = (double)255/(double)part->h;
         for(int j = 0 ; j < part->h ; j++){ // vertical
@@ -485,7 +485,7 @@ void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// R
         unsigned int start;
         dest->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
         dest->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
-        start =    bmp_incl[0x0a] + (bmp_incl[0x0a+1]<<8) + (bmp_incl[0x0a+2]<<16) + (bmp_incl[0x0a+3]<<24);
+        start   = bmp_incl[0x0a] + (bmp_incl[0x0a+1]<<8) + (bmp_incl[0x0a+2]<<16) + (bmp_incl[0x0a+3]<<24);
 
 	//uint32_t* pixels_to_free = dest->pixels ; 	
         dest->pixels = (unsigned int*)malloc(dest->w*dest->h*4); // Doesn't make sense if we read it in to a image that allready have allocated memory!!!
