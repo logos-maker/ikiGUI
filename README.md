@@ -29,7 +29,7 @@ It's a cross platform, graphics library for tiled graphics with alpha channel an
 It can be used for audio plugins (it doesn't use static or global variables that will mess up your programs).
 
 Include ikigui.h to your project for usage. Easy to test out by making standalone applications...
-#define IKIGUI_STANDALONE before #include 'ikigui.h'
+#define IKIGUI_STANDALONE before #include '/libs/ikigui.h'
 
 You can place graphic elements one by one or use character/tile maps (an old concept widely used in the 80's and in 2D computer games).
 Tile maps it's a simple way to make columns and rows of knobs for example and animate them.
