@@ -1,7 +1,8 @@
 // to compile dor linux...
-// gcc ikigui_standalone.c -o standalone -lX11
+// gcc ikigui_pixel.c -o pixel -lX11
 // for windows... (-mwindows gets rid of terminal opening)
-// gcc ikigui_standalone.c -o standalone.exe -lgdi32 -mwindows
+// gcc ikigui_pixel.c -o pixel.exe -lgdi32 -mwindows
+
 #define IKIGUI_DIAL
 #define IKIGUI_STANDALONE // define before we include ikigui.h
 #include "../../libs/ikigui.h"
@@ -19,11 +20,12 @@ void main(){
 	ikigui_window_open(&mywin,1024,800); // Create and open window and specify window size
 
 	while(1) { // Event loop! look for events forever...
-	        ikigui_window_get_events(&mywin); // get the window events. Get events from mouse and window interactions. 
+	        ikigui_window_get_events(&mywin); // get the window events. Get events from mouse and window interactions.
+
 		if(mywin.mouse.buttons & MOUSE_LEFT){ 
 			ikigui_pixel_draw(&mywin.image, mywin.mouse.x, mywin.mouse.y, color_draw); // Draw on pixel with transparent color.
 		}
-		if(mywin.mouse.buttons & MOUSE_RIGHT){
+		if(mywin.mouse.right_click){
 			ikigui_pixel_get(&mywin.image, mywin.mouse.x, mywin.mouse.y);
 			ikigui_dial_color_select(color_draw,&color_draw);
 			//ikigui_image_solid(&mywin.image,color_draw);
