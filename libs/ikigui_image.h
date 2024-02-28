@@ -1,4 +1,4 @@
-/// @file ikigui_image.h To be able to load imageuse in formats like JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC.
+/// @file ikigui_image.h To be able to load images in formats like JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC.
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
