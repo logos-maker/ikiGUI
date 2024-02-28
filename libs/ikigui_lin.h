@@ -45,6 +45,7 @@ typedef struct {
 	XImage* ximage;
 	Pixmap bitmap;
         ikigui_image image;
+	char name[32];
 } ikigui_window;                     
 
 int old_x;
@@ -89,7 +90,7 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr,int w, int h){
 
 
 void ikigui_window_close(ikigui_window *mywin){
-	XDestroyWindow(mywin->dis,mywin->win);
+	XDestroyWindow(mywin->dis, mywin->win);
 	XCloseDisplay(mywin->dis);				
 };
 /// Updates the Window graphics with new things drawn
@@ -114,7 +115,7 @@ void ikigui_window_get_events(ikigui_window *mywin){
                         }
                 }
 	        if (mywin->event.type==Expose && mywin->event.xexpose.count==0) ikigui_window_update(mywin); // Window graphics needs a redraw
-                if (mywin->event.type==KeyPress&& XLookupString(&mywin->event.xkey,mywin->text,255,&mywin->key,0)==1) { // the XLookupString routine to converts the KeyPress event data into regular text.
+                if (mywin->event.type==KeyPress&& XLookupString(&mywin->event.xkey,mywin->text, 255, &mywin->key, 0)==1) { // the XLookupString routine to converts the KeyPress event data into regular text.
 		        //printf("You pressed the %c key!\n",mywin.text[0]);
 	        }
 
@@ -146,9 +147,9 @@ void ikigui_window_get_events(ikigui_window *mywin){
                 }
         } // while loop end
 
-	mywin->mouse.left_click   = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_LEFT);
-	mywin->mouse.middle_click = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_MIDDLE);
-	mywin->mouse.right_click  = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_RIGHT);
+	mywin->mouse.left_click     = (mywin->mouse.old_button_press == 0) && (  mywin->mouse.buttons & MOUSE_LEFT);
+	mywin->mouse.middle_click   = (mywin->mouse.old_button_press == 0) && (  mywin->mouse.buttons & MOUSE_MIDDLE);
+	mywin->mouse.right_click    = (mywin->mouse.old_button_press == 0) && (  mywin->mouse.buttons & MOUSE_RIGHT);
 	mywin->mouse.left_release   = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_LEFT));
 	mywin->mouse.middle_release = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_MIDDLE));
 	mywin->mouse.right_release  = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_RIGHT));
@@ -158,7 +159,8 @@ void ikigui_window_get_events(ikigui_window *mywin){
 	#include <unistd.h> // Needed for usleep() function
 	void ikigui_breathe(int milisec){	usleep(milisec *1000);  } // pause
 
-	void ikigui_window_open(ikigui_window *mywin,int w, int h) { // input is the size of the window to create
+	void ikigui_window_open(ikigui_window *mywin, char * name, int w, int h) { // input is the size of the window to create
+		for(int i = 0 ; name[i] ; i++) mywin->name[i] = name[i] ; 
 		mywin->image.w = w;
 		mywin->image.h = h;
 		mywin->dis=XOpenDisplay((char *)0);     // Get the display
@@ -168,7 +170,8 @@ void ikigui_window_get_events(ikigui_window *mywin){
 		black=BlackPixel(mywin->dis,mywin->screen),
 		white=WhitePixel(mywin->dis, mywin->screen);
 
-	   	mywin->win=XCreateSimpleWindow(mywin->dis,DefaultRootWindow(mywin->dis),0,0,w, h, 5,black, white); // Create window
+	   	mywin->win=XCreateSimpleWindow(mywin->dis,DefaultRootWindow(mywin->dis), 0, 0, w, h, 5, black, white); // Create window
+		XStoreName(mywin->dis, mywin->win, mywin->name); // Set the window name
 
 		// To get evet to close window
 		mywin->wm_delete_window = XInternAtom(mywin->dis, "WM_DELETE_WINDOW", False);
@@ -176,7 +179,7 @@ void ikigui_window_get_events(ikigui_window *mywin){
 
 		XSelectInput(mywin->dis, mywin->win, ExposureMask|PointerMotionMask|ButtonPressMask|ButtonReleaseMask|KeyPressMask|KeyReleaseMask|FocusChangeMask|EnterWindowMask|LeaveWindowMask); // Select event types to get
 
-		mywin->gc=DefaultGC(mywin->dis,mywin->screen); // alternativ som funkar är... mywin->gc=XCreateGC(mywin->dis, mywin->win, 0,0);
+		mywin->gc=DefaultGC(mywin->dis,mywin->screen); // alternative that also works is... mywin->gc=XCreateGC(mywin->dis, mywin->win, 0,0);
 
 		XMapRaised(mywin->dis, mywin->win);
 
@@ -186,7 +189,9 @@ void ikigui_window_get_events(ikigui_window *mywin){
 		mywin->image.pixels = (unsigned int *)malloc(w * h * 4);
 		mywin->bitmap = XCreatePixmap(mywin->dis, mywin->win, w, h, 1);
 		mywin->ximage = XCreateImage(mywin->dis, wa.visual, wa.depth, ZPixmap, 0, (char*)mywin->image.pixels, w, h, 32, w * 4);
+		
 	};
+
 	void ikigui_window_till(ikigui_window* win, int delay){ /// Helper for simplicity
 		ikigui_breathe(delay);
 		ikigui_window_get_events(win);

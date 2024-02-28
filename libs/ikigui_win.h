@@ -39,7 +39,8 @@ typedef struct ikigui_window{
         HDC bitmap_device_context;
         bool keyboard[256];
         bool has_focus;
-        MSG message;     
+        MSG message;
+	char name[32];     
 } ikigui_window; 
 
 int old_x;
@@ -125,8 +126,8 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr, int w, int h){
 	mywin->bitmap_info.bmiHeader.biCompression = BI_RGB;
 	mywin->bitmap_device_context = CreateCompatibleDC(0);
 
-	if(ptr == NULL)mywin->window_handle = CreateWindow((PCSTR)window_class_name, "BitBlt Test Program ", WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_BORDER, CW_USEDEFAULT, CW_USEDEFAULT, w, h, NULL, NULL, GetModuleHandle(NULL), NULL);
-        else mywin->window_handle = CreateWindow((PCSTR)window_class_name, "BitBlt Test Program ", WS_CHILD | WS_VISIBLE , CW_USEDEFAULT, CW_USEDEFAULT, w, h, (HWND)ptr, NULL, NULL, NULL);
+	if(ptr == NULL)mywin->window_handle = CreateWindow((PCSTR)window_class_name, mywin->name, WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_BORDER, CW_USEDEFAULT, CW_USEDEFAULT, w, h, NULL, NULL, GetModuleHandle(NULL), NULL);
+        else mywin->window_handle = CreateWindow((PCSTR)window_class_name, mywin->name, WS_CHILD | WS_VISIBLE , CW_USEDEFAULT, CW_USEDEFAULT, w, h, (HWND)ptr, NULL, NULL, NULL);
 	if(mywin->window_handle == NULL) {
 	//	PRINT_ERROR("CreateWindow() failed. Returned NULL.\n");
 	}
@@ -170,7 +171,8 @@ void ikigui_window_update(struct ikigui_window *mywin){
 	void ikigui_breathe(int milisec){ Sleep(milisec); } // Pause function, gives CPU over to the OS
 
 	/// Open window (for a standalone application)
-	void ikigui_window_open(ikigui_window *mywin, int w, int h){
+	void ikigui_window_open(ikigui_window *mywin, char *name, int w, int h){
+		for(int i = 0 ; name[i] ; i++) mywin->name[i] = name[i] ;
 		ikigui_window_open_editor(mywin,NULL, w, h);
 		mywin->mouse.buttons_intern = 0 ;
 	}
