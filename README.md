@@ -104,9 +104,9 @@ ikigui_include_bmp()    // Imports BMP graphics from include file, to a ikigui_i
 - Support for MIDI in standalone applications (2024).
 - Support for audio generation with oscillators envelopes and LFO's (2024).
 - Support for audio effects on audio streams (2024).
-- Support for loading audio plugins in standalone applications (2025).
 - Adopt version control when the API interface for ikiGUI is stable (2024).
 - Better support for TTF True Type fonts for realtime usage (2024).
+- Support for loading audio plugins in standalone applications (2025).
 - Support for 'embeddedd systems'/'stand alone hardware'(2025).
 - Tools for faster development and rapid GUI design (2025).
 - Support usage in more languages  (bindings for Python or maybe Lua and Wren, 2025).
