@@ -21,6 +21,8 @@ The smallest cross platform GUI library for applications and audio plugins avail
 - Has compilation flag to strip away 100% of all platform depentant code.
 - Can be used with doxygen for automatic generation of documentation.
 - Can generate and draw text with TTF True Type fonts.
+- Load and save BMP and PNG images.
+- Open native many types of dialogs, like load and save dialogs.
     
 Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
@@ -95,8 +97,6 @@ ikigui_include_bmp()    // Imports BMP graphics from include file, to a ikigui_i
 ```
 
 ## Roadmap
-- Load and save BMP and PNG images (near future).
-- Open native load and save dialogs (near future).
 - Better documentation (2024).
 - Readymade graphics for easy usage (2024).
 - More functions for realtime drawing (2024).
