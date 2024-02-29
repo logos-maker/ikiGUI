@@ -138,6 +138,7 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr, int w, int h){
 	mywin->bitmap = CreateDIBSection(NULL, &mywin->bitmap_info, DIB_RGB_COLORS, (void**)&mywin->image.pixels, 0, 0);
 	SelectObject(mywin->bitmap_device_context, mywin->bitmap);
 	SetWindowLongPtr(mywin->window_handle, GWLP_USERDATA, (LONG_PTR)mywin);
+	mywin->image.composit = 0 ;
 }
 
 /// Update the event data for the Window
@@ -175,6 +176,7 @@ void ikigui_window_update(struct ikigui_window *mywin){
 		for(int i = 0 ; name[i] ; i++) mywin->name[i] = name[i] ;
 		ikigui_window_open_editor(mywin,NULL, w, h);
 		mywin->mouse.buttons_intern = 0 ;
+		mywin->image.composit = 0 ;
 	}
 	void ikigui_window_till(ikigui_window* win, int delay){ /// Helper for simplicity
 		ikigui_breathe(delay);
