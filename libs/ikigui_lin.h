@@ -114,7 +114,9 @@ void ikigui_window_get_events(ikigui_window *mywin){
 	                                exit(1);
                         }
                 }
-	        if (mywin->event.type==Expose && mywin->event.xexpose.count==0) ikigui_window_update(mywin); // Window graphics needs a redraw
+	        if (mywin->event.type==Expose && mywin->event.xexpose.count==0){ // Window graphics needs a redraw
+			ikigui_window_update(mywin); // This action can be qustioned
+		} 
                 if (mywin->event.type==KeyPress&& XLookupString(&mywin->event.xkey,mywin->text, 255, &mywin->key, 0)==1) { // the XLookupString routine to converts the KeyPress event data into regular text.
 		        //printf("You pressed the %c key!\n",mywin.text[0]);
 	        }
