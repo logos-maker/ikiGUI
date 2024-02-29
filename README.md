@@ -2,7 +2,8 @@
 _A screenshot of a simple plugin example using ikiGUI_
 
 # ikiGUI
-The smallest cross platform GUI library for applications and audio plugins availible. Made for the least amount of dependencies and easy compilation.
+The smallest cross platform GUI library for applications and audio plugins availible. Made for the least amount of dependencies and easy compilation. 
+It uses imidiate mode, but functions for working in retained mode are in the works.
 
 - Can be used for making audio plugin GUI's.
 - Can be used to make stand alone applications (usefull for learning and trying out GUI designs).
