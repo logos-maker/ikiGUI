@@ -148,3 +148,29 @@ void ikigui_map_draw(struct ikigui_map *display, char tile_type, int x, int y){ 
       }
    }
 }
+/// To draw one tile in the tile map to a window or image but first draw a new background for that tile position
+void ikigui_map_draw_tile(struct ikigui_map *display, ikigui_image bg_source, int index, char tile_type, int x, int y){ /// heal backgroud and draw the tile
+   
+	ikigui_rect srcrect = { .w = display->tile_width, .h = display->tile_hight }; // , .x = 0, .y = 0,  } ;
+	ikigui_rect dstrect = { .w = display->tile_width, .h = display->tile_hight };
+
+	int set_w;
+	if(display->direction) set_w = srcrect.w ;
+	else                   set_w = srcrect.h ;
+
+	int i = index % columns ; // Row
+	dstrect.y = i * display->y_spacing + y;
+	int j = index / columns // Column
+	dstrect.x = (j * display->x_spacing) + x;
+	int val = set_w * (display->map[i*display->columns + j] + display->offset) ;
+	if(val<0) continue ; // Don't draw tile if given lower value than 0. // val=0; 
+	if(display->direction)srcrect.x = val ; else srcrect.y = val ;
+	ikigui_tile_fast  (display->dest,bg_source, dstrect.x, dstrect.y, &srcrect); // Heal background
+	switch(tile_type){ // Draw the selected tile to window.
+		case 0: ikigui_tile_alpha (display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
+		case 1:	ikigui_tile_filled(display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
+		case 2:	ikigui_tile_fast  (display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
+		case 3:	ikigui_tile_hollow(display->dest,display->source, dstrect.x, dstrect.y, &srcrect);	break;
+	}
+
+}
