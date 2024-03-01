@@ -23,7 +23,7 @@ It uses immediate mode, but functions for working in retained mode are in the wo
 - Can be used with doxygen for automatic generation of documentation.
 - Can generate and draw text with TTF True Type fonts.
 - Load and save BMP and PNG images.
-- Open native many types of dialogs, like load and save dialogs.
+- Open native dialogs, like load, save and select folder.
     
 Example code for using it making audio plugins can be found here... https://github.com/logos-maker/RST
 
