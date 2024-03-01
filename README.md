@@ -148,8 +148,8 @@ of what you want to change and do what you need to do. All pixels are saved in a
 
 If you want vector graphics maybe you could use something like...  
 [PlutoVG](https://github.com/sammycage/plutovg/tree/main)
-[Cairo](https://www.cairographics.org/)
-And here you can find a interesting video about image processing...  
+[Cairo](https://www.cairographics.org/)  
+And here you can find a interesting video about image processing...    
 [Video: How Blurs & Filters Work](https://youtu.be/C_zFhWdM4ic?si=F9bRqaaNlFn7qX06)
 
 ## What is a [tile map](https://en.wikipedia.org/wiki/Text_mode)?
