@@ -35,7 +35,7 @@ int main(int argc, char ** argv){
 
 
 	// Create a background image - a color gradient
-	ikigui_image_create(&bg, width,hight );
+	ikigui_image_make(&bg, width,hight );
 	ikigui_image_gradient(&bg,0xffeeeedd, 0xff999999);
 
 	map_ikigui_to_sdl(&data.mywin,(unsigned int *)&pixels,width,hight);
