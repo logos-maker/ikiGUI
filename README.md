@@ -12,7 +12,7 @@ It uses immediate mode, but functions for working in retained mode are in the wo
 - It selects the platform specific code automatically.
 - For self contained plugs, with no external files.
 - Require no build system for compilation.
-- It sets up a A8R8G8B8 framebuffer (also known as ARGB8888) for the entire plugin window.
+- It sets up a A8R8G8B8 framebuffer (also known as ARGB8888 or ARGB32) for the entire plugin window.
 - Uses 32bit pixels (24bit color and 8bit alpha channel).
 - Can make precalculated compositing of images with transparancy.
 - Super small code base
