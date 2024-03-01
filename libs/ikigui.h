@@ -17,9 +17,12 @@ typedef struct {
         unsigned int color;  ///< color that may be used of tile map drawing for filling background
 	unsigned char composit; ///< flag for internal usage only (for compabillity reasons).
 } ikigui_image;
+
+#include <stdlib.h>
+#include "ikigui_regular.h" // Include platform agnostic/independent drawing rutines
+
 #ifdef IKIGUI_STANDALONE
 	#include <stdint.h>
-	#include <stdlib.h>
 	#include <stdio.h>
 #endif
 #ifdef IKIGUI_TTF
@@ -31,6 +34,7 @@ typedef struct {
 #ifdef IKIGUI_DIAL
 	#include "ikigui_dial.h"
 #endif
+
 #ifndef IKIGUI_DRAW_ONLY // that declatation excludes all platform specific code, so it can be used for drawing into pixelbuffers only.
 #ifdef __linux__ //linux specific code goes here...
 	#include "ikigui_lin.h"	// For window and graphics handling in this case for Linux.
@@ -38,9 +42,6 @@ typedef struct {
 	#include "windows.h"
 	#include "ikigui_win.h" // For window and graphics handling in this case for Windows.
 #endif
-#endif
-#ifdef IKIGUI_DRAW_ONLY
-	#include "ikigui_regular.h" // we use regular as it's usual that the first pixel is in the top left corner.  
 #endif
 
 typedef uint32_t ikigui_color; /// An less unambiguous way to rembemer how to make a color variable and not color constants.

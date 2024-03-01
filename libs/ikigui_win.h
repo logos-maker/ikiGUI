@@ -6,7 +6,6 @@
 
 #include <windows.h>
 #include <stdbool.h>
-#include "ikigui_goofy.h" // Windows uses the goofy functions with the first pixel in the lower left in pixel buffers.
 
 bool quit = false;
 
@@ -62,7 +61,38 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 			PAINTSTRUCT paint;
 			HDC device_context;
 			device_context = BeginPaint(window_handle, &paint);
-			BitBlt(device_context, paint.rcPaint.left, paint.rcPaint.top, paint.rcPaint.right - paint.rcPaint.left, paint.rcPaint.bottom - paint.rcPaint.top, mywin->bitmap_device_context, paint.rcPaint.left, paint.rcPaint.top, SRCCOPY);
+
+			// The functions BitBlt and StretchBlt have identical inputs, but has 2 more parameters in the end before the last parameter
+			//BitBlt(device_context, paint.rcPaint.left, paint.rcPaint.top, paint.rcPaint.right - paint.rcPaint.left, paint.rcPaint.bottom - paint.rcPaint.top, mywin->bitmap_device_context, paint.rcPaint.left, paint.rcPaint.top, SRCCOPY);
+
+			StretchBlt(
+			device_context,
+			0,//paint.rcPaint.left, 
+			mywin->image.h-1,//0,//paint.rcPaint.bottom - paint.rcPaint.top -1, 
+			mywin->image.w, //paint.rcPaint.right - paint.rcPaint.left, 
+			-mywin->image.h, //- paint.rcPaint.bottom - paint.rcPaint.top,
+			mywin->bitmap_device_context,
+			0,//paint.rcPaint.left, 
+			0,//paint.rcPaint.top,
+			mywin->image.w, //paint.rcPaint.right - paint.rcPaint.left, 
+			mywin->image.h, //paint.rcPaint.bottom - paint.rcPaint.top,
+			SRCCOPY);
+
+			/*
+			BOOL StretchBlt(
+			  [in] HDC   hdcDest,
+			  [in] int   xDest,
+			  [in] int   yDest,
+			  [in] int   wDest,
+			  [in] int   hDest,
+			  [in] HDC   hdcSrc,
+			  [in] int   xSrc,
+			  [in] int   ySrc,
+			  [in] int   wSrc,
+			  [in] int   hSrc,
+			  [in] DWORD rop
+			);
+			*/
 			EndPaint(window_handle,&paint);
 		} break;
 		case WM_KILLFOCUS: mywin->has_focus = false; break;
@@ -75,7 +105,7 @@ LRESULT CALLBACK WindowProcessMessage(HWND window_handle, UINT message, WPARAM w
 			if(mywin->mouse.buttons == MOUSE_LEFT){ // SetCursorPos();
 				GetCursorPos(&pos);				// absolute coordinate on screen
 				mywin->mouse.y_intern += pos.y - mywin->mouse.pos.y;
-				mywin->mouse.pos.y = pos.y;
+				mywin->mouse.pos.y = pos.y ;
 				mywin->mouse.x_intern += pos.x - mywin->mouse.pos.x;	
 				mywin->mouse.pos.x = pos.x;			
 			

@@ -1,5 +1,5 @@
 /// @file ikigui_regular.h Drawing functions, where the first pixel is in the top left corner (used by X11 on Linux) it uses a identical API as ikigui_goofy.c
-
+#include <stdint.h>
 #ifdef IKIGUI_DRAW_ONLY
 void map_ikigui_to_sdl(ikigui_image * dest, Uint32 * pixels, int w , int h){
 	dest->w = w;
