@@ -53,8 +53,8 @@ typedef struct {
 // ----------------------------------------------------------
 //   Low level stuff like color, pixel and alpha operations
 
-typedef uint32_t ikigui_color; /// An less unambiguous way to rembemer how to make a color variable and not color constants.
-uint32_t ikigui_color_make(uint8_t a, uint8_t r, uint8_t g, uint8_t b){ return (a << 24) + (r << 16) + (g << 8) + (b << 0) ;} /// to make a color by it's separate components
+typedef uint32_t ikigui_color; /// A color variable.
+uint32_t ikigui_color_make(uint8_t a, uint8_t r, uint8_t g, uint8_t b){ return (a << 24) + (r << 16) + (g << 8) + (b << 0) ;} /// Make a color by it's separate components
 
 unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal for usage in other functions // done with fixed point math
 	unsigned char alpha = temp >> 24; // Alpha channel
