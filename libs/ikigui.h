@@ -15,7 +15,6 @@ typedef struct {
 	unsigned int *pixels;   ///< pointer to pixel buffer in ARGB8888 format
         unsigned int size;      ///< the size of the buffer
         unsigned int color;  ///< color that may be used of tile map drawing for filling background
-	unsigned char composit; ///< flag for internal usage only (for compabillity reasons).
 } ikigui_image;
 
 #include <stdlib.h>
