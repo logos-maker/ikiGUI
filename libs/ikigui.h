@@ -19,10 +19,8 @@ typedef struct {
 
 #include <stdint.h>
 #include <stdlib.h>
-//#include "ikigui_regular.h" // Include platform agnostic/independent drawing rutines
 
 #ifdef IKIGUI_STANDALONE
-	#include <stdint.h>
 	#include <stdio.h>
 #endif
 #ifdef IKIGUI_TTF
@@ -53,10 +51,14 @@ typedef struct {
 // ----------------------------------------------------------
 //   Low level stuff like color, pixel and alpha operations
 
-typedef uint32_t ikigui_color; /// A color variable.
-uint32_t ikigui_color_make(uint8_t a, uint8_t r, uint8_t g, uint8_t b){ return (a << 24) + (r << 16) + (g << 8) + (b << 0) ;} /// Make a color by it's separate components
+/// ARGB32 Color variable definition.
+typedef uint32_t ikigui_color;
 
-unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal for usage in other functions // done with fixed point math
+/// Make a color by it's separate components
+uint32_t ikigui_color_make(uint8_t a, uint8_t r, uint8_t g, uint8_t b){ return (a << 24) + (r << 16) + (g << 8) + (b << 0) ;}
+
+// Mix 2 colors in ARGB format and return the new color
+unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal for usage in other functions (done with fixed point math).
 	unsigned char alpha = temp >> 24; // Alpha channel
 	unsigned char alpha_inv = ~alpha;
 	unsigned char rf =  (temp&0xff0000)>>16;	// Red forground
@@ -71,16 +73,24 @@ unsigned int alpha_channel(unsigned int color,unsigned int temp){ // Internal fo
 	return (unsigned int)((ro << 16) + (go<< 8) + bo); 
 }
 
-uint32_t ikigui_pixel_get(ikigui_image* source,int x, int y){ return source->pixels[source->w * y + x];} 		/// Get pixel ARGB value
-void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){ dest->pixels[dest->w * y + x] = color;}	/// Set pixel ARGB value
-void     ikigui_pixel_draw(ikigui_image* dest,int x, int y, uint32_t color){						/// Draw transparant pixel
+/// Get pixel ARGB value
+uint32_t ikigui_pixel_get(ikigui_image* source,int x, int y){ 
+	return source->pixels[source->w * y + x];
+} 		
+/// Set pixel ARGB value
+void     ikigui_pixel_set(ikigui_image* dest,int x, int y, uint32_t color){
+	dest->pixels[dest->w * y + x] = color;
+}	
+/// Draw transparent pixel
+void     ikigui_pixel_draw(ikigui_image* dest,int x, int y, uint32_t color){
 	dest->pixels[dest->w * y + x] = alpha_channel(dest->pixels[dest->w * y + x],color);
 }
 
 // -----------------------------------------------------------------------------------
 //   Tile related operations - Used in special cases of pure tile related operations 
 
-void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
+/// Draw area. Flexible to Blit in windows and pixel buffers.
+void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ 
 	int inter_w = source->w ;
 	int inter_h = source->h ;
 	if(dest->w < (source->w + x)) inter_w = dest->w - (x) ; // clip off right  part of image and block crash
@@ -92,7 +102,8 @@ void ikigui_draw_image(ikigui_image *dest,ikigui_image *source, int x, int y){ /
                 }
         }
 }
-void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){ /// Draw area. Flexible to Blit in windows and pixel buffers.
+/// Draw area. Flexible to Blit in windows and pixel buffers.
+void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x, int y){
 	int inter_w = source->w ;
 	int inter_h = source->h ;
 	if(dest->w < (source->w + x)) inter_w = dest->w - (x) ; // clip off right  part of image and block crash
@@ -108,7 +119,8 @@ void ikigui_draw_image_composite(ikigui_image *dest,ikigui_image *source, int x,
 // ---------------------------------------------------------
 //   Pure tile related operations (they mostly need alpha)
 
-void ikigui_tile_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw source area specified by rect, to the destination, if part is NULL we print the whole image instead. 
+/// Draw source area specified by rect, to the destination, if part is NULL we print the whole image instead. 
+void ikigui_tile_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){
 	if(NULL == part){ ikigui_draw_image_composite(dest,source,x,y); return; } // if part is NULL we print the whole image instead. 
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shelding crash
@@ -119,7 +131,8 @@ void ikigui_tile_alpha(ikigui_image *dest,ikigui_image *source, int x, int y, ik
                 }
         }
 }
-void ikigui_tile_filled(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill low alpha value with a solid color.
+/// Draw area - can be used if you whant to fill low alpha value with a solid color.
+void ikigui_tile_filled(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
@@ -130,7 +143,8 @@ void ikigui_tile_filled(ikigui_image *dest,ikigui_image *source, int x, int y, i
                 }
         }
 }
-void ikigui_tile_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if you whant to fill high alpha value with a solid color.
+/// Draw area - can be used if you whant to fill high alpha value with a solid color.
+void ikigui_tile_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shielding crash
         if(dest->h < (y+part->h))return; // shielding crash
@@ -141,7 +155,8 @@ void ikigui_tile_hollow(ikigui_image *dest,ikigui_image *source, int x, int y, i
                 }
         }
 }
-void ikigui_tile_fast(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){ /// Draw area - can be used if source has no alpha
+/// Draw area - can be used if source has no alpha
+void ikigui_tile_fast(ikigui_image *dest,ikigui_image *source, int x, int y, ikigui_rect *part){
 	if(NULL == part){ ikigui_draw_image(dest,source,x,y); return; }
         if((x<0) || (y<0))return; // sheilding crash
         if(dest->w < (x+part->w))return; // shelding crash
@@ -174,6 +189,7 @@ typedef struct ikigui_map {
 } ikigui_map;
 
 enum offset {OFFSET_ASCII = -32, OFFSET_NORMAL = 0 }; // Used for setting the offset value in ikigui_map_inite later used by the ikigui_map_draw function.
+
 /// To initialize ikigui_map structs and allocate memory for the char map
 int ikigui_map_init(struct ikigui_map *display, ikigui_image *dest, ikigui_image *source,  int8_t offset, int x_spacing, int y_spacing, int width, int hight, int columns, int rows ){
    display->map = (char*)calloc(columns*rows,sizeof(char));
@@ -205,12 +221,13 @@ int ikigui_mouse_pos_rect(ikigui_rect *box, int x, int y){ // is the x y coordin
 	if(y>(box->y+box->h)) return 0;
 	return -1; // Return a hit/true value.
 }
-// A helper function
-char* ikigui_map_layout(ikigui_map* find_text_pointer){ /// get the char* pointer to the array that is used for the tile/character array 
+
+/// get the char* pointer to the array that is used for the tile/character array
+char* ikigui_map_layout(ikigui_map* find_text_pointer){ // A helper function
 	return find_text_pointer->map;
 }
-// A helper function
-void ikigui_rect_find(ikigui_rect *destin_rect, int x, int y, ikigui_rect *source_rect){ /// Fill in the parameters of the destin_rect. Convinience to automatically get the destination rect area for a hypthetical blit operation parameters.
+/// Fill in the parameters of the destin_rect. Convinience to automatically get the destination rect area for a hypthetical blit operation parameters.
+void ikigui_rect_find(ikigui_rect *destin_rect, int x, int y, ikigui_rect *source_rect){ // A helper function
 	destin_rect->x = x ;
 	destin_rect->y = y ;
 	destin_rect->w = source_rect->w ;
@@ -289,7 +306,7 @@ void ikigui_map_draw_healing(struct ikigui_map *display, ikigui_image *bg_source
    }
 }
 /// To draw one tile in the tile map to a window or image but first draw a new background for that tile position (for retained mode)
-void ikigui_map_draw_tile(struct ikigui_map *display, ikigui_image *bg_source, int index, char tile_type, int x, int y){ /// heal backgroud and draw the tile
+void ikigui_map_draw_tile(struct ikigui_map *display, ikigui_image *bg_source, int index, char tile_type, int x, int y){ /// Draw tile after healing background
    
 	ikigui_rect srcrect = { .w = display->tile_width, .h = display->tile_hight }; // , .x = 0, .y = 0,  } ;
 	ikigui_rect dstrect = { .w = display->tile_width, .h = display->tile_hight };
@@ -318,7 +335,8 @@ void ikigui_map_draw_tile(struct ikigui_map *display, ikigui_image *bg_source, i
 // -------------------------------------------------------------------
 //   Rect related operations - Drawing primitives using ikigui_rect 
 
-void ikigui_draw_gradient_4x(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, uint32_t color_left, uint32_t color_right, ikigui_rect *part ){ /// Fill part of image or window with gradient.
+/// Draw gradient in part of image or window image.
+void ikigui_draw_gradient_4x(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, uint32_t color_left, uint32_t color_right, ikigui_rect *part ){ 
 
 	int x = part->x;
 	int y = part->y;
@@ -362,7 +380,8 @@ void ikigui_draw_gradient_4x(ikigui_image *dest, uint32_t color_top, uint32_t co
         }
 }
 
-void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ /// Fill part of image or window with gradient.
+/// Draw gradient in part of image or window image.
+void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot, ikigui_rect *part ){ 
 
 	int x = part->x;
 	int y = part->y;
@@ -397,7 +416,8 @@ void ikigui_draw_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color
         }
 }
 
-void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint32_t shadow, ikigui_rect *part ){ /// A filled rect with shaddow
+/// Draww a filled rect with shaddow.
+void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint32_t shadow, ikigui_rect *part ){ 
 	int x = part->x;
 	int y = part->y;
 
@@ -424,7 +444,8 @@ void ikigui_draw_panel(ikigui_image *dest, uint32_t color, uint32_t light, uint3
 		dest->pixels[i+(part->y+part->h-1)*dest->w] = shadow;
         }
 }
-void ikigui_draw_bevel(ikigui_image *dest, uint32_t color, uint32_t shadow, ikigui_rect *part ){ /// A unfilled rect with shaddow
+/// Draw a unfilled rect with shaddow.
+void ikigui_draw_bevel(ikigui_image *dest, uint32_t color, uint32_t shadow, ikigui_rect *part ){ 
 	int x = part->x;
 	int y = part->y;
 
@@ -445,7 +466,8 @@ void ikigui_draw_bevel(ikigui_image *dest, uint32_t color, uint32_t shadow, ikig
 		dest->pixels[i+(part->y+part->h-1)*dest->w] = shadow;
         }
 }
-void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// A unfilled rect (has alpha support)
+/// Draw a unfilled rect (has alpha support)
+void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ 
 	int x = part->x;
 	int y = part->y;
 
@@ -474,7 +496,8 @@ void ikigui_draw_rect(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /
 		}
 	}
 }
-void ikigui_draw_box(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ /// To draw a filled rectangle (has alpha support)
+/// Draw a filled rectangle (has alpha support)
+void ikigui_draw_box(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ 
 	int x = part->x; // to make code easier to read
 	int y = part->y; // to make code easier to read
         if((x<0) || (y<0))return; // sheilding crash
@@ -498,8 +521,8 @@ void ikigui_draw_box(ikigui_image *dest, uint32_t color, ikigui_rect *part ){ //
 // ----------------------------------------
 //   Drawing primitives - On pixel level
 
-
-void ikigui_draw_line_v(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ /// Draw vertical line fast (has alpha support)
+/// Draw vertical line fast (has alpha support)
+void ikigui_draw_line_v(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ 
 	if((x<0||y<0))return; // crash blocking
 	if((color & 0xFF000000) != 0xFF000000){ // Do we use alpha? True if no alpha (alpha is set to 0xFF in the color value)
 		for(int i = y ; i < (y+length) ; i++){ // draw vertical line with alpha
@@ -511,7 +534,8 @@ void ikigui_draw_line_v(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t
 		}
 	}
 }
-void ikigui_draw_line_h(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ /// Draw horizontal line fast (has alpha support)
+/// Draw horizontal line fast (has alpha support)
+void ikigui_draw_line_h(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t y, uint32_t length ){ 
 	if((x<0||y<0))return; // crash blocking
 	if((color & 0xFF000000) != 0xFF000000){ // Do we use alpha? True if no alpha (alpha is set to 0xFF in the color value)
 		for(int i = x ; i < (x+length) ; i++){ // draw horizontal line with alpha
@@ -524,8 +548,8 @@ void ikigui_draw_line_h(ikigui_image *dest, uint32_t color, uint32_t x, uint32_t
 		}
 	}
 }
-
-void ikigui_draw_line(ikigui_image *dest, uint32_t color, int x0, int y0, int x1, int y1) { /// Draw line between two x,y coordinates
+/// Draw line between two x,y coordinates
+void ikigui_draw_line(ikigui_image *dest, uint32_t color, int x0, int y0, int x1, int y1) { 
 	int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
 	int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1; 
 	int err = (dx>dy ? dx : -dy)/2, e2;
@@ -538,18 +562,13 @@ void ikigui_draw_line(ikigui_image *dest, uint32_t color, int x0, int y0, int x1
 		if(e2 < dy) { err += dx; y0 += sy; }
 	}
 }
-
-void ikigui_draw_line_bh(ikigui_image *dest, uint32_t color,int x0, int y0, int x1, int y1){ /// Alternative draw line funtion beetween two x,y coordinates
-	//void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
-	int dx, dy, p, x, y;
-
-	dx=x1-x0;
-	dy=y1-y0;
-
-	x=x0;
-	y=y0;
-
-	p=2*dy-dx;
+/// Draw line funtion beetween two x,y coordinates (with alternatine algorithm).
+void ikigui_draw_line_bh(ikigui_image *dest, uint32_t color,int x0, int y0, int x1, int y1){ 
+	int dx=x1-x0;
+	int dy=y1-y0;
+	int x=x0;
+	int y=y0;
+	int p=2*dy-dx;
  
 	while(x<x1){
 		if(p>=0){
@@ -564,53 +583,8 @@ void ikigui_draw_line_bh(ikigui_image *dest, uint32_t color,int x0, int y0, int 
 		x=x+1;
 	}
 }
-
-/*
-#include <math.h>
-void ikigui_draw_cubic_bezier(ikigui_image *dest, uint32_t color,
-        unsigned int x1, unsigned int y1,
-        unsigned int x2, unsigned int y2,
-        unsigned int x3, unsigned int y3,
-        unsigned int x4, unsigned int y4)
-{
-	void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
-
-#define N_SEG 20 // number of segments for the curve
-    unsigned int i;
-    double pts[N_SEG+1][2];
-    for (i=0; i <= N_SEG; ++i)
-    {
-        double t = (double)i / (double)N_SEG;
-
-        double a = pow((1.0 - t), 3.0);
-        double b = 3.0 * t * pow((1.0 - t), 2.0);
-        double c = 3.0 * pow(t, 2.0) * (1.0 - t);
-        double d = pow(t, 3.0);
-
-        double x = a * x1 + b * x2 + c * x3 + d * x4;
-        double y = a * y1 + b * y2 + c * y3 + d * y4;
-        pts[i][0] = x;
-        pts[i][1] = y;
-    }
- 
-
-    // draw only points
-    for (i=0; i <= N_SEG; ++i)
-    {
-        plot( pts[i][0],
-              pts[i][1] );
-    }
-    // draw segments
-    for (i=0; i < N_SEG; ++i){
-        int j = i + 1;
-	ikigui_draw_line(dest,color, pts[i][0], pts[i][1],pts[j][0], pts[j][1] );
-    }
-}
-*/
-
-void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsigned int radius){ /// Draw a circle from it's x,y center, with radius seting
-	//void plot(int x0,int y0){ dest->pixels[dest->w * y0 + x0] = color;}
-
+/// Draw a circle from it's x,y center, with radius setting
+void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsigned int radius){ 
 	int f = 1 - radius;
 	int ddF_x = 0;
 	int ddF_y = -2 * radius;
@@ -645,7 +619,8 @@ void ikigui_draw_circle(ikigui_image *dest, uint32_t color, int x0, int y0, unsi
 
 
 enum cuadrants{ NE = 1, NW = 2, SW = 4, SE = 8};
-void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color, int x0, int y0, unsigned int radius){ /// Draw selected quadrants of a circle from x,y center, with radius setting
+/// Draw selected quadrants of a circle from x,y center, with radius setting
+void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color, int x0, int y0, unsigned int radius){ 
 
 	int f = 1 - radius;
 	int ddF_x = 0;
@@ -692,23 +667,28 @@ void ikigui_draw_circle_parts(ikigui_image *dest, int quad_flags, uint32_t color
 //   ikigui_image related operations - Drawing functions for image manipulation
 
 
-void ikigui_image_solid(ikigui_image *dest, unsigned int color){ /// Fill image or window with a ARGB value.
+/// Fill image or window with a ARGB value.
+void ikigui_image_solid(ikigui_image *dest, unsigned int color){ 
         for(int i = 0 ; i < dest->w * dest->h ; i++){	dest->pixels[i] = color; }
 }
-void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ /// Fill background in destination. Doesn't overwrite the image.
+/// Fill background in destination. Doesn't overwrite the image.
+void ikigui_image_solid_bg(ikigui_image *dest,unsigned int color){ 
         for(int i = 0 ; i < dest->size ; i++){		dest->pixels[i] = alpha_channel(color,dest->pixels[i]);	}
 }
-void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ /// Fill image with a color gradient.
+/// Fill image with a color gradient.
+void ikigui_image_gradient(ikigui_image *dest, uint32_t color_top, uint32_t color_bot){ 
 	ikigui_rect all = {.x=0,.y=0,.w= dest->w,.h= dest->h};
 	ikigui_draw_gradient(dest,color_top,color_bot,&all);
 }
-void ikigui_image_make(ikigui_image *frame, uint32_t w,uint32_t h){ /// Allocate pixel memory for a ikigui_image
+/// Allocate pixel memory for a ikigui_image
+void ikigui_image_make(ikigui_image *frame, uint32_t w,uint32_t h){ 
         frame->w = w;
         frame->h = h;
         frame->pixels = (unsigned int*)malloc(frame->w*frame->h*4);
         frame->size = frame->w * frame->h ;
 }
-void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// Read BMP image in header file (or RAM) to a ikigui_image and allocate memory for it.
+/// Read BMP image in header file (or RAM) to a ikigui_image and allocate memory for it.
+void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ 
         unsigned int start;
         dest->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
         dest->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
@@ -727,4 +707,3 @@ void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ /// R
         }
         dest->size = dest->w * dest->h ;
 }
-
