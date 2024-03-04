@@ -6,7 +6,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-int save_png_header(ikigui_image *image, const char* output) {
+int save_png_header(ikigui_image *image, const char* output) { /// Convert ikigui_image in RAM to a PNG file and convert it to a header file
 	// Generate image file name
 	char output_filename_png[256];
 	strcpy(output_filename_png, output);

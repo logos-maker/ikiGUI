@@ -174,7 +174,6 @@ void ikigui_window_open_editor(ikigui_window *mywin,void *ptr, int w, int h){
 /// Update the event data for the Window
 void ikigui_window_get_events(struct ikigui_window *mywin){
 
-
         while(PeekMessage(&mywin->message, NULL, 0, 0, PM_REMOVE)) { DispatchMessage(&mywin->message); }
 
         // values for recognicing changes in mousemovements and mouse buttons.
@@ -184,9 +183,9 @@ void ikigui_window_get_events(struct ikigui_window *mywin){
 	mywin->mouse.y=mywin->mouse.y_intern;
 	mywin->mouse.old_button_press = mywin->mouse.buttons;  // old value for buttons. For finding changes later on.
 	mywin->mouse.buttons = mywin->mouse.buttons_intern; 
-	mywin->mouse.left_click   = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_LEFT);
-	mywin->mouse.middle_click = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_MIDDLE);
-	mywin->mouse.right_click  = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_RIGHT);
+	mywin->mouse.left_click     = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_LEFT);
+	mywin->mouse.middle_click   = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_MIDDLE);
+	mywin->mouse.right_click    = (mywin->mouse.old_button_press == 0) && (mywin->mouse.buttons & MOUSE_RIGHT);
 	mywin->mouse.left_release   = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_LEFT));
 	mywin->mouse.middle_release = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_MIDDLE));
 	mywin->mouse.right_release  = (mywin->mouse.old_button_press == 1) && (!(mywin->mouse.buttons & MOUSE_RIGHT));
@@ -199,10 +198,9 @@ void ikigui_window_update(struct ikigui_window *mywin){
 }
 
 #ifdef IKIGUI_STANDALONE
-	void ikigui_breathe(int milisec){ Sleep(milisec); } // Pause function, gives CPU over to the OS
+	void ikigui_breathe(int milisec){ Sleep(milisec); } /// Pause function, gives CPU over to the OS
 
-	/// Open window (for a standalone application)
-	void ikigui_window_open(ikigui_window *mywin, char *name, int w, int h){
+	void ikigui_window_open(ikigui_window *mywin, char *name, int w, int h){ /// Open window (for a standalone application)
 		for(int i = 0 ; name[i] ; i++) mywin->name[i] = name[i] ;
 		ikigui_window_open_editor(mywin,NULL, w, h);
 		mywin->mouse.buttons_intern = 0 ;
