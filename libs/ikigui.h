@@ -8,6 +8,7 @@ typedef struct{
         int h; ///< hight of the rectangle (in pixels)
 } ikigui_rect;
 
+enum pixel_format { IKI_ARGB = 0, IKI_RGBA = 1, IKI_ARGB_PREMUL = 2}; /// ARGB is the native format for ikiGUI. ARGB_PREMUL can be used with eg. Cairo (CAIRO_FORMAT_ARGB32). And RGBA with PlutoVG and PlutoSVG. 
 /// For a image with dimensions and pointer to pixel data
 typedef struct {
 	int w; ///< width of image (in pixels)
@@ -15,6 +16,7 @@ typedef struct {
 	unsigned int *pixels; ///< pointer to pixel buffer in ARGB8888 format
         unsigned int size;    ///< the size of the buffer
         unsigned int color;   ///< color that may be used of tile map drawing for filling background
+	char pixel_format;    // Not used by anything yet (may be used by map functions to use different sourceformats later on).
 } ikigui_image;
 
 #include <stdint.h>
@@ -41,10 +43,10 @@ typedef struct {
 	}
 #else // Select the right platform specific files...
 	#ifdef __linux__ //linux specific code goes here...
-		#include "ikigui_lin.h"	// For window and graphics handling in this case for Linux.
+		#include <ikigui/ikigui_lin.h>	// For window and graphics handling in this case for Linux.
 	#elif _WIN32 // windows specific code goes here...
 		#include "windows.h"
-		#include "ikigui_win.h" // For window and graphics handling in this case for Windows.
+		#include <ikigui/ikigui_win.h> // For window and graphics handling in this case for Windows.
 	#endif
 #endif
 
@@ -171,7 +173,6 @@ void ikigui_tile_fast(ikigui_image *dest,ikigui_image *source, int x, int y, iki
         }
 }
 
-
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //   Tile map related operations - That need the pure tile related operations and alpha. For making tilemaps that select image parts from a tile atlas, for oldschool monospace characters and graphic tiles.
 
@@ -212,6 +213,30 @@ int ikigui_map_init(struct ikigui_map *display, ikigui_image *dest, ikigui_image
    if(source->w == width) display->direction = 0; else display->direction = 1; // Automatic detection for tile-atlas direction (horizontal or vertical).
    return columns * rows ; // returns the total number of tiles in the character display
 }
+
+/// To initialize ikigui_map structs with less parameters and allocate memory for the char map
+int ikigui_map_init_simple(struct ikigui_map *display, ikigui_image *dest, ikigui_image *source, int width, int hight, int columns, int rows ){
+   display->map = (char*)calloc(columns*rows,sizeof(char));
+   display->offset = 0 ;      // index value offset to all values used in the map array.
+   display->tile_width = width ;   // The width of the tiles. 
+   display->tile_hight = hight ;   // The higth of the tiles.
+   display->x_spacing = width ;    // The number of pixels between left most pixel in each tile.
+   display->y_spacing = width ;    // The number of pixels between top  most pixel in each tile.
+   display->columns = columns ;    // Set to a default value
+   display->rows = rows ;          // Set to a default value
+   display->max_index = (source->w / width) * (source->h / hight) - 1 ; //
+   display->dest = dest ;          // Set to dest given as input by library user.
+   display->source = source ;      // Set to source image given as input by library user.
+   if(source->w == width) display->direction = 0; else display->direction = 1; // Automatic detection for tile-atlas direction (horizontal or vertical).
+   return columns * rows ; // returns the total number of tiles in the character display
+}
+
+/// To copy spacing from another ikigui map. E.g. you use ikigui_map_init_simple() and want to use the same spacing as another ikigui_map
+int ikigui_map_spacing_copy(struct ikigui_map *dest, struct ikigui_map *source){ // For making programs with more readable code.
+	dest->x_spacing = source->x_spacing;
+	dest->y_spacing = source->x_spacing;
+}
+
 
 /// To free memory allocated to a ikigui_map with the ikigui_map_init function
 void ikigui_map_free(struct ikigui_map *display){
@@ -761,8 +786,31 @@ void ikigui_image_RGBA_to_ARGB(ikigui_image *frame){
 		frame->pixels[i] =  ((frame->pixels[i] & 0x00FF0000)>>16) + ((frame->pixels[i] & 0x000000FF)<<16) + (frame->pixels[i] & 0xFF00FF00) ;
 	}
 }
+
+// Structure for a ARGB32 pixel
+typedef struct {
+    uint8_t a; // alpha channel
+    uint8_t r; // red channel
+    uint8_t g; // green channel
+    uint8_t b; // blue channel
+} ikigui_argb_pixel;
+
+/// Convert ARGB pixels with premultiplied alpha, to "normal" ARGB without premultiplied alpha that is used by ikiGUI.
+void ikigui_image_ARGB_unmultiply(ikigui_image *frame){ // To convert data from e.g. cairo  
+	for(int i = 0 ; i < (frame->w*frame->h); i++){ // Uses 8.8 fixed-point math
+		argb_pixel *pixel = (ikigui_argb_pixel *)&frame->pixels[i];
+		if (pixel->a != 0) {
+		    uint16_t alpha = pixel->a;
+		    uint16_t invAlpha = (1 << 8) / alpha;
+		    pixel->r = (pixel->r * invAlpha + 0x80) >> 8; // Add rounding
+		    pixel->g = (pixel->g * invAlpha + 0x80) >> 8;
+		    pixel->b = (pixel->b * invAlpha + 0x80) >> 8;
+		}
+	}
+}
+
 /// Read BMP image in header file (or RAM) to a ikigui_image and allocate memory for it.
-void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ 
+void ikigui_include_bmp(ikigui_image *dest,const unsigned char* bmp_incl){ // Do not use ikigui_image_create() on a ikigui_image struct, before you use ikigui_include_bmp() as you will allocate memory 2 times.
         unsigned int start;
         dest->w = bmp_incl[0x12] + (bmp_incl[0x12+1]<<8) + (bmp_incl[0x12+2]<<16) + (bmp_incl[0x12+3]<<24);
         dest->h = bmp_incl[0x16] + (bmp_incl[0x16+1]<<8) + (bmp_incl[0x16+2]<<16) + (bmp_incl[0x16+3]<<24);
