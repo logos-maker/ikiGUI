@@ -43,10 +43,10 @@ typedef struct {
 	}
 #else // Select the right platform specific files...
 	#ifdef __linux__ //linux specific code goes here...
-		#include <ikigui/ikigui_lin.h>	// For window and graphics handling in this case for Linux.
+		#include "ikigui_lin.h"	// For window and graphics handling in this case for Linux.
 	#elif _WIN32 // windows specific code goes here...
 		#include "windows.h"
-		#include <ikigui/ikigui_win.h> // For window and graphics handling in this case for Windows.
+		#include "ikigui_win.h" // For window and graphics handling in this case for Windows.
 	#endif
 #endif
 
@@ -798,7 +798,7 @@ typedef struct {
 /// Convert ARGB pixels with premultiplied alpha, to "normal" ARGB without premultiplied alpha that is used by ikiGUI.
 void ikigui_image_ARGB_unmultiply(ikigui_image *frame){ // To convert data from e.g. cairo  
 	for(int i = 0 ; i < (frame->w*frame->h); i++){ // Uses 8.8 fixed-point math
-		argb_pixel *pixel = (ikigui_argb_pixel *)&frame->pixels[i];
+		ikigui_argb_pixel *pixel = (ikigui_argb_pixel *)&frame->pixels[i];
 		if (pixel->a != 0) {
 		    uint16_t alpha = pixel->a;
 		    uint16_t invAlpha = (1 << 8) / alpha;
